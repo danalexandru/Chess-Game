@@ -4,22 +4,10 @@ Documentation:
 """
 
 # region imports
-import pygame
-import os
-# import piece
 from board import Board
-# from board import Board
 
 from globals import *
 # endregion imports
-
-# board = pygame.transform.scale(pygame.image.load(os.path.join("pics", "board_alt.png")), (WIDTH, HEIGHT))
-
-board = pygame.transform.scale(pygame.image.load(os.path.join("pics",
-                                                              "boards",
-                                                              "chessboard_wallpaper_1.jpg")),
-                               (WINDOW_WIDTH, WINDOW_HEIGHT))
-
 
 # region local functions
 def redraw_game_window():
@@ -100,7 +88,8 @@ def main():
                 if event.type == pygame.MOUSEMOTION:
                     pass
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    pass
+                    mouse_current_position = pygame.mouse.get_pos()
+                    click_on_chessboard(mouse_current_position)
 
         return True
     except Exception as error_message:
