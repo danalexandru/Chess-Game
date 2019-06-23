@@ -59,11 +59,38 @@ class Board:
         try:
             for i in range(self.rows):
                 for j in range(self.cols):
-                    if self.board[i][j] != 0:
+                    if not isinstance(self.board[i][j], int):
                         self.board[i][j].draw(win)
 
             return True
         except Exception as error_message:
             console_log(error_message, LOG_ERROR, self.draw.__name__)
             return False
+
+    def select_chess_piece(self, position):
+        """
+        Description: This function selects the current chess piece that was clicked on
+        :param position: The position of the chess piece on the board
+        :return: Boolean (True or False
+        """
+        try:
+            [y, x] = position
+
+            for i in range(self.rows):
+                for j in range(self.cols):
+                    if not isinstance(self.board[i][j], int):
+                        self.board[i][j].is_selected = False
+
+            if not isinstance(self.board[x][y], int):
+                self.board[x][y].is_selected = True
+                console_log("chess piece \"%s\".is_selected = %d" % (self.board[x][y].image_index,
+                                                                     self.board[x][y].is_selected),
+                            LOG_INFO)
+
+            return True
+
+        except Exception as error_message:
+            console_log(error_message, LOG_ERROR, self.select_chess_piece.__name__)
+            return False
+
 # endregion class Board

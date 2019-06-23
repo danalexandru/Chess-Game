@@ -32,7 +32,7 @@ LOG_INFO        =   0x03
 CODE_RED        =   "\033[1;31;40m"
 CODE_YELLOW     =   "\033[1;33;40m"
 CODE_GREEN      =   "\033[1;32;40m"
-
+CODE_BLUE       =   "\033[1;34;40m"
 CODE_WHITE      =   "\033[1;37;40m"
 # endregion
 
@@ -199,6 +199,19 @@ else:
 # endregion chess pieces
 
 
+# region application surface
+win = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
+pygame.display.set_caption("Chess Game")
+
+icon = pygame.transform.scale(pygame.image.load(os.path.join("pics",
+                                                             "chess_pieces",
+                                                             "king.png")),
+                              (32, 32))
+
+pygame.display.set_icon(icon)
+# endregion application surface
+
+
 # region global functions
 def console_log(message, priority=None, location=None):
     """
@@ -223,8 +236,10 @@ def console_log(message, priority=None, location=None):
         elif priority == LOG_SUCCESS:
             print("%s\t Success (%s):%s %s" % (CODE_GREEN, location, CODE_WHITE, message))
 
-        elif priority == LOG_INFO or \
-                priority is None:
+        elif priority == LOG_INFO:
+            print("%s\t Info (%s):%s %s" % (CODE_BLUE, location, CODE_WHITE, message))
+
+        elif priority is None:
             print("%s\t %s" % (CODE_WHITE, message))
 
         return True
@@ -242,7 +257,7 @@ def click_on_chessboard(mouse_position):
              Variable: chessboard_mouse_position
              Values: [0 - 7, 0 - 7]
 
-             False: If an error occured
+             False: If an error occurred
     """
     try:
         if CHESSBOARD_INITIAL_POSITION[0] < mouse_position[0] < CHESSBOARD_INITIAL_POSITION[0] + CHESSBOARD_WIDTH:
@@ -257,9 +272,10 @@ def click_on_chessboard(mouse_position):
 
                 console_log("mouse clicked at position (%d, %d)" %
                             (chessboard_mouse_position[0], chessboard_mouse_position[1]),
-                            LOG_SUCCESS,
+                            LOG_INFO,
                             click_on_chessboard.__name__)
-                return True
+
+                return chessboard_mouse_position
 
         return False
     except Exception as error_message:

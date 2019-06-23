@@ -7,7 +7,6 @@ class Piece(object):
     image_index = ""
     x_position = CHESSBOARD_INITIAL_POSITION[0]
     y_position = CHESSBOARD_INITIAL_POSITION[1]
-    is_alive = True
 
     def __init__(self, row, col, color):
         """
@@ -20,7 +19,8 @@ class Piece(object):
             self.row = row
             self.col = col
             self.color = color
-            self.selected = False
+            self.is_alive = True
+            self.is_selected = False
             return
 
         except Exception as error_message:
@@ -65,7 +65,14 @@ class Piece(object):
                       PIECE_OFFSET / 2)
 
             win.blit(draw_this, (x, y))
+
+            if self.is_selected is True:
+                rect = pygame.Surface((PIECE_WIDTH,PIECE_HEIGHT), pygame.SRCALPHA, 32)
+                rect.fill((66, 134, 244, 70))
+                win.blit(rect, (x - PIECE_OFFSET / 2, y - PIECE_OFFSET / 2))
+
             return True
+
         except Exception as error_message:
             console_log(error_message, LOG_ERROR, self.draw.__name__)
             return False

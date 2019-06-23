@@ -18,11 +18,9 @@ def redraw_game_window():
              False if an error occurred
     """
     try:
-        global win
         win.blit(board, (0, 0))
         # find_chessboard_edges()
 
-        board_inst = Board(8, 8)
         board_inst.draw(win)
 
         # find_chessboard_edges()
@@ -74,6 +72,10 @@ def main():
     try:
         clock = pygame.time.Clock()
         run = True
+
+        global board_inst
+        board_inst = Board(8, 8)
+
         while run:
             clock.tick(10)
             redraw_game_window()
@@ -89,7 +91,11 @@ def main():
                     pass
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     mouse_current_position = pygame.mouse.get_pos()
-                    click_on_chessboard(mouse_current_position)
+                    position = click_on_chessboard(mouse_current_position)
+
+                    if position is not False:
+                        pass
+                    board_inst.select_chess_piece(position)
 
         return True
     except Exception as error_message:
@@ -98,15 +104,5 @@ def main():
 
 
 if __name__ == "__main__":
-    win = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
-    pygame.display.set_caption("Chess Game")
-
-    icon = pygame.transform.scale(pygame.image.load(os.path.join("pics",
-                                                                 "chess_pieces",
-                                                                 "king.png")),
-                                  (32, 32))
-
-    pygame.display.set_icon(icon)
-
     main()
 
