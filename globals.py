@@ -17,7 +17,7 @@ PIECE_HEIGHT = CHESSBOARD_HEIGHT / 8
 
 PIECE_WIDTH_ROUND = round(PIECE_WIDTH - 0.5) - PIECE_OFFSET
 PIECE_HEIGHT_ROUND = round(PIECE_HEIGHT - 0.5) - PIECE_OFFSET
-PIECES_TYPE_3D = True
+PIECES_TYPE_3D = False
 
 
 # region console log flags
@@ -29,11 +29,11 @@ LOG_INFO        =   0x03
 
 
 # region messages color codes
-CODE_RED        =   "\033[1;31;40m"
-CODE_YELLOW     =   "\033[1;33;40m"
-CODE_GREEN      =   "\033[1;32;40m"
-CODE_BLUE       =   "\033[1;34;40m"
-CODE_WHITE      =   "\033[1;37;40m"
+CODE_RED        =   '\033[1;31;40m'
+CODE_YELLOW     =   '\033[1;33;40m'
+CODE_GREEN      =   '\033[1;32;40m'
+CODE_BLUE       =   '\033[1;34;40m'
+CODE_WHITE      =   '\033[1;37;40m'
 # endregion
 
 
@@ -41,9 +41,9 @@ CODE_WHITE      =   "\033[1;37;40m"
 
 
 # region chessboard
-board = pygame.transform.scale(pygame.image.load(os.path.join("pics",
-                                                              "boards",
-                                                              "chessboard_wallpaper_1.jpg")),
+board = pygame.transform.scale(pygame.image.load(os.path.join('pics',
+                                                              'boards',
+                                                              'chessboard_wallpaper_1.jpg')),
                                (WINDOW_WIDTH, WINDOW_HEIGHT))
 # endregion chessboard
 
@@ -54,145 +54,144 @@ board = pygame.transform.scale(pygame.image.load(os.path.join("pics",
 dict_black_pieces = {}
 
 if PIECES_TYPE_3D is False:
-    dict_black_pieces["bishop"] = pygame.transform.scale(pygame.image.load(os.path.join("pics",
-                                                                                        "chess_pieces",
-                                                                                        "3Ds",
-                                                                                        "black",
-                                                                                        "Chess_bdt60.png")),
+    dict_black_pieces['bishop'] = pygame.transform.scale(pygame.image.load(os.path.join('pics',
+                                                                                        'chess_pieces',
+                                                                                        'black',
+                                                                                        'Chess_bdt60.png')),
                                                          (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND))
-    dict_black_pieces["king"]   = pygame.transform.scale(pygame.image.load(os.path.join("pics",
-                                                                                        "chess_pieces",
-                                                                                        "black",
-                                                                                        "Chess_kdt60.png")),
+    dict_black_pieces['king']   = pygame.transform.scale(pygame.image.load(os.path.join('pics',
+                                                                                        'chess_pieces',
+                                                                                        'black',
+                                                                                        'Chess_kdt60.png')),
                                                          (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND))
-    dict_black_pieces["knight"] = pygame.transform.scale(pygame.image.load(os.path.join("pics",
-                                                                                        "chess_pieces",
-                                                                                        "black",
-                                                                                        "Chess_ndt60.png")),
+    dict_black_pieces['knight'] = pygame.transform.scale(pygame.image.load(os.path.join('pics',
+                                                                                        'chess_pieces',
+                                                                                        'black',
+                                                                                        'Chess_ndt60.png')),
                                                          (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND))
-    dict_black_pieces["pawn"]   = pygame.transform.scale(pygame.image.load(os.path.join("pics",
-                                                                                        "chess_pieces",
-                                                                                        "black",
-                                                                                        "Chess_pdt60.png")),
+    dict_black_pieces['pawn']   = pygame.transform.scale(pygame.image.load(os.path.join('pics',
+                                                                                        'chess_pieces',
+                                                                                        'black',
+                                                                                        'Chess_pdt60.png')),
                                                          (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND))
-    dict_black_pieces["queen"]  = pygame.transform.scale(pygame.image.load(os.path.join("pics",
-                                                                                        "chess_pieces",
-                                                                                        "black",
-                                                                                        "Chess_qdt60.png")),
+    dict_black_pieces['queen']  = pygame.transform.scale(pygame.image.load(os.path.join('pics',
+                                                                                        'chess_pieces',
+                                                                                        'black',
+                                                                                        'Chess_qdt60.png')),
                                                          (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND))
-    dict_black_pieces["rook"]   = pygame.transform.scale(pygame.image.load(os.path.join("pics",
-                                                                                        "chess_pieces",
-                                                                                        "black",
-                                                                                        "Chess_rdt60.png")),
+    dict_black_pieces['rook']   = pygame.transform.scale(pygame.image.load(os.path.join('pics',
+                                                                                        'chess_pieces',
+                                                                                        'black',
+                                                                                        'Chess_rdt60.png')),
                                                          (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND))
 else:
-    dict_black_pieces["bishop"] = pygame.transform.scale(pygame.image.load(os.path.join("pics",
-                                                                                        "chess_pieces",
-                                                                                        "3Ds",
-                                                                                        "black",
-                                                                                        "chess_piece_illustration_black_bishop.png")),
+    dict_black_pieces['bishop'] = pygame.transform.scale(pygame.image.load(os.path.join('pics',
+                                                                                        'chess_pieces',
+                                                                                        '3Ds',
+                                                                                        'black',
+                                                                                        'chess_piece_illustration_black_bishop.png')),
                                                          (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND))
-    dict_black_pieces["king"]   = pygame.transform.scale(pygame.image.load(os.path.join("pics",
-                                                                                        "chess_pieces",
-                                                                                        "3Ds",
-                                                                                        "black",
-                                                                                        "chess_piece_illustration_black_king.png")),
+    dict_black_pieces['king']   = pygame.transform.scale(pygame.image.load(os.path.join('pics',
+                                                                                        'chess_pieces',
+                                                                                        '3Ds',
+                                                                                        'black',
+                                                                                        'chess_piece_illustration_black_king.png')),
                                                          (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND))
-    dict_black_pieces["knight"] = pygame.transform.scale(pygame.image.load(os.path.join("pics",
-                                                                                        "chess_pieces",
-                                                                                        "3Ds",
-                                                                                        "black",
-                                                                                        "chess_piece_illustration_black_knight.png")),
+    dict_black_pieces['knight'] = pygame.transform.scale(pygame.image.load(os.path.join('pics',
+                                                                                        'chess_pieces',
+                                                                                        '3Ds',
+                                                                                        'black',
+                                                                                        'chess_piece_illustration_black_knight.png')),
                                                          (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND))
-    dict_black_pieces["pawn"]   = pygame.transform.scale(pygame.image.load(os.path.join("pics",
-                                                                                        "chess_pieces",
-                                                                                        "3Ds",
-                                                                                        "black",
-                                                                                        "chess_piece_illustration_black_pawn.png")),
+    dict_black_pieces['pawn']   = pygame.transform.scale(pygame.image.load(os.path.join('pics',
+                                                                                        'chess_pieces',
+                                                                                        '3Ds',
+                                                                                        'black',
+                                                                                        'chess_piece_illustration_black_pawn.png')),
                                                          (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND))
-    dict_black_pieces["queen"]  = pygame.transform.scale(pygame.image.load(os.path.join("pics",
-                                                                                        "chess_pieces",
-                                                                                        "3Ds",
-                                                                                        "black",
-                                                                                        "chess_piece_illustration_black_queen.png")),
+    dict_black_pieces['queen']  = pygame.transform.scale(pygame.image.load(os.path.join('pics',
+                                                                                        'chess_pieces',
+                                                                                        '3Ds',
+                                                                                        'black',
+                                                                                        'chess_piece_illustration_black_queen.png')),
                                                          (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND))
-    dict_black_pieces["rook"]   = pygame.transform.scale(pygame.image.load(os.path.join("pics",
-                                                                                        "chess_pieces",
-                                                                                        "3Ds",
-                                                                                        "black",
-                                                                                        "chess_piece_illustration_black_rook.png")),
+    dict_black_pieces['rook']   = pygame.transform.scale(pygame.image.load(os.path.join('pics',
+                                                                                        'chess_pieces',
+                                                                                        '3Ds',
+                                                                                        'black',
+                                                                                        'chess_piece_illustration_black_rook.png')),
                                                          (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND))
 # endregion black pieces
 
 # region white pieces
 dict_white_pieces = {}
 if PIECES_TYPE_3D is False:
-    dict_white_pieces["bishop"] = pygame.transform.scale(pygame.image.load(os.path.join("pics",
-                                                                                        "chess_pieces",
-                                                                                        "white",
-                                                                                        "Chess_blt60.png")),
+    dict_white_pieces['bishop'] = pygame.transform.scale(pygame.image.load(os.path.join('pics',
+                                                                                        'chess_pieces',
+                                                                                        'white',
+                                                                                        'Chess_blt60.png')),
                                                          (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND))
-    dict_white_pieces["king"]   = pygame.transform.scale(pygame.image.load(os.path.join("pics",
-                                                                                        "chess_pieces",
-                                                                                        "white",
-                                                                                        "Chess_klt60.png")),
+    dict_white_pieces['king']   = pygame.transform.scale(pygame.image.load(os.path.join('pics',
+                                                                                        'chess_pieces',
+                                                                                        'white',
+                                                                                        'Chess_klt60.png')),
                                                          (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND))
-    dict_white_pieces["knight"] = pygame.transform.scale(pygame.image.load(os.path.join("pics",
-                                                                                        "chess_pieces",
-                                                                                        "white",
-                                                                                        "Chess_nlt60.png")),
+    dict_white_pieces['knight'] = pygame.transform.scale(pygame.image.load(os.path.join('pics',
+                                                                                        'chess_pieces',
+                                                                                        'white',
+                                                                                        'Chess_nlt60.png')),
                                                          (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND))
-    dict_white_pieces["pawn"]   = pygame.transform.scale(pygame.image.load(os.path.join("pics",
-                                                                                        "chess_pieces",
-                                                                                        "white",
-                                                                                        "Chess_plt60.png")),
+    dict_white_pieces['pawn']   = pygame.transform.scale(pygame.image.load(os.path.join('pics',
+                                                                                        'chess_pieces',
+                                                                                        'white',
+                                                                                        'Chess_plt60.png')),
                                                          (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND))
-    dict_white_pieces["queen"]  = pygame.transform.scale(pygame.image.load(os.path.join("pics",
-                                                                                        "chess_pieces",
-                                                                                        "white",
-                                                                                        "Chess_qlt60.png")),
+    dict_white_pieces['queen']  = pygame.transform.scale(pygame.image.load(os.path.join('pics',
+                                                                                        'chess_pieces',
+                                                                                        'white',
+                                                                                        'Chess_qlt60.png')),
                                                          (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND))
-    dict_white_pieces["rook"]   = pygame.transform.scale(pygame.image.load(os.path.join("pics",
-                                                                                        "chess_pieces",
-                                                                                        "white",
-                                                                                        "Chess_rlt60.png")),
+    dict_white_pieces['rook']   = pygame.transform.scale(pygame.image.load(os.path.join('pics',
+                                                                                        'chess_pieces',
+                                                                                        'white',
+                                                                                        'Chess_rlt60.png')),
                                                          (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND))
 else:
-    dict_white_pieces["bishop"] = pygame.transform.scale(pygame.image.load(os.path.join("pics",
-                                                                                        "chess_pieces",
-                                                                                        "3Ds",
-                                                                                        "white",
-                                                                                        "chess_piece_illustration_white_bishop.png")),
+    dict_white_pieces['bishop'] = pygame.transform.scale(pygame.image.load(os.path.join('pics',
+                                                                                        'chess_pieces',
+                                                                                        '3Ds',
+                                                                                        'white',
+                                                                                        'chess_piece_illustration_white_bishop.png')),
                                                          (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND))
-    dict_white_pieces["king"]   = pygame.transform.scale(pygame.image.load(os.path.join("pics",
-                                                                                        "chess_pieces",
-                                                                                        "3Ds",
-                                                                                        "white",
-                                                                                        "chess_piece_illustration_white_king.png")),
+    dict_white_pieces['king']   = pygame.transform.scale(pygame.image.load(os.path.join('pics',
+                                                                                        'chess_pieces',
+                                                                                        '3Ds',
+                                                                                        'white',
+                                                                                        'chess_piece_illustration_white_king.png')),
                                                          (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND))
-    dict_white_pieces["knight"] = pygame.transform.scale(pygame.image.load(os.path.join("pics",
-                                                                                        "chess_pieces",
-                                                                                        "3Ds",
-                                                                                        "white",
-                                                                                        "chess_piece_illustration_white_knight.png")),
+    dict_white_pieces['knight'] = pygame.transform.scale(pygame.image.load(os.path.join('pics',
+                                                                                        'chess_pieces',
+                                                                                        '3Ds',
+                                                                                        'white',
+                                                                                        'chess_piece_illustration_white_knight.png')),
                                                          (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND))
-    dict_white_pieces["pawn"]   = pygame.transform.scale(pygame.image.load(os.path.join("pics",
-                                                                                        "chess_pieces",
-                                                                                        "3Ds",
-                                                                                        "white",
-                                                                                        "chess_piece_illustration_white_pawn.png")),
+    dict_white_pieces['pawn']   = pygame.transform.scale(pygame.image.load(os.path.join('pics',
+                                                                                        'chess_pieces',
+                                                                                        '3Ds',
+                                                                                        'white',
+                                                                                        'chess_piece_illustration_white_pawn.png')),
                                                          (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND))
-    dict_white_pieces["queen"]  = pygame.transform.scale(pygame.image.load(os.path.join("pics",
-                                                                                        "chess_pieces",
-                                                                                        "3Ds",
-                                                                                        "white",
-                                                                                        "chess_piece_illustration_white_queen.png")),
+    dict_white_pieces['queen']  = pygame.transform.scale(pygame.image.load(os.path.join('pics',
+                                                                                        'chess_pieces',
+                                                                                        '3Ds',
+                                                                                        'white',
+                                                                                        'chess_piece_illustration_white_queen.png')),
                                                          (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND))
-    dict_white_pieces["rook"]   = pygame.transform.scale(pygame.image.load(os.path.join("pics",
-                                                                                        "chess_pieces",
-                                                                                        "3Ds",
-                                                                                        "white",
-                                                                                        "chess_piece_illustration_white_rook.png")),
+    dict_white_pieces['rook']   = pygame.transform.scale(pygame.image.load(os.path.join('pics',
+                                                                                        'chess_pieces',
+                                                                                        '3Ds',
+                                                                                        'white',
+                                                                                        'chess_piece_illustration_white_rook.png')),
                                                          (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND))
 # endregion white pieces
 
@@ -200,11 +199,11 @@ else:
 
 
 # region application surface
-pygame.display.set_caption("Chess Game")
+pygame.display.set_caption('Chess Game')
 
-icon = pygame.transform.scale(pygame.image.load(os.path.join("pics",
-                                                             "chess_pieces",
-                                                             "king.png")),
+icon = pygame.transform.scale(pygame.image.load(os.path.join('pics',
+                                                             'chess_pieces',
+                                                             'king.png')),
                               (32, 32))
 
 pygame.display.set_icon(icon)
@@ -218,6 +217,7 @@ highlighted_square.fill((66, 134, 244, 70)) # blue
 def console_log(message, priority=None, location=None):
     """
     Description: Function user to return color coded error messages, along with the location
+
     :param message: message (String)
     :param location:  message location (String)
     :param priority: the message type (Integer)
@@ -227,33 +227,34 @@ def console_log(message, priority=None, location=None):
         message = str(message)
 
         if location is None:
-            location = ""
+            location = ''
 
         if priority == LOG_ERROR:
-            print("%s\t Error (%s):%s %s" % (CODE_RED, location, CODE_WHITE, message))
+            print('%s\t Error (%s):%s %s' % (CODE_RED, location, CODE_WHITE, message))
 
         elif priority == LOG_WARNING:
-            print("%s\t Warning (%s):%s %s" % (CODE_YELLOW, location, CODE_WHITE, message))
+            print('%s\t Warning (%s):%s %s' % (CODE_YELLOW, location, CODE_WHITE, message))
 
         elif priority == LOG_SUCCESS:
-            print("%s\t Success (%s):%s %s" % (CODE_GREEN, location, CODE_WHITE, message))
+            print('%s\t Success (%s):%s %s' % (CODE_GREEN, location, CODE_WHITE, message))
 
         elif priority == LOG_INFO:
-            print("%s\t Info (%s):%s %s" % (CODE_BLUE, location, CODE_WHITE, message))
+            print('%s\t Info (%s):%s %s' % (CODE_BLUE, location, CODE_WHITE, message))
 
         elif priority is None:
-            print("%s\t %s" % (CODE_WHITE, message))
+            print('%s\t %s' % (CODE_WHITE, message))
 
         return True
 
     except Exception as error_message:
-        print("%s\t Error: %s %s" % (CODE_RED, CODE_WHITE, str(error_message)))
+        print('%s\t Error: %s %s' % (CODE_RED, CODE_WHITE, str(error_message)))
         return False
 
 
 def click_on_chessboard(mouse_position):
     """
     Description: This function returns the mouse position on the chessboard
+
     :param mouse_position: The current mouse position in the entire application
     :return: The square position that was clicked on:
              Variable: chessboard_mouse_position
@@ -272,8 +273,8 @@ def click_on_chessboard(mouse_position):
                                                       CHESSBOARD_INITIAL_POSITION[1]) /
                                                      (CHESSBOARD_HEIGHT / 8) - 0.5)
 
-                console_log("mouse clicked at position (%d, %d)" %
-                            (chessboard_mouse_position[0], chessboard_mouse_position[1]),
+                console_log('mouse clicked at position (%d, %d)' %
+                            (chessboard_mouse_position[1], chessboard_mouse_position[0]),
                             LOG_INFO,
                             click_on_chessboard.__name__)
 

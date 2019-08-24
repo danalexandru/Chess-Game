@@ -5,13 +5,14 @@ from globals import *
 
 # region class Piece
 class Piece(object):
-    image_index = ""
+    image_index = ''
     x_position = CHESSBOARD_INITIAL_POSITION[0]
     y_position = CHESSBOARD_INITIAL_POSITION[1]
 
     def __init__(self, row, col, color):
         """
         Description: Initialize a chess piece object
+
         :param row: (Integer) The number of rows of the chessboard
         :param col: (Integer) The number of columns of the chessboard
         :param color: (String) The color of the piece
@@ -22,38 +23,41 @@ class Piece(object):
             self.color = color
             self.is_alive = True
             self.is_selected = False
+            self.valid_moves_list = []
             return
 
         except Exception as error_message:
             console_log(error_message, CODE_RED, Piece.__init__.__name__)
             return
 
-    def move(self, x_position, y_position):
+    def move(self, position):
         """
-        Description: This function is used to move a chess piece from the initial position to it's next position
-        :param x_position: The next column position
-        :param y_position: The next row position
+        Description: This function is used to change the position of the piece
+
+        :param position: an Array with 2 Integers (the new x_position and y_position)
         :return: Boolean (True or False)
         """
         try:
-            self.x_position = x_position
-            self.y_position = y_position
+            self.row = position[0]
+            self.col = position[1]
 
             return True
         except Exception as error_message:
             console_log(error_message, LOG_ERROR, self.move.__name__)
             return False
 
-    def draw(self, win):
+    def draw(self, win, board_inst):
         """
         Description: This function is used to draw a chess piece on the chessboard
+
         :param win: The pygame window
+        :param board_inst: The board instance that the highlighted moves will be drawn upon
         :return: Boolean (True or False)
         """
         try:
-            if self.color == "white":
+            if self.color == 'white':
                 draw_this = dict_white_pieces[self.image_index]
-            elif self.color == "black":
+            elif self.color == 'black':
                 draw_this = dict_black_pieces[self.image_index]
             else:
                 return False
@@ -70,36 +74,182 @@ class Piece(object):
             if self.is_selected is True:
                 win.blit(highlighted_square, (x - PIECE_OFFSET / 2, y - PIECE_OFFSET / 2))
 
+                self.update_valid_moves_list(board_inst)
+
+                for valid_position in self.valid_moves_list:
+                    x = round(self.x_position +
+                              (valid_position['col'] * PIECE_WIDTH) +
+                              PIECE_OFFSET / 2)
+                    y = round(self.y_position +
+                              (valid_position['row'] * PIECE_HEIGHT) +
+                              PIECE_OFFSET / 2)
+
+                    win.blit(highlighted_square, (x - PIECE_OFFSET / 2, y - PIECE_OFFSET / 2))
             return True
 
         except Exception as error_message:
             console_log(error_message, LOG_ERROR, self.draw.__name__)
             return False
+
+    def reset_valid_moves_list(self):
+        """
+        Description: This method resets the valid_moves_list in order to repopulate it when the chess piece is selected
+
+        :return: Boolean (True of False)
+        """
+        try:
+            self.valid_moves_list = []
+
+            return True
+        except Exception as error_message:
+            console_log(error_message, LOG_ERROR, self.reset_valid_moves_list.__name__)
+            return False
+
+    def append_valid_move_to_valid_moves_list(self, valid_row, valid_col):
+        """
+        Description: This method updates the valid_moves_list of the current chess piece. It appends a new dictionary
+                    to the valid_moves_list. The dictionary has the following format:
+                    {
+                        'row': valid_row,
+                        'col': valid_col
+                    }
+
+        :param valid_row: The row position of a valid next move
+        :param valid_col: The column position of a valid next move
+        :return: None
+        """
+        try:
+            self.valid_moves_list.append({
+                'row': valid_row,
+                'col': valid_col
+            })
+
+            return True
+        except Exception as error_message:
+            console_log(error_message, LOG_ERROR, self.append_valid_move_to_valid_moves_list.__name__)
+            return False
+
+    def update_valid_moves_list(self, board_inst):
+        pass
+
+
 # endregion class Piece
 
 
 # region Pieces
 class Bishop(Piece):
-    image_index = "bishop"
+    image_index = 'bishop'
+
+    def update_valid_moves_list(self, board_inst):
+        pass
 
 
 class King(Piece):
-    image_index = "king"
+    image_index = 'king'
+
+    def update_valid_moves_list(self, board_inst):
+        pass
 
 
 class Knight(Piece):
-    image_index = "knight"
+    image_index = 'knight'
+
+    def update_valid_moves_list(self, board_inst):
+        pass
 
 
 class Queen(Piece):
-    image_index = "queen"
+    image_index = 'queen'
+
+    def update_valid_moves_list(self, board_inst):
+        pass
 
 
 class Pawn(Piece):
-    image_index = "pawn"
-    initial_position = True
+    image_index = 'pawn'
+
+    def __init__(self, row, col, color):
+        try:
+            super().__init__(row, col, color)
+            self.initial_position = True
+
+            return
+        except Exception as error_message:
+            console_log(error_message, LOG_ERROR, Pawn.__init__.__name__)
+            return
+
+    def update_valid_moves_list(self, board_inst):
+        """
+        Description: Update the valid_moves_list of the current Pawn chess piece
+
+        :return: Boolean (True of False)
+        """
+        try:
+            self.reset_valid_moves_list()
+
+            i = self.row
+            j = self.col
+
+            k = 0  # the chess piece direction
+            if self.color == 'black':
+                k = 1
+            elif self.color == 'white':
+                k = -1
+            else:
+                return False
+
+            if (self.color == 'black' and i < 7) or \
+                    (self.color == 'white' and i > 0):
+                # FORWARD
+                possible_next_move = board_inst[i + k][j]
+                if isinstance(possible_next_move, int):
+                    self.append_valid_move_to_valid_moves_list(i + k, j)
+
+                # DIAGONAL
+                if j < 7:
+                    possible_next_move = board_inst[i + k][j + 1]
+                    if not isinstance(possible_next_move, int) and \
+                            self.color != possible_next_move.color:
+                        self.append_valid_move_to_valid_moves_list(i + k, j + 1)
+
+                if j > 0:
+                    possible_next_move = board_inst[i + k][j - 1]
+                    if not isinstance(possible_next_move, int) and \
+                            self.color != possible_next_move.color:
+                        self.append_valid_move_to_valid_moves_list(i + k, j - 1)
+
+            if self.initial_position is True:
+                if (self.color == 'black' and i == 1) or \
+                        (self.color == 'white' and i == 6):
+                    possible_next_move = board_inst[i + 2*k][j]
+                    if isinstance(possible_next_move, int):
+                        self.append_valid_move_to_valid_moves_list(i + 2 * k, j)
+
+            return True
+        except Exception as error_message:
+            console_log(error_message, LOG_ERROR, self.update_valid_moves_list.__name__)
+            return False
+
+    def move(self, position):
+        """
+        Description: This function is used to change the position of the piece
+
+        :param position: an Array with 2 Integers (the new x_position and y_position)
+        :return: Boolean (True of False)
+        """
+        try:
+            super().move(position)
+            self.initial_position = False
+
+        except Exception as error_message:
+            console_log(error_message, LOG_ERROR, self.move.__name__)
+            return False
 
 
 class Rook(Piece):
-    image_index = "rook"
+    image_index = 'rook'
+
+    def get_valid_moves_list(self, board_inst):
+        pass
+
 # endregion Pieces

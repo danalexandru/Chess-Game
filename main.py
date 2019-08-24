@@ -14,6 +14,7 @@ from globals import *
 def redraw_game_window():
     """
     Description: This function draws the chess board, as well as all of the chess pieces that are still present in
+
     the game at any point in time
     :return: The board with all the pieces
              False if an error occurred
@@ -38,7 +39,8 @@ def redraw_game_window():
 def find_chessboard_edges():
     """
     Description: Debugging function used to identify the location of the chessboard inside the image, alongside the
-    :return:
+
+    :return: Null or False
     """
     try:
         pygame.draw.rect(win, (255, 0, 0), [CHESSBOARD_INITIAL_POSITION[0],
@@ -65,8 +67,9 @@ def find_chessboard_edges():
 
 def main():
     """
-    Description: This function calls the "redraw_game_window" at every iteration in order to redraw the chess board.
+    Description: This function calls the 'redraw_game_window' at every iteration in order to redraw the chess board.
                 It is the main part that updates the board for every game.
+
     :return: Starts the chess board game
              False if an error occurred
     """
@@ -98,7 +101,6 @@ def main():
 
                     if position is not False:
                         if board_inst.select_chess_piece(position):
-                            # board_inst.highlight_chess_piece_possible_next_moves(win, position)
                             pass
         return True
     except Exception as error_message:
@@ -106,6 +108,6 @@ def main():
         return False
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
 
