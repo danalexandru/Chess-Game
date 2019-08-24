@@ -155,7 +155,50 @@ class Knight(Piece):
     image_index = 'knight'
 
     def update_valid_moves_list(self, board_inst):
-        pass
+        try:
+            self.reset_valid_moves_list()
+
+            i = self.row
+            j = self.col
+
+            list_positions = []
+            list_abstract_positions = [{
+                'x': 1,
+                'y': 2
+            },
+                {
+                    'x': 2,
+                    'y': 1
+                }]
+
+            def append_to_list_positions(x, y):
+                list_positions.append({
+                    'x': x,
+                    'y': y
+                })
+
+            for position in list_abstract_positions:
+                (x, y) = (position['x'], position['y'])
+                if i - x >= 0 and j - y >= 0:
+                    append_to_list_positions(i - x, j - y)
+                if i - x >= 0 and j + y <= 7:
+                    append_to_list_positions(i - x, j + y)
+                if i + x <= 7 and j - y >= 0:
+                    append_to_list_positions(i + x, j - y)
+                if i + x <= 7 and j + y <= 7:
+                    append_to_list_positions(i + x, j + y)
+
+            for position in list_positions:
+                (x, y) = (position['x'], position['y'])
+                possible_next_move = board_inst[x][y]
+                if isinstance(possible_next_move, int) or \
+                        self.color != possible_next_move.color:
+                    self.append_valid_move_to_valid_moves_list(x, y)
+
+            return True
+        except Exception as error_message:
+            console_log(error_message, LOG_ERROR, self.update_valid_moves_list.__name__)
+            return False
 
 
 class Queen(Piece):
@@ -249,7 +292,6 @@ class Pawn(Piece):
 class Rook(Piece):
     image_index = 'rook'
 
-    def get_valid_moves_list(self, board_inst):
+    def update_valid_moves_list(self, board_inst):
         pass
-
 # endregion Pieces
