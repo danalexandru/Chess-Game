@@ -78,7 +78,7 @@ class Board:
         :return: Boolean (True or False
         """
         try:
-            [y, x] = position
+            [x, y] = position
 
             for i in range(self.rows):
                 for j in range(self.cols):
@@ -99,5 +99,32 @@ class Board:
             console_log(error_message, LOG_ERROR, self.select_chess_piece.__name__)
             return False
 
+    def move_chess_piece(self, initial_position, next_position):
+        try:
+            [x1, y1] = initial_position
+            [x2, y2] = next_position
+
+            if isinstance(self.board[x1][y1], int):
+                return False
+
+            if self.board[x1][y1].validate_possible_next_position(next_position) is True:
+                self.board[x1][y1].move(next_position)
+                self.board[x1][y1].is_selected = False
+                self.board[x2][y2] = self.board[x1][y1]
+                self.board[x1][y1] = 0
+
+                console_log('move chess piece \'%s\' from (%d, %d) to (%d, %d)' %
+                            (str(self.board[x2][y2].image_index).capitalize(),
+                             x1, y1,
+                             x2, y2),
+                            LOG_INFO,
+                            self.move_chess_piece.__name__)
+
+                return True
+
+            return False
+        except Exception as error_message:
+            console_log(error_message, LOG_ERROR, self.move_chess_piece.__name__)
+            return False
 # endregion class Board
 

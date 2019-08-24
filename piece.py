@@ -21,7 +21,6 @@ class Piece(object):
             self.row = row
             self.col = col
             self.color = color
-            self.is_alive = True
             self.is_selected = False
             self.valid_moves_list = []
             return
@@ -93,7 +92,8 @@ class Piece(object):
 
     def reset_valid_moves_list(self):
         """
-        Description: This method resets the valid_moves_list in order to repopulate it when the chess piece is selected
+        Description: This method resets the \"valid_moves_list\" in order to repopulate it when the chess piece is
+                     selected
 
         :return: Boolean (True of False)
         """
@@ -107,8 +107,8 @@ class Piece(object):
 
     def append_valid_move_to_valid_moves_list(self, valid_row, valid_col):
         """
-        Description: This method updates the valid_moves_list of the current chess piece. It appends a new dictionary
-                    to the valid_moves_list. The dictionary has the following format:
+        Description: This method updates the \"valid_moves_list\" of the current chess piece. It appends a new
+                    dictionary to the \"valid_moves_list\". The dictionary has the following format:
                     {
                         'row': valid_row,
                         'col': valid_col
@@ -131,14 +131,33 @@ class Piece(object):
 
     def update_valid_moves_list(self, board_inst):
         """
-        Description: Update the valid_moves_list of the current chess piece
+        Description: Update the \"valid_moves_list\" of the current chess piece
 
         :param board_inst: The board instance on which the chess piece will be drawn
         :return: Boolean (True of False)
         """
         pass
 
+    def validate_possible_next_position(self, position):
+        """
+        Description: This method checks if tre given position exits in the \"valid_moves_list\".
 
+        :param position: The position in which the chess piece could be moved next
+        :return:
+        """
+        try:
+            dict_position = {
+                'row': position[0],
+                'col': position[1]
+            }
+
+            if dict_position in self.valid_moves_list:
+                return True
+
+            return False
+        except Exception as error_message:
+            console_log(error_message, LOG_ERROR, self.validate_possible_next_position.__name__)
+            return False
 # endregion class Piece
 
 
@@ -148,7 +167,7 @@ class Bishop(Piece):
 
     def update_valid_moves_list(self, board_inst):
         """
-        Description: Update the valid_moves_list of the current \"Bishop\" chess piece
+        Description: Update the \"valid_moves_list\" of the current \"Bishop\" chess piece
 
         :param board_inst: The board instance on which the chess piece will be drawn
         :return: Boolean (True of False)
@@ -161,7 +180,7 @@ class King(Piece):
 
     def update_valid_moves_list(self, board_inst):
         """
-        Description: Update the valid_moves_list of the current \"King\" chess piece
+        Description: Update the \"valid_moves_list\" of the current \"King\" chess piece
 
         :param board_inst: The board instance on which the chess piece will be drawn
         :return: Boolean (True of False)
@@ -174,7 +193,7 @@ class Knight(Piece):
 
     def update_valid_moves_list(self, board_inst):
         """
-        Description: Update the valid_moves_list of the current \"Knight\" chess piece
+        Description: Update the \"valid_moves_list\" of the current \"Knight\" chess piece
 
         :param board_inst: The board instance on which the chess piece will be drawn
         :return: Boolean (True of False)
@@ -230,7 +249,7 @@ class Queen(Piece):
 
     def update_valid_moves_list(self, board_inst):
         """
-        Description: Update the valid_moves_list of the current \"Queen\" chess piece
+        Description: Update the \"valid_moves_list\" of the current \"Queen\" chess piece
 
         :param board_inst: The board instance on which the chess piece will be drawn
         :return: Boolean (True of False)
@@ -253,7 +272,7 @@ class Pawn(Piece):
 
     def update_valid_moves_list(self, board_inst):
         """
-        Description: Update the valid_moves_list of the current \"Pawn\" chess piece
+        Description: Update the \"valid_moves_list\" of the current \"Pawn\" chess piece
 
         :param board_inst: The board instance on which the chess piece will be drawn
         :return: Boolean (True of False)
@@ -325,7 +344,7 @@ class Rook(Piece):
 
     def update_valid_moves_list(self, board_inst):
         """
-        Description: Update the valid_moves_list of the current \"Rook\" chess piece
+        Description: Update the \"valid_moves_list\" of the current \"Rook\" chess piece
 
         :param board_inst: The board instance on which the chess piece will be drawn
         :return: Boolean (True of False)

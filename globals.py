@@ -273,8 +273,9 @@ def click_on_chessboard(mouse_position):
                                                       CHESSBOARD_INITIAL_POSITION[1]) /
                                                      (CHESSBOARD_HEIGHT / 8) - 0.5)
 
+                chessboard_mouse_position = [chessboard_mouse_position[1], chessboard_mouse_position[0]]
                 console_log('mouse clicked at position (%d, %d)' %
-                            (chessboard_mouse_position[1], chessboard_mouse_position[0]),
+                            (chessboard_mouse_position[0], chessboard_mouse_position[1]),
                             LOG_INFO,
                             click_on_chessboard.__name__)
 

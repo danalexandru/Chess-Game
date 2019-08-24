@@ -82,6 +82,7 @@ def main():
 
         board_inst = Board(8, 8)
 
+        position = False
         while run:
             clock.tick(10)
             redraw_game_window()
@@ -97,11 +98,16 @@ def main():
                     pass
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     mouse_current_position = pygame.mouse.get_pos()
+                    last_position = position
                     position = click_on_chessboard(mouse_current_position)
 
                     if position is not False:
-                        if board_inst.select_chess_piece(position):
-                            pass
+                        board_inst.select_chess_piece(position)
+
+                    if position is not False and last_position is not False:
+                        if board_inst.move_chess_piece(last_position, position) is True:
+                            position = False
+
         return True
     except Exception as error_message:
         console_log(error_message, CODE_RED, main.__name__)
