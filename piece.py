@@ -130,6 +130,12 @@ class Piece(object):
             return False
 
     def update_valid_moves_list(self, board_inst):
+        """
+        Description: Update the valid_moves_list of the current chess piece
+
+        :param board_inst: The board instance on which the chess piece will be drawn
+        :return: Boolean (True of False)
+        """
         pass
 
 
@@ -141,6 +147,12 @@ class Bishop(Piece):
     image_index = 'bishop'
 
     def update_valid_moves_list(self, board_inst):
+        """
+        Description: Update the valid_moves_list of the current \"Bishop\" chess piece
+
+        :param board_inst: The board instance on which the chess piece will be drawn
+        :return: Boolean (True of False)
+        """
         pass
 
 
@@ -148,6 +160,12 @@ class King(Piece):
     image_index = 'king'
 
     def update_valid_moves_list(self, board_inst):
+        """
+        Description: Update the valid_moves_list of the current \"King\" chess piece
+
+        :param board_inst: The board instance on which the chess piece will be drawn
+        :return: Boolean (True of False)
+        """
         pass
 
 
@@ -155,6 +173,12 @@ class Knight(Piece):
     image_index = 'knight'
 
     def update_valid_moves_list(self, board_inst):
+        """
+        Description: Update the valid_moves_list of the current \"Knight\" chess piece
+
+        :param board_inst: The board instance on which the chess piece will be drawn
+        :return: Boolean (True of False)
+        """
         try:
             self.reset_valid_moves_list()
 
@@ -205,6 +229,12 @@ class Queen(Piece):
     image_index = 'queen'
 
     def update_valid_moves_list(self, board_inst):
+        """
+        Description: Update the valid_moves_list of the current \"Queen\" chess piece
+
+        :param board_inst: The board instance on which the chess piece will be drawn
+        :return: Boolean (True of False)
+        """
         pass
 
 
@@ -223,8 +253,9 @@ class Pawn(Piece):
 
     def update_valid_moves_list(self, board_inst):
         """
-        Description: Update the valid_moves_list of the current Pawn chess piece
+        Description: Update the valid_moves_list of the current \"Pawn\" chess piece
 
+        :param board_inst: The board instance on which the chess piece will be drawn
         :return: Boolean (True of False)
         """
         try:
@@ -293,5 +324,11 @@ class Rook(Piece):
     image_index = 'rook'
 
     def update_valid_moves_list(self, board_inst):
+        """
+        Description: Update the valid_moves_list of the current \"Rook\" chess piece
+
+        :param board_inst: The board instance on which the chess piece will be drawn
+        :return: Boolean (True of False)
+        """
         pass
 # endregion Pieces
