@@ -2,6 +2,7 @@
 from globals import *
 # endregion imports
 
+
 # region class Piece
 class Piece(object):
     image_index = ""
@@ -67,9 +68,7 @@ class Piece(object):
             win.blit(draw_this, (x, y))
 
             if self.is_selected is True:
-                rect = pygame.Surface((PIECE_WIDTH,PIECE_HEIGHT), pygame.SRCALPHA, 32)
-                rect.fill((66, 134, 244, 70))
-                win.blit(rect, (x - PIECE_OFFSET / 2, y - PIECE_OFFSET / 2))
+                win.blit(highlighted_square, (x - PIECE_OFFSET / 2, y - PIECE_OFFSET / 2))
 
             return True
 
@@ -77,6 +76,7 @@ class Piece(object):
             console_log(error_message, LOG_ERROR, self.draw.__name__)
             return False
 # endregion class Piece
+
 
 # region Pieces
 class Bishop(Piece):
@@ -97,6 +97,7 @@ class Queen(Piece):
 
 class Pawn(Piece):
     image_index = "pawn"
+    initial_position = True
 
 
 class Rook(Piece):

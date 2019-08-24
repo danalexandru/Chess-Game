@@ -9,6 +9,7 @@ from board import Board
 from globals import *
 # endregion imports
 
+
 # region local functions
 def redraw_game_window():
     """
@@ -73,7 +74,9 @@ def main():
         clock = pygame.time.Clock()
         run = True
 
-        global board_inst
+        global win, board_inst
+        win = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
+
         board_inst = Board(8, 8)
 
         while run:
@@ -94,9 +97,9 @@ def main():
                     position = click_on_chessboard(mouse_current_position)
 
                     if position is not False:
-                        pass
-                    board_inst.select_chess_piece(position)
-
+                        if board_inst.select_chess_piece(position):
+                            # board_inst.highlight_chess_piece_possible_next_moves(win, position)
+                            pass
         return True
     except Exception as error_message:
         console_log(error_message, CODE_RED, main.__name__)

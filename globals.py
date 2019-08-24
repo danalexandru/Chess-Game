@@ -200,7 +200,6 @@ else:
 
 
 # region application surface
-win = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 pygame.display.set_caption("Chess Game")
 
 icon = pygame.transform.scale(pygame.image.load(os.path.join("pics",
@@ -209,6 +208,9 @@ icon = pygame.transform.scale(pygame.image.load(os.path.join("pics",
                               (32, 32))
 
 pygame.display.set_icon(icon)
+
+highlighted_square = pygame.Surface((PIECE_WIDTH,PIECE_HEIGHT), pygame.SRCALPHA, 32)
+highlighted_square.fill((66, 134, 244, 70)) # blue
 # endregion application surface
 
 
