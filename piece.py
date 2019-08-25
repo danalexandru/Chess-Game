@@ -349,5 +349,35 @@ class Rook(Piece):
         :param board_inst: The board instance on which the chess piece will be drawn
         :return: Boolean (True of False)
         """
-        pass
+        try:
+            self.reset_valid_moves_list()
+
+            i = self.row
+            j = self.col
+
+            def list_directions():
+                return [[-1, 0], [0, -1], [1, 0], [0, 1]]
+
+            for direction in list_directions():
+                [x, y] = [i + direction[0], j + direction[1]]
+
+                while True:
+                    if (x < 0 or x > 7) or \
+                            (y < 0 or y > 7):
+                        break
+
+                    possible_next_move = board_inst[x][y]
+                    if isinstance(possible_next_move, int):
+                        self.append_valid_move_to_valid_moves_list(x, y)
+                        [x, y] = [x + direction[0], y + direction[1]]
+                    elif possible_next_move.color != self.color:
+                        self.append_valid_move_to_valid_moves_list(x, y)
+                        break
+                    else:
+                        break
+
+            return True
+        except Exception as error_message:
+            console_log(error_message, LOG_ERROR, self.update_valid_moves_list.__name__)
+            return False
 # endregion Pieces
