@@ -24,7 +24,7 @@ def redraw_game_window():
         # find_chessboard_edges()
 
         board_inst.draw(win)
-
+        draw_player_led()
         # find_chessboard_edges()
 
         pygame.display.update()
@@ -32,6 +32,29 @@ def redraw_game_window():
         console_log(error_message, LOG_ERROR, redraw_game_window.__name__)
         return False
 
+
+def draw_player_led():
+    """
+    Description: This function draws the player LED in order to determine the player turn.
+
+    :return: Boolean (True or False)
+    """
+    try:
+        current_color = board_inst.current_color
+        if current_color == 'white' or current_color == 'black':
+            pygame.draw.circle(win, PLAYER_LED[current_color]['color'],
+                               PLAYER_LED['initial_position'],
+                               PLAYER_LED['radius'])
+        else:
+            console_log('Current color not found: %s' % current_color,
+                        LOG_WARNING,
+                        draw_player_led.__name__)
+            return False
+
+        return True
+    except Exception as error_message:
+        console_log(error_message, LOG_ERROR, draw_player_led.__name__)
+        return False
 # endregion local functions
 
 

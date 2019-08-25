@@ -162,6 +162,8 @@ class Piece(object):
 
 
 # region Pieces
+
+# region Bishop
 class Bishop(Piece):
     image_index = 'bishop'
 
@@ -172,9 +174,39 @@ class Bishop(Piece):
         :param board_inst: The board instance on which the chess piece will be drawn
         :return: Boolean (True of False)
         """
-        pass
+        try:
+            self.reset_valid_moves_list()
+
+            i = self.row
+            j = self.col
+
+            def list_directions():
+                return [[-1, -1], [-1, 1], [1, -1], [1, 1]]
+
+            for direction in list_directions():
+                [x, y] = [i + direction[0], j + direction[1]]
+
+                while True:
+                    if (x < 0 or x > 7) or \
+                            (y < 0 or y > 7):
+                        break
+
+                    possible_next_move = board_inst[x][y]
+                    if isinstance(possible_next_move, int):
+                        self.append_valid_move_to_valid_moves_list(x, y)
+                        [x, y] = [x + direction[0], y + direction[1]]
+                    elif possible_next_move.color != self.color:
+                        self.append_valid_move_to_valid_moves_list(x, y)
+                        break
+                    else:
+                        break
+        except Exception as error_message:
+            console_log(error_message, LOG_ERROR, self.update_valid_moves_list.__name__)
+            return False
+# endregion Bishop
 
 
+# region King
 class King(Piece):
     image_index = 'king'
 
@@ -185,9 +217,48 @@ class King(Piece):
         :param board_inst: The board instance on which the chess piece will be drawn
         :return: Boolean (True of False)
         """
-        pass
+        try:
+            self.reset_valid_moves_list()
+
+            i = self.row
+            j = self.col
+
+            list_directions = [[-1, 0], [-1, 1], [0, 1], [1, 1], [1, 0], [1, -1], [0, -1], [-1, -1]]
+
+            for direction in list_directions:
+                [x, y] = [i + direction[0], j + direction[1]]
+                if (x < 0 or x > 7) or \
+                        (y < 0 or y > 7):
+                    continue
+
+                possible_next_move = board_inst[x][y]
+                if isinstance(possible_next_move, int) or \
+                        self.color != possible_next_move.color:
+                    valid_move = True
+                    for direction_second_check in list_directions:
+                        [x2, y2] = [x + direction_second_check[0], y + direction_second_check[1]]
+
+                        if (x2 < 0 or x2 > 7) or \
+                                (y2 < 0 or y2 > 7):
+                            continue
+
+                        possible_next_move = board_inst[x2][y2]
+                        if not isinstance(possible_next_move, int) and \
+                                self.color != possible_next_move.color:
+                            valid_move = False
+                            break
+
+                    if valid_move is True:
+                        self.append_valid_move_to_valid_moves_list(x, y)
+
+            return True
+        except Exception as error_message:
+            console_log(error_message, LOG_ERROR, self.update_valid_moves_list.__name__)
+            return False
+# endregion King
 
 
+# region Knight
 class Knight(Piece):
     image_index = 'knight'
 
@@ -242,8 +313,10 @@ class Knight(Piece):
         except Exception as error_message:
             console_log(error_message, LOG_ERROR, self.update_valid_moves_list.__name__)
             return False
+# endregion Knight
 
 
+# region Queen
 class Queen(Piece):
     image_index = 'queen'
 
@@ -254,9 +327,41 @@ class Queen(Piece):
         :param board_inst: The board instance on which the chess piece will be drawn
         :return: Boolean (True of False)
         """
-        pass
+        try:
+            self.reset_valid_moves_list()
+
+            i = self.row
+            j = self.col
+
+            def list_directions():
+                return [[-1, 0], [-1, 1], [0, 1], [1, 1], [1, 0], [1, -1], [0, -1], [-1, -1]]
+
+            for direction in list_directions():
+                [x, y] = [i + direction[0], j + direction[1]]
+
+                while True:
+                    if (x < 0 or x > 7) or \
+                            (y < 0 or y > 7):
+                        break
+
+                    possible_next_move = board_inst[x][y]
+                    if isinstance(possible_next_move, int):
+                        self.append_valid_move_to_valid_moves_list(x, y)
+                        [x, y] = [x + direction[0], y + direction[1]]
+                    elif possible_next_move.color != self.color:
+                        self.append_valid_move_to_valid_moves_list(x, y)
+                        break
+                    else:
+                        break
+
+            return True
+        except Exception as error_message:
+            console_log(error_message, LOG_ERROR, self.update_valid_moves_list.__name__)
+            return False
+# endregion Queen
 
 
+# region Pawn
 class Pawn(Piece):
     image_index = 'pawn'
 
@@ -337,8 +442,10 @@ class Pawn(Piece):
         except Exception as error_message:
             console_log(error_message, LOG_ERROR, self.move.__name__)
             return False
+# endregion Pawn
 
 
+# region Rook
 class Rook(Piece):
     image_index = 'rook'
 
@@ -349,5 +456,37 @@ class Rook(Piece):
         :param board_inst: The board instance on which the chess piece will be drawn
         :return: Boolean (True of False)
         """
-        pass
+        try:
+            self.reset_valid_moves_list()
+
+            i = self.row
+            j = self.col
+
+            def list_directions():
+                return [[-1, 0], [0, -1], [1, 0], [0, 1]]
+
+            for direction in list_directions():
+                [x, y] = [i + direction[0], j + direction[1]]
+
+                while True:
+                    if (x < 0 or x > 7) or \
+                            (y < 0 or y > 7):
+                        break
+
+                    possible_next_move = board_inst[x][y]
+                    if isinstance(possible_next_move, int):
+                        self.append_valid_move_to_valid_moves_list(x, y)
+                        [x, y] = [x + direction[0], y + direction[1]]
+                    elif possible_next_move.color != self.color:
+                        self.append_valid_move_to_valid_moves_list(x, y)
+                        break
+                    else:
+                        break
+
+            return True
+        except Exception as error_message:
+            console_log(error_message, LOG_ERROR, self.update_valid_moves_list.__name__)
+            return False
+# endregion Rook
+
 # endregion Pieces
