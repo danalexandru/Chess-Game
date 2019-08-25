@@ -162,6 +162,8 @@ class Piece(object):
 
 
 # region Pieces
+
+# region Bishop
 class Bishop(Piece):
     image_index = 'bishop'
 
@@ -172,9 +174,39 @@ class Bishop(Piece):
         :param board_inst: The board instance on which the chess piece will be drawn
         :return: Boolean (True of False)
         """
-        pass
+        try:
+            self.reset_valid_moves_list()
+
+            i = self.row
+            j = self.col
+
+            def list_directions():
+                return [[-1, -1], [-1, 1], [1, -1], [1, 1]]
+
+            for direction in list_directions():
+                [x, y] = [i + direction[0], j + direction[1]]
+
+                while True:
+                    if (x < 0 or x > 7) or \
+                            (y < 0 or y > 7):
+                        break
+
+                    possible_next_move = board_inst[x][y]
+                    if isinstance(possible_next_move, int):
+                        self.append_valid_move_to_valid_moves_list(x, y)
+                        [x, y] = [x + direction[0], y + direction[1]]
+                    elif possible_next_move.color != self.color:
+                        self.append_valid_move_to_valid_moves_list(x, y)
+                        break
+                    else:
+                        break
+        except Exception as error_message:
+            console_log(error_message, LOG_ERROR, self.update_valid_moves_list.__name__)
+            return False
+# endregion Bishop
 
 
+# region King
 class King(Piece):
     image_index = 'king'
 
@@ -186,8 +218,10 @@ class King(Piece):
         :return: Boolean (True of False)
         """
         pass
+# endregion King
 
 
+# region Knight
 class Knight(Piece):
     image_index = 'knight'
 
@@ -242,8 +276,10 @@ class Knight(Piece):
         except Exception as error_message:
             console_log(error_message, LOG_ERROR, self.update_valid_moves_list.__name__)
             return False
+# endregion Knight
 
 
+# region Queen
 class Queen(Piece):
     image_index = 'queen'
 
@@ -255,8 +291,10 @@ class Queen(Piece):
         :return: Boolean (True of False)
         """
         pass
+# endregion Queen
 
 
+# region Pawn
 class Pawn(Piece):
     image_index = 'pawn'
 
@@ -337,8 +375,10 @@ class Pawn(Piece):
         except Exception as error_message:
             console_log(error_message, LOG_ERROR, self.move.__name__)
             return False
+# endregion Pawn
 
 
+# region Rook
 class Rook(Piece):
     image_index = 'rook'
 
@@ -380,4 +420,6 @@ class Rook(Piece):
         except Exception as error_message:
             console_log(error_message, LOG_ERROR, self.update_valid_moves_list.__name__)
             return False
+# endregion Rook
+
 # endregion Pieces
