@@ -67,7 +67,7 @@ class Board:
             for i in range(self.rows):
                 for j in range(self.cols):
                     if not isinstance(self.board[i][j], int):
-                        self.board[i][j].draw(win, self.board)
+                        self.board[i][j].draw(win)
 
             return True
         except Exception as error_message:
@@ -96,6 +96,8 @@ class Board:
                                                                      self.board[x][y].is_selected),
                             LOG_INFO,
                             self.select_chess_piece.__name__)
+
+                self.update_valid_moves_list()
                 return True
 
             return False
@@ -184,5 +186,20 @@ class Board:
             return True
         except Exception as error_message:
             console_log(error_message, LOG_ERROR, self.change_current_color.__name__)
+            return False
+
+    def update_valid_moves_list(self):
+        """
+        Description: This function updates the list of valid moves for each chess piece still on the board
+
+        :return: Boolean(True or False)
+        """
+        try:
+            for i in range(self.rows):
+                for j in range(self.cols):
+                    if not isinstance(self.board[i][j], int):
+                        self.board[i][j].update_valid_moves_list(self.board)
+        except Exception as error_message:
+            console_log(error_message, LOG_ERROR, self.update_valid_moves_list.__name__)
             return False
 # endregion class Board

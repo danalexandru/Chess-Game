@@ -45,7 +45,7 @@ class Piece(object):
             console_log(error_message, LOG_ERROR, self.move.__name__)
             return False
 
-    def draw(self, win, board_inst):
+    def draw(self, win):
         """
         Description: This function is used to draw a chess piece on the chessboard
 
@@ -72,8 +72,6 @@ class Piece(object):
 
             if self.is_selected is True:
                 win.blit(highlighted_square, (x - PIECE_OFFSET / 2, y - PIECE_OFFSET / 2))
-
-                self.update_valid_moves_list(board_inst)
 
                 for valid_position in self.valid_moves_list:
                     x = round(self.x_position +
@@ -234,26 +232,71 @@ class King(Piece):
                 possible_next_move = board_inst[x][y]
                 if isinstance(possible_next_move, int) or \
                         self.color != possible_next_move.color:
-                    valid_move = True
-                    for direction_second_check in list_directions:
-                        [x2, y2] = [x + direction_second_check[0], y + direction_second_check[1]]
 
-                        if (x2 < 0 or x2 > 7) or \
-                                (y2 < 0 or y2 > 7):
-                            continue
-
-                        possible_next_move = board_inst[x2][y2]
-                        if not isinstance(possible_next_move, int) and \
-                                self.color != possible_next_move.color:
-                            valid_move = False
-                            break
-
-                    if valid_move is True:
+                    if self.validate_next_position(board_inst, x, y) is True:
                         self.append_valid_move_to_valid_moves_list(x, y)
 
             return True
         except Exception as error_message:
             console_log(error_message, LOG_ERROR, self.update_valid_moves_list.__name__)
+            return False
+
+    def validate_next_position(self, board_inst, next_row, next_col):
+        """
+        Description: This function checks if the next possible position of the \"King\" chess piece would be in 
+                     check if the \"King\" would be moves there.
+
+        :param board_inst: The board instance on which the chess piece will be drawn
+        :param row: The row position of the next move
+        :param col: The column position of the next move
+        :return: Boolean (True of False)
+        """
+        try:
+            rows = 8
+            cols = 8
+
+            possible_next_move = {
+                'row': next_row,
+                'col': next_col
+            }
+
+            pawn_check_direction = 0
+            if self.color == 'white':
+                pawn_check_direction = 1
+            elif self.color == 'black':
+                pawn_check_direction = -1
+            else:
+                return False
+                
+            for i in range(rows):
+                for j in range(cols):
+                    if not isinstance(board_inst[i][j], int) and \
+                            board_inst[i][j].color != self.color:
+                        if possible_next_move in board_inst[i][j].valid_moves_list:
+                            return False
+                        elif board_inst[i][j].image_index == 'pawn' and \
+                            i + pawn_check_direction >= 0 and \
+                                i + pawn_check_direction <= 7:
+                                    list_pawn_check_moves = []
+                                    if j - 1 >= 0:
+                                        list_pawn_check_moves.append({
+                                            'row': i + pawn_check_direction,
+                                            'col': j - 1
+                                        })
+                                    
+                                    if j + 1 <= 7:
+                                        list_pawn_check_moves.append({
+                                            'row': i + pawn_check_direction,
+                                            'col': j + 1
+                                        })
+                                    
+                                    if possible_next_move in list_pawn_check_moves:
+                                        return False
+                
+            return True
+
+        except Exception as error_message:
+            console_log(error_message, LOG_ERROR, self.validate_next_position.__name__)
             return False
 # endregion King
 
