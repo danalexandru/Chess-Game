@@ -1,5 +1,8 @@
 # region imports
 from globals import *
+import copy
+
+
 # endregion imports
 
 
@@ -156,6 +159,8 @@ class Piece(object):
         except Exception as error_message:
             console_log(error_message, LOG_ERROR, self.validate_possible_next_position.__name__)
             return False
+
+
 # endregion class Piece
 
 
@@ -201,6 +206,8 @@ class Bishop(Piece):
         except Exception as error_message:
             console_log(error_message, LOG_ERROR, self.update_valid_moves_list.__name__)
             return False
+
+
 # endregion Bishop
 
 
@@ -247,8 +254,8 @@ class King(Piece):
                      check if the \"King\" would be moves there.
 
         :param board_inst: The board instance on which the chess piece will be drawn
-        :param row: The row position of the next move
-        :param col: The column position of the next move
+        :param next_row: The row position of the next move
+        :param next_col: The column position of the next move
         :return: Boolean (True of False)
         """
         try:
@@ -260,44 +267,45 @@ class King(Piece):
                 'col': next_col
             }
 
-            pawn_check_direction = 0
             if self.color == 'white':
                 pawn_check_direction = 1
             elif self.color == 'black':
                 pawn_check_direction = -1
             else:
                 return False
-                
+
             for i in range(rows):
                 for j in range(cols):
                     if not isinstance(board_inst[i][j], int) and \
                             board_inst[i][j].color != self.color:
-                        if possible_next_move in board_inst[i][j].valid_moves_list:
+                        if board_inst[i][j].image_index == 'pawn' and \
+                                0 <= i + pawn_check_direction <= 7:
+                            list_pawn_check_moves = []
+                            if j - 1 >= 0:
+                                list_pawn_check_moves.append({
+                                    'row': i + pawn_check_direction,
+                                    'col': j - 1
+                                })
+
+                            if j + 1 <= 7:
+                                list_pawn_check_moves.append({
+                                    'row': i + pawn_check_direction,
+                                    'col': j + 1
+                                })
+
+                            if possible_next_move in list_pawn_check_moves:
+                                return False
+
+                        elif possible_next_move in board_inst[i][j].valid_moves_list:
                             return False
-                        elif board_inst[i][j].image_index == 'pawn' and \
-                            i + pawn_check_direction >= 0 and \
-                                i + pawn_check_direction <= 7:
-                                    list_pawn_check_moves = []
-                                    if j - 1 >= 0:
-                                        list_pawn_check_moves.append({
-                                            'row': i + pawn_check_direction,
-                                            'col': j - 1
-                                        })
-                                    
-                                    if j + 1 <= 7:
-                                        list_pawn_check_moves.append({
-                                            'row': i + pawn_check_direction,
-                                            'col': j + 1
-                                        })
-                                    
-                                    if possible_next_move in list_pawn_check_moves:
-                                        return False
-                
+
             return True
 
         except Exception as error_message:
             console_log(error_message, LOG_ERROR, self.validate_next_position.__name__)
             return False
+
+
 # endregion King
 
 
@@ -356,6 +364,8 @@ class Knight(Piece):
         except Exception as error_message:
             console_log(error_message, LOG_ERROR, self.update_valid_moves_list.__name__)
             return False
+
+
 # endregion Knight
 
 
@@ -401,6 +411,8 @@ class Queen(Piece):
         except Exception as error_message:
             console_log(error_message, LOG_ERROR, self.update_valid_moves_list.__name__)
             return False
+
+
 # endregion Queen
 
 
@@ -462,7 +474,7 @@ class Pawn(Piece):
             if self.initial_position is True:
                 if (self.color == 'black' and i == 1) or \
                         (self.color == 'white' and i == 6):
-                    possible_next_move = board_inst[i + 2*k][j]
+                    possible_next_move = board_inst[i + 2 * k][j]
                     if isinstance(possible_next_move, int):
                         self.append_valid_move_to_valid_moves_list(i + 2 * k, j)
 
@@ -485,6 +497,8 @@ class Pawn(Piece):
         except Exception as error_message:
             console_log(error_message, LOG_ERROR, self.move.__name__)
             return False
+
+
 # endregion Pawn
 
 
