@@ -26,6 +26,10 @@ class Board:
             self.cols = cols
 
             self.current_color = 'white'
+            self.score = {
+                'white': 0,
+                'black': 0
+            }
 
             self.board = [[0 for x in range(8)] for _ in range(rows)]
 
@@ -123,6 +127,11 @@ class Board:
 
             if self.board[x1][y1].validate_possible_next_position(next_position) is True and \
                     self.validate_current_color(self.board[x1][y1].color) is True:
+
+                if not isinstance(self.board[x2][y2], int):
+                    self.score[self.current_color] += self.board[x2][y2].strength
+                    console.log('score: %s' % str(self.score), console.LOG_SUCCESS, self.move_chess_piece.__name__)
+
                 self.board[x1][y1].move(next_position)
                 self.board[x1][y1].is_selected = False
                 self.change_current_color(self.board[x1][y1].color)
@@ -202,4 +211,28 @@ class Board:
         except Exception as error_message:
             console.log(error_message, console.LOG_ERROR, self.update_valid_moves_list.__name__)
             return False
+
+    def get_chessboard_score(self, current_color=None):
+        """
+        This method returns the score of the chess game
+
+        :param current_color: (String) The color for which the score should be returned (Default: both)
+        :return: (Dictionary or Integer) The score for the specific selected color or for both
+        """
+        try:
+            if current_color is None:
+                return self.score
+            elif current_color in ['black', 'white']:
+                return self.score[current_color]
+
+            console.log('Current color not found: %s' % current_color,
+                        console.LOG_WARNING,
+                        self.get_chessboard_score.__name__)
+            return False
+
+        except Exception as error_message:
+            console.log(error_message, console.LOG_ERROR, self.get_chessboard_score.__name__)
+            return False
+
+
 # endregion class Board

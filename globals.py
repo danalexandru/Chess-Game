@@ -269,6 +269,8 @@ class Console(object):
         self.LOG_SUCCESS = 0x02
         self.LOG_INFO = 0x03
         self.LOG_DEFAULT = 0x04
+
+        self.LOG_MAX_PRIORITY = self.LOG_SUCCESS
         # endregion console log flags
 
         # region messages color codes
@@ -293,8 +295,13 @@ class Console(object):
         try:
             message = str(message).capitalize()
 
+            if priority is None and self.LOG_MAX_PRIORITY != self.LOG_DEFAULT:
+                return False
+            elif priority is not None and priority > self.LOG_MAX_PRIORITY:
+                return False
+
             if sys.exc_info()[-1] is not None:
-                line_number = str(sys.exc_info()[-1].tb_lineno)
+                line_number = str(':%s' % str(sys.exc_info()[-1].tb_lineno))
             else:
                 line_number = ''
 
@@ -302,17 +309,17 @@ class Console(object):
                 location = ''
 
             if priority == self.LOG_ERROR:
-                print('%s\t Error (%s:%s):%s %s' % (self._CODE_RED, location, line_number, self._CODE_WHITE, message))
+                print('%s\t Error (%s%s):%s %s' % (self._CODE_RED, location, line_number, self._CODE_WHITE, message))
             elif priority == self.LOG_WARNING:
-                print('%s\t Warning (%s:%s):%s %s' % (
+                print('%s\t Warning (%s%s):%s %s' % (
                     self._CODE_YELLOW, location, line_number, self._CODE_WHITE, message))
 
             elif priority == self.LOG_SUCCESS:
                 print(
-                    '%s\t Success (%s:%s):%s %s' % (self._CODE_GREEN, location, line_number, self._CODE_WHITE, message))
+                    '%s\t Success (%s%s):%s %s' % (self._CODE_GREEN, location, line_number, self._CODE_WHITE, message))
 
             elif priority == self.LOG_INFO:
-                print('%s\t Info (%s:%s):%s %s' % (self._CODE_BLUE, location, line_number, self._CODE_WHITE, message))
+                print('%s\t Info (%s%s):%s %s' % (self._CODE_BLUE, location, line_number, self._CODE_WHITE, message))
 
             elif priority is None:
                 print('%s\t %s' % (self._CODE_WHITE, message))
