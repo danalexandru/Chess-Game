@@ -53,7 +53,7 @@ class Board:
 
             return
         except Exception as error_message:
-            console_log(error_message, LOG_ERROR, self.__init__.__name__)
+            console.log(error_message, console.LOG_ERROR, self.__init__.__name__)
             return
 
     def draw(self, win):
@@ -71,7 +71,7 @@ class Board:
 
             return True
         except Exception as error_message:
-            console_log(error_message, LOG_ERROR, self.draw.__name__)
+            console.log(error_message, console.LOG_ERROR, self.draw.__name__)
             return False
 
     def select_chess_piece(self, position):
@@ -92,9 +92,9 @@ class Board:
             if not isinstance(self.board[x][y], int) and \
                     self.validate_current_color(self.board[x][y].color) is True:
                 self.board[x][y].is_selected = True
-                console_log('chess piece \"%s\".is_selected = %d' % (str(self.board[x][y].image_index).capitalize(),
+                console.log('chess piece \"%s\".is_selected = %d' % (str(self.board[x][y].image_index).capitalize(),
                                                                      self.board[x][y].is_selected),
-                            LOG_INFO,
+                            console.LOG_INFO,
                             self.select_chess_piece.__name__)
 
                 self.update_valid_moves_list()
@@ -103,7 +103,7 @@ class Board:
             return False
 
         except Exception as error_message:
-            console_log(error_message, LOG_ERROR, self.select_chess_piece.__name__)
+            console.log(error_message, console.LOG_ERROR, self.select_chess_piece.__name__)
             return False
 
     def move_chess_piece(self, initial_position, next_position):
@@ -129,18 +129,18 @@ class Board:
                 self.board[x2][y2] = self.board[x1][y1]
                 self.board[x1][y1] = 0
 
-                console_log('move chess piece \"%s\" from (%d, %d) to (%d, %d)' %
+                console.log('move chess piece \"%s\" from (%d, %d) to (%d, %d)' %
                             (str(self.board[x2][y2].image_index).capitalize(),
                              x1, y1,
                              x2, y2),
-                            LOG_INFO,
+                            console.LOG_INFO,
                             self.move_chess_piece.__name__)
 
                 return True
 
             return False
         except Exception as error_message:
-            console_log(error_message, LOG_ERROR, self.move_chess_piece.__name__)
+            console.log(error_message, console.LOG_ERROR, self.move_chess_piece.__name__)
             return False
 
     def validate_current_color(self, current_color):
@@ -155,14 +155,14 @@ class Board:
             if current_color == self.current_color:
                 return True
             else:
-                console_log('It is not the turn of the \"%s\" player. '
+                console.log('It is not the turn of the \"%s\" player. '
                             'Wait for the \"%s\" player to finish his turn.' %
                             (current_color.capitalize(), self.current_color.capitalize()),
-                            LOG_WARNING,
+                            console.LOG_WARNING,
                             self.validate_current_color.__name__)
                 return False
         except Exception as error_message:
-            console_log(error_message, LOG_ERROR, self.validate_current_color.__name__)
+            console.log(error_message, console.LOG_ERROR, self.validate_current_color.__name__)
             return False
 
     def change_current_color(self, current_color):
@@ -178,14 +178,14 @@ class Board:
             elif current_color == 'white':
                 self.current_color = 'black'
             else:
-                console_log('Current color not found: %s' % current_color,
-                            LOG_WARNING,
+                console.log('Current color not found: %s' % current_color,
+                            console.LOG_WARNING,
                             self.change_current_color.__name__)
                 return False
 
             return True
         except Exception as error_message:
-            console_log(error_message, LOG_ERROR, self.change_current_color.__name__)
+            console.log(error_message, console.LOG_ERROR, self.change_current_color.__name__)
             return False
 
     def update_valid_moves_list(self):
@@ -200,6 +200,6 @@ class Board:
                     if not isinstance(self.board[i][j], int):
                         self.board[i][j].update_valid_moves_list(self.board)
         except Exception as error_message:
-            console_log(error_message, LOG_ERROR, self.update_valid_moves_list.__name__)
+            console.log(error_message, console.LOG_ERROR, self.update_valid_moves_list.__name__)
             return False
 # endregion class Board

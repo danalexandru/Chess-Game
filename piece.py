@@ -29,7 +29,7 @@ class Piece(object):
             return
 
         except Exception as error_message:
-            console_log(error_message, CODE_RED, Piece.__init__.__name__)
+            console.log(error_message, console.LOG_ERROR, Piece.__init__.__name__)
             return
 
     def move(self, position):
@@ -45,7 +45,7 @@ class Piece(object):
 
             return True
         except Exception as error_message:
-            console_log(error_message, LOG_ERROR, self.move.__name__)
+            console.log(error_message, console.LOG_ERROR, self.move.__name__)
             return False
 
     def draw(self, win):
@@ -88,7 +88,7 @@ class Piece(object):
             return True
 
         except Exception as error_message:
-            console_log(error_message, LOG_ERROR, self.draw.__name__)
+            console.log(error_message, console.LOG_ERROR, self.draw.__name__)
             return False
 
     def reset_valid_moves_list(self):
@@ -103,7 +103,7 @@ class Piece(object):
 
             return True
         except Exception as error_message:
-            console_log(error_message, LOG_ERROR, self.reset_valid_moves_list.__name__)
+            console.log(error_message, console.LOG_ERROR, self.reset_valid_moves_list.__name__)
             return False
 
     def append_valid_move_to_valid_moves_list(self, valid_row, valid_col):
@@ -127,7 +127,7 @@ class Piece(object):
 
             return True
         except Exception as error_message:
-            console_log(error_message, LOG_ERROR, self.append_valid_move_to_valid_moves_list.__name__)
+            console.log(error_message, console.LOG_ERROR, self.append_valid_move_to_valid_moves_list.__name__)
             return False
 
     def update_valid_moves_list(self, board_inst):
@@ -157,7 +157,7 @@ class Piece(object):
 
             return False
         except Exception as error_message:
-            console_log(error_message, LOG_ERROR, self.validate_possible_next_position.__name__)
+            console.log(error_message, console.LOG_ERROR, self.validate_possible_next_position.__name__)
             return False
 
 
@@ -204,7 +204,7 @@ class Bishop(Piece):
                     else:
                         break
         except Exception as error_message:
-            console_log(error_message, LOG_ERROR, self.update_valid_moves_list.__name__)
+            console.log(error_message, console.LOG_ERROR, self.update_valid_moves_list.__name__)
             return False
 
 
@@ -245,7 +245,7 @@ class King(Piece):
 
             return True
         except Exception as error_message:
-            console_log(error_message, LOG_ERROR, self.update_valid_moves_list.__name__)
+            console.log(error_message, console.LOG_ERROR, self.update_valid_moves_list.__name__)
             return False
 
     def validate_next_position(self, board_inst, next_row, next_col):
@@ -302,7 +302,7 @@ class King(Piece):
             return True
 
         except Exception as error_message:
-            console_log(error_message, LOG_ERROR, self.validate_next_position.__name__)
+            console.log(error_message, console.LOG_ERROR, self.validate_next_position.__name__)
             return False
 
 
@@ -362,7 +362,7 @@ class Knight(Piece):
 
             return True
         except Exception as error_message:
-            console_log(error_message, LOG_ERROR, self.update_valid_moves_list.__name__)
+            console.log(error_message, console.LOG_ERROR, self.update_valid_moves_list.__name__)
             return False
 
 
@@ -409,7 +409,7 @@ class Queen(Piece):
 
             return True
         except Exception as error_message:
-            console_log(error_message, LOG_ERROR, self.update_valid_moves_list.__name__)
+            console.log(error_message, console.LOG_ERROR, self.update_valid_moves_list.__name__)
             return False
 
 
@@ -427,7 +427,7 @@ class Pawn(Piece):
 
             return
         except Exception as error_message:
-            console_log(error_message, LOG_ERROR, Pawn.__init__.__name__)
+            console.log(error_message, console.LOG_ERROR, Pawn.__init__.__name__)
             return
 
     def update_valid_moves_list(self, board_inst):
@@ -480,7 +480,7 @@ class Pawn(Piece):
 
             return True
         except Exception as error_message:
-            console_log(error_message, LOG_ERROR, self.update_valid_moves_list.__name__)
+            console.log(error_message, console.LOG_ERROR, self.update_valid_moves_list.__name__)
             return False
 
     def move(self, position):
@@ -495,7 +495,7 @@ class Pawn(Piece):
             self.initial_position = False
 
         except Exception as error_message:
-            console_log(error_message, LOG_ERROR, self.move.__name__)
+            console.log(error_message, console.LOG_ERROR, self.move.__name__)
             return False
 
 
@@ -542,7 +542,7 @@ class Rook(Piece):
 
             return True
         except Exception as error_message:
-            console_log(error_message, LOG_ERROR, self.update_valid_moves_list.__name__)
+            console.log(error_message, console.LOG_ERROR, self.update_valid_moves_list.__name__)
             return False
 # endregion Rook
 

@@ -29,7 +29,7 @@ def redraw_game_window():
 
         pygame.display.update()
     except Exception as error_message:
-        console_log(error_message, LOG_ERROR, redraw_game_window.__name__)
+        console.log(error_message, console.LOG_ERROR, redraw_game_window.__name__)
         return False
 
 
@@ -46,14 +46,14 @@ def draw_player_led():
                                PLAYER_LED['initial_position'],
                                PLAYER_LED['radius'])
         else:
-            console_log('Current color not found: %s' % current_color,
-                        LOG_WARNING,
+            console.log('Current color not found: %s' % current_color,
+                        console.LOG_WARNING,
                         draw_player_led.__name__)
             return False
 
         return True
     except Exception as error_message:
-        console_log(error_message, LOG_ERROR, draw_player_led.__name__)
+        console.log(error_message, console.LOG_ERROR, draw_player_led.__name__)
         return False
 # endregion local functions
 
@@ -82,7 +82,7 @@ def find_chessboard_edges():
                                  1)
 
     except Exception as error_message:
-        console_log(error_message, LOG_ERROR, find_chessboard_edges.__name__)
+        console.log(error_message, console.LOG_ERROR, find_chessboard_edges.__name__)
         return False
 
 # endregion debug
@@ -133,7 +133,7 @@ def main():
 
         return True
     except Exception as error_message:
-        console_log(error_message, CODE_RED, main.__name__)
+        console.log(error_message, console.LOG_ERROR, main.__name__)
         return False
 
 
