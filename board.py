@@ -16,7 +16,7 @@ from globals import *
 class Board:
     def __init__(self, rows=8, cols=8):
         """
-        Description: Initialize the chessboard with the chess pieces in their initial positions
+        Initialize the chessboard with the chess pieces in their initial positions
 
         :param rows: (Optional) The number of rows in a chessboard (Default: 8)
         :param cols: (Optional) The number of columns in a chessboard (Default: 8)
@@ -53,12 +53,12 @@ class Board:
 
             return
         except Exception as error_message:
-            console_log(error_message, LOG_ERROR, self.__init__.__name__)
+            console.log(error_message, console.LOG_ERROR, self.__init__.__name__)
             return
 
     def draw(self, win):
         """
-        Description: This function draws the chessboard pieces
+        This function draws the chessboard pieces
 
         :param win:
         :return: Boolean (True or False)
@@ -67,16 +67,16 @@ class Board:
             for i in range(self.rows):
                 for j in range(self.cols):
                     if not isinstance(self.board[i][j], int):
-                        self.board[i][j].draw(win, self.board)
+                        self.board[i][j].draw(win)
 
             return True
         except Exception as error_message:
-            console_log(error_message, LOG_ERROR, self.draw.__name__)
+            console.log(error_message, console.LOG_ERROR, self.draw.__name__)
             return False
 
     def select_chess_piece(self, position):
         """
-        Description: This function selects the current chess piece that was clicked on
+        This function selects the current chess piece that was clicked on
 
         :param position: The position of the chess piece on the board
         :return: Boolean (True or False
@@ -92,21 +92,23 @@ class Board:
             if not isinstance(self.board[x][y], int) and \
                     self.validate_current_color(self.board[x][y].color) is True:
                 self.board[x][y].is_selected = True
-                console_log('chess piece \"%s\".is_selected = %d' % (str(self.board[x][y].image_index).capitalize(),
+                console.log('chess piece \"%s\".is_selected = %d' % (str(self.board[x][y].image_index).capitalize(),
                                                                      self.board[x][y].is_selected),
-                            LOG_INFO,
+                            console.LOG_INFO,
                             self.select_chess_piece.__name__)
+
+                self.update_valid_moves_list()
                 return True
 
             return False
 
         except Exception as error_message:
-            console_log(error_message, LOG_ERROR, self.select_chess_piece.__name__)
+            console.log(error_message, console.LOG_ERROR, self.select_chess_piece.__name__)
             return False
 
     def move_chess_piece(self, initial_position, next_position):
         """
-        Description: This function will move a chess piece from an initial position to the next position
+        This function will move a chess piece from an initial position to the next position
 
         :param initial_position: A list containing the current coordinates of the chess piece (x1, y1)
         :param next_position: A list containing the coordinates of the desired position of the chess piece (x2, y2)
@@ -127,23 +129,23 @@ class Board:
                 self.board[x2][y2] = self.board[x1][y1]
                 self.board[x1][y1] = 0
 
-                console_log('move chess piece \"%s\" from (%d, %d) to (%d, %d)' %
+                console.log('move chess piece \"%s\" from (%d, %d) to (%d, %d)' %
                             (str(self.board[x2][y2].image_index).capitalize(),
                              x1, y1,
                              x2, y2),
-                            LOG_INFO,
+                            console.LOG_INFO,
                             self.move_chess_piece.__name__)
 
                 return True
 
             return False
         except Exception as error_message:
-            console_log(error_message, LOG_ERROR, self.move_chess_piece.__name__)
+            console.log(error_message, console.LOG_ERROR, self.move_chess_piece.__name__)
             return False
 
     def validate_current_color(self, current_color):
         """
-        Description: This function determines if it is the turn of the chess piece (if the chess piece color matches
+        This function determines if it is the turn of the chess piece (if the chess piece color matches
                     the one of the board "current_color").
 
         :param current_color: The color of the selected chess piece ("black" or "white")
@@ -153,19 +155,19 @@ class Board:
             if current_color == self.current_color:
                 return True
             else:
-                console_log('It is not the turn of the \"%s\" player. '
+                console.log('It is not the turn of the \"%s\" player. '
                             'Wait for the \"%s\" player to finish his turn.' %
                             (current_color.capitalize(), self.current_color.capitalize()),
-                            LOG_WARNING,
+                            console.LOG_WARNING,
                             self.validate_current_color.__name__)
                 return False
         except Exception as error_message:
-            console_log(error_message, LOG_ERROR, self.validate_current_color.__name__)
+            console.log(error_message, console.LOG_ERROR, self.validate_current_color.__name__)
             return False
 
     def change_current_color(self, current_color):
         """
-        Description: This function changes the turn from to the next player / color
+        This function changes the turn from to the next player / color
 
         :param current_color: The current color
         :return: Boolean (True or False)
@@ -176,13 +178,28 @@ class Board:
             elif current_color == 'white':
                 self.current_color = 'black'
             else:
-                console_log('Current color not found: %s' % current_color,
-                            LOG_WARNING,
+                console.log('Current color not found: %s' % current_color,
+                            console.LOG_WARNING,
                             self.change_current_color.__name__)
                 return False
 
             return True
         except Exception as error_message:
-            console_log(error_message, LOG_ERROR, self.change_current_color.__name__)
+            console.log(error_message, console.LOG_ERROR, self.change_current_color.__name__)
+            return False
+
+    def update_valid_moves_list(self):
+        """
+        This function updates the list of valid moves for each chess piece still on the board
+
+        :return: Boolean(True or False)
+        """
+        try:
+            for i in range(self.rows):
+                for j in range(self.cols):
+                    if not isinstance(self.board[i][j], int):
+                        self.board[i][j].update_valid_moves_list(self.board)
+        except Exception as error_message:
+            console.log(error_message, console.LOG_ERROR, self.update_valid_moves_list.__name__)
             return False
 # endregion class Board
