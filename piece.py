@@ -26,6 +26,7 @@ class Piece(object):
             self.color = color
             self.is_selected = False
             self.valid_moves_list = []
+            self.strength = 0
             return
 
         except Exception as error_message:
@@ -170,6 +171,10 @@ class Piece(object):
 class Bishop(Piece):
     image_index = 'bishop'
 
+    def __init__(self, row, col, color):
+        super().__init__(row, col, color)
+        self.strength = 3
+
     def update_valid_moves_list(self, board_inst):
         """
         Description: Update the \"valid_moves_list\" of the current \"Bishop\" chess piece
@@ -214,6 +219,10 @@ class Bishop(Piece):
 # region King
 class King(Piece):
     image_index = 'king'
+
+    def __init__(self, row, col, color):
+        super().__init__(row, col, color)
+        self.strength = 90
 
     def update_valid_moves_list(self, board_inst):
         """
@@ -313,6 +322,10 @@ class King(Piece):
 class Knight(Piece):
     image_index = 'knight'
 
+    def __init__(self, row, col, color):
+        super().__init__(row, col, color)
+        self.strength = 3
+
     def update_valid_moves_list(self, board_inst):
         """
         Description: Update the \"valid_moves_list\" of the current \"Knight\" chess piece
@@ -373,6 +386,10 @@ class Knight(Piece):
 class Queen(Piece):
     image_index = 'queen'
 
+    def __init__(self, row, col, color):
+        super().__init__(row, col, color)
+        self.strength = 9
+
     def update_valid_moves_list(self, board_inst):
         """
         Description: Update the \"valid_moves_list\" of the current \"Queen\" chess piece
@@ -421,14 +438,9 @@ class Pawn(Piece):
     image_index = 'pawn'
 
     def __init__(self, row, col, color):
-        try:
-            super().__init__(row, col, color)
-            self.initial_position = True
-
-            return
-        except Exception as error_message:
-            console.log(error_message, console.LOG_ERROR, Pawn.__init__.__name__)
-            return
+        super().__init__(row, col, color)
+        self.initial_position = True
+        self.strength = 1
 
     def update_valid_moves_list(self, board_inst):
         """
@@ -505,6 +517,10 @@ class Pawn(Piece):
 # region Rook
 class Rook(Piece):
     image_index = 'rook'
+
+    def __init__(self, row, col, color):
+        super().__init__(row, col, color)
+        self.strength = 5
 
     def update_valid_moves_list(self, board_inst):
         """
