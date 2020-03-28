@@ -16,7 +16,7 @@ from globals import *
 class Board:
     def __init__(self, rows=8, cols=8):
         """
-        Description: Initialize the chessboard with the chess pieces in their initial positions
+        Initialize the chessboard with the chess pieces in their initial positions
 
         :param rows: (Optional) The number of rows in a chessboard (Default: 8)
         :param cols: (Optional) The number of columns in a chessboard (Default: 8)
@@ -58,7 +58,7 @@ class Board:
 
     def draw(self, win):
         """
-        Description: This function draws the chessboard pieces
+        This function draws the chessboard pieces
 
         :param win:
         :return: Boolean (True or False)
@@ -76,7 +76,7 @@ class Board:
 
     def select_chess_piece(self, position):
         """
-        Description: This function selects the current chess piece that was clicked on
+        This function selects the current chess piece that was clicked on
 
         :param position: The position of the chess piece on the board
         :return: Boolean (True or False
@@ -108,7 +108,7 @@ class Board:
 
     def move_chess_piece(self, initial_position, next_position):
         """
-        Description: This function will move a chess piece from an initial position to the next position
+        This function will move a chess piece from an initial position to the next position
 
         :param initial_position: A list containing the current coordinates of the chess piece (x1, y1)
         :param next_position: A list containing the coordinates of the desired position of the chess piece (x2, y2)
@@ -145,7 +145,7 @@ class Board:
 
     def validate_current_color(self, current_color):
         """
-        Description: This function determines if it is the turn of the chess piece (if the chess piece color matches
+        This function determines if it is the turn of the chess piece (if the chess piece color matches
                     the one of the board "current_color").
 
         :param current_color: The color of the selected chess piece ("black" or "white")
@@ -167,7 +167,7 @@ class Board:
 
     def change_current_color(self, current_color):
         """
-        Description: This function changes the turn from to the next player / color
+        This function changes the turn from to the next player / color
 
         :param current_color: The current color
         :return: Boolean (True or False)
@@ -190,7 +190,7 @@ class Board:
 
     def update_valid_moves_list(self):
         """
-        Description: This function updates the list of valid moves for each chess piece still on the board
+        This function updates the list of valid moves for each chess piece still on the board
 
         :return: Boolean(True or False)
         """

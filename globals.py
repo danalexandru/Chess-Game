@@ -217,7 +217,7 @@ highlighted_square.fill((66, 134, 244, 70))  # blue
 # region global functions
 def click_on_chessboard(mouse_position):
     """
-    Description: This function returns the mouse position on the chessboard
+    This function returns the mouse position on the chessboard
 
     :param mouse_position: The current mouse position in the entire application
     :return: The square position that was clicked on:

@@ -14,7 +14,7 @@ class Piece(object):
 
     def __init__(self, row, col, color):
         """
-        Description: Initialize a chess piece object
+        Initialize a chess piece object
 
         :param row: (Integer) The number of rows of the chessboard
         :param col: (Integer) The number of columns of the chessboard
@@ -35,7 +35,7 @@ class Piece(object):
 
     def move(self, position):
         """
-        Description: This function is used to change the position of the piece
+        This function is used to change the position of the piece
 
         :param position: an Array with 2 Integers (the new x_position and y_position)
         :return: Boolean (True or False)
@@ -51,7 +51,7 @@ class Piece(object):
 
     def draw(self, win):
         """
-        Description: This function is used to draw a chess piece on the chessboard
+        This function is used to draw a chess piece on the chessboard
 
         :param win: The pygame window
         :param board_inst: The board instance that the highlighted moves will be drawn upon
@@ -94,7 +94,7 @@ class Piece(object):
 
     def reset_valid_moves_list(self):
         """
-        Description: This method resets the \"valid_moves_list\" in order to repopulate it when the chess piece is
+        This method resets the \"valid_moves_list\" in order to repopulate it when the chess piece is
                      selected
 
         :return: Boolean (True of False)
@@ -109,7 +109,7 @@ class Piece(object):
 
     def append_valid_move_to_valid_moves_list(self, valid_row, valid_col):
         """
-        Description: This method updates the \"valid_moves_list\" of the current chess piece. It appends a new
+        This method updates the \"valid_moves_list\" of the current chess piece. It appends a new
                     dictionary to the \"valid_moves_list\". The dictionary has the following format:
                     {
                         'row': valid_row,
@@ -133,7 +133,7 @@ class Piece(object):
 
     def update_valid_moves_list(self, board_inst):
         """
-        Description: Update the \"valid_moves_list\" of the current chess piece
+        Update the \"valid_moves_list\" of the current chess piece
 
         :param board_inst: The board instance on which the chess piece will be drawn
         :return: Boolean (True of False)
@@ -142,7 +142,7 @@ class Piece(object):
 
     def validate_possible_next_position(self, position):
         """
-        Description: This method checks if tre given position exits in the \"valid_moves_list\".
+        This method checks if tre given position exits in the \"valid_moves_list\".
 
         :param position: The position in which the chess piece could be moved next
         :return:
@@ -177,7 +177,7 @@ class Bishop(Piece):
 
     def update_valid_moves_list(self, board_inst):
         """
-        Description: Update the \"valid_moves_list\" of the current \"Bishop\" chess piece
+        Update the \"valid_moves_list\" of the current \"Bishop\" chess piece
 
         :param board_inst: The board instance on which the chess piece will be drawn
         :return: Boolean (True of False)
@@ -226,7 +226,7 @@ class King(Piece):
 
     def update_valid_moves_list(self, board_inst):
         """
-        Description: Update the \"valid_moves_list\" of the current \"King\" chess piece
+        Update the \"valid_moves_list\" of the current \"King\" chess piece
 
         :param board_inst: The board instance on which the chess piece will be drawn
         :return: Boolean (True of False)
@@ -259,7 +259,7 @@ class King(Piece):
 
     def validate_next_position(self, board_inst, next_row, next_col):
         """
-        Description: This function checks if the next possible position of the \"King\" chess piece would be in 
+        This function checks if the next possible position of the \"King\" chess piece would be in 
                      check if the \"King\" would be moves there.
 
         :param board_inst: The board instance on which the chess piece will be drawn
@@ -328,7 +328,7 @@ class Knight(Piece):
 
     def update_valid_moves_list(self, board_inst):
         """
-        Description: Update the \"valid_moves_list\" of the current \"Knight\" chess piece
+        Update the \"valid_moves_list\" of the current \"Knight\" chess piece
 
         :param board_inst: The board instance on which the chess piece will be drawn
         :return: Boolean (True of False)
@@ -392,7 +392,7 @@ class Queen(Piece):
 
     def update_valid_moves_list(self, board_inst):
         """
-        Description: Update the \"valid_moves_list\" of the current \"Queen\" chess piece
+        Update the \"valid_moves_list\" of the current \"Queen\" chess piece
 
         :param board_inst: The board instance on which the chess piece will be drawn
         :return: Boolean (True of False)
@@ -444,7 +444,7 @@ class Pawn(Piece):
 
     def update_valid_moves_list(self, board_inst):
         """
-        Description: Update the \"valid_moves_list\" of the current \"Pawn\" chess piece
+        Update the \"valid_moves_list\" of the current \"Pawn\" chess piece
 
         :param board_inst: The board instance on which the chess piece will be drawn
         :return: Boolean (True of False)
@@ -497,7 +497,7 @@ class Pawn(Piece):
 
     def move(self, position):
         """
-        Description: This function is used to change the position of the piece
+        This function is used to change the position of the piece
 
         :param position: an Array with 2 Integers (the new x_position and y_position)
         :return: Boolean (True of False)
@@ -524,7 +524,7 @@ class Rook(Piece):
 
     def update_valid_moves_list(self, board_inst):
         """
-        Description: Update the \"valid_moves_list\" of the current \"Rook\" chess piece
+        Update the \"valid_moves_list\" of the current \"Rook\" chess piece
 
         :param board_inst: The board instance on which the chess piece will be drawn
         :return: Boolean (True of False)

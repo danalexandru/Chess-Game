@@ -13,7 +13,7 @@ from globals import *
 # region local functions
 def redraw_game_window():
     """
-    Description: This function draws the chess board, as well as all of the chess pieces that are still present in
+    This function draws the chess board, as well as all of the chess pieces that are still present in
 
     the game at any point in time
     :return: The board with all the pieces
@@ -35,7 +35,7 @@ def redraw_game_window():
 
 def draw_player_led():
     """
-    Description: This function draws the player LED in order to determine the player turn.
+    This function draws the player LED in order to determine the player turn.
 
     :return: Boolean (True or False)
     """
@@ -61,7 +61,7 @@ def draw_player_led():
 # region debug
 def find_chessboard_edges():
     """
-    Description: Debugging function used to identify the location of the chessboard inside the image, alongside the
+    Debugging function used to identify the location of the chessboard inside the image, alongside the
 
     :return: Null or False
     """
@@ -88,9 +88,10 @@ def find_chessboard_edges():
 # endregion debug
 
 
+# region main
 def main():
     """
-    Description: This function calls the 'redraw_game_window' at every iteration in order to redraw the chess board.
+    This function calls the 'redraw_game_window' at every iteration in order to redraw the chess board.
                 It is the main part that updates the board for every game.
 
     :return: Starts the chess board game
@@ -112,7 +113,6 @@ def main():
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    quit()
                     run = False
 
                     pygame.quit()
@@ -140,3 +140,5 @@ def main():
 if __name__ == '__main__':
     main()
 
+
+# endregion main
