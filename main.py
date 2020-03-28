@@ -7,6 +7,8 @@ Documentation:
 from board import Board
 
 from globals import *
+
+
 # endregion imports
 
 
@@ -25,6 +27,7 @@ def redraw_game_window():
 
         board_inst.draw(win)
         draw_player_led()
+        draw_player_score()
         # find_chessboard_edges()
 
         pygame.display.update()
@@ -55,6 +58,43 @@ def draw_player_led():
     except Exception as error_message:
         console.log(error_message, console.LOG_ERROR, draw_player_led.__name__)
         return False
+
+
+def draw_player_score():
+    """
+    This function draws the values of the players scores
+
+    :return Boolean (True or False)
+    """
+    try:
+        font = pygame.font.SysFont('Calibri', 25)
+
+        score_panels = {
+            'black': {
+                'panel': pygame.Surface((123, 50), pygame.SRCALPHA, 32),
+                'text': font.render('Score: %d' % board_inst.get_chessboard_score('black'), True, (255, 255, 255))
+            },
+            'white': {
+                'panel': pygame.Surface((123, 50), pygame.SRCALPHA, 32),
+                'text': font.render('Score: %d' % board_inst.get_chessboard_score('white'), True, (0, 0, 0))
+            }
+        }
+
+        score_panels['black']['panel'].fill((0, 0, 0, 100))
+        score_panels['white']['panel'].fill((255, 255, 255, 100))
+
+        win.blit(score_panels['black']['panel'], (2, 80))
+        win.blit(score_panels['black']['text'], (20, 90))
+
+        win.blit(score_panels['white']['panel'], (2, 470))
+        win.blit(score_panels['white']['text'], (20, 480))
+
+        return True
+    except Exception as error_message:
+        console.log(error_message, console.LOG_ERROR, draw_player_score.__name__)
+        return False
+
+
 # endregion local functions
 
 
@@ -75,15 +115,16 @@ def find_chessboard_edges():
         for i in range(8):
             for j in range(8):
                 pygame.draw.rect(win, (0, 255, 0), [CHESSBOARD_INITIAL_POSITION[0] +
-                                                    j*PIECE_WIDTH,
+                                                    j * PIECE_WIDTH,
                                                     CHESSBOARD_INITIAL_POSITION[1] +
-                                                    i*PIECE_HEIGHT,
+                                                    i * PIECE_HEIGHT,
                                                     PIECE_WIDTH, PIECE_HEIGHT],
                                  1)
 
     except Exception as error_message:
         console.log(error_message, console.LOG_ERROR, find_chessboard_edges.__name__)
         return False
+
 
 # endregion debug
 
@@ -107,6 +148,8 @@ def main():
         board_inst = Board(8, 8)
 
         position = False
+
+        pygame.font.init()
         while run:
             clock.tick(10)
             redraw_game_window()
@@ -139,6 +182,5 @@ def main():
 
 if __name__ == '__main__':
     main()
-
 
 # endregion main
