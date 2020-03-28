@@ -167,6 +167,12 @@ class Piece(object):
 
 # region Pieces
 
+# region Empty
+class Empty(Piece):
+    pass
+# endregion Empty
+
+
 # region Bishop
 class Bishop(Piece):
     image_index = 'bishop'
@@ -200,7 +206,7 @@ class Bishop(Piece):
                         break
 
                     possible_next_move = board_inst[x][y]
-                    if isinstance(possible_next_move, int):
+                    if isinstance(possible_next_move, Empty):
                         self.append_valid_move_to_valid_moves_list(x, y)
                         [x, y] = [x + direction[0], y + direction[1]]
                     elif possible_next_move.color != self.color:
@@ -246,7 +252,7 @@ class King(Piece):
                     continue
 
                 possible_next_move = board_inst[x][y]
-                if isinstance(possible_next_move, int) or \
+                if isinstance(possible_next_move, Empty) or \
                         self.color != possible_next_move.color:
 
                     if self.validate_next_position(board_inst, x, y) is True:
@@ -285,7 +291,7 @@ class King(Piece):
 
             for i in range(rows):
                 for j in range(cols):
-                    if not isinstance(board_inst[i][j], int) and \
+                    if not isinstance(board_inst[i][j], Empty) and \
                             board_inst[i][j].color != self.color:
                         if board_inst[i][j].image_index == 'pawn' and \
                                 0 <= i + pawn_check_direction <= 7:
@@ -369,7 +375,7 @@ class Knight(Piece):
             for position in list_positions:
                 (x, y) = (position['x'], position['y'])
                 possible_next_move = board_inst[x][y]
-                if isinstance(possible_next_move, int) or \
+                if isinstance(possible_next_move, Empty) or \
                         self.color != possible_next_move.color:
                     self.append_valid_move_to_valid_moves_list(x, y)
 
@@ -415,7 +421,7 @@ class Queen(Piece):
                         break
 
                     possible_next_move = board_inst[x][y]
-                    if isinstance(possible_next_move, int):
+                    if isinstance(possible_next_move, Empty):
                         self.append_valid_move_to_valid_moves_list(x, y)
                         [x, y] = [x + direction[0], y + direction[1]]
                     elif possible_next_move.color != self.color:
@@ -467,19 +473,19 @@ class Pawn(Piece):
                     (self.color == 'white' and i > 0):
                 # FORWARD
                 possible_next_move = board_inst[i + k][j]
-                if isinstance(possible_next_move, int):
+                if isinstance(possible_next_move, Empty):
                     self.append_valid_move_to_valid_moves_list(i + k, j)
 
                 # DIAGONAL
                 if j < 7:
                     possible_next_move = board_inst[i + k][j + 1]
-                    if not isinstance(possible_next_move, int) and \
+                    if not isinstance(possible_next_move, Empty) and \
                             self.color != possible_next_move.color:
                         self.append_valid_move_to_valid_moves_list(i + k, j + 1)
 
                 if j > 0:
                     possible_next_move = board_inst[i + k][j - 1]
-                    if not isinstance(possible_next_move, int) and \
+                    if not isinstance(possible_next_move, Empty) and \
                             self.color != possible_next_move.color:
                         self.append_valid_move_to_valid_moves_list(i + k, j - 1)
 
@@ -487,7 +493,7 @@ class Pawn(Piece):
                 if (self.color == 'black' and i == 1) or \
                         (self.color == 'white' and i == 6):
                     possible_next_move = board_inst[i + 2 * k][j]
-                    if isinstance(possible_next_move, int):
+                    if isinstance(possible_next_move, Empty):
                         self.append_valid_move_to_valid_moves_list(i + 2 * k, j)
 
             return True
@@ -547,7 +553,7 @@ class Rook(Piece):
                         break
 
                     possible_next_move = board_inst[x][y]
-                    if isinstance(possible_next_move, int):
+                    if isinstance(possible_next_move, Empty):
                         self.append_valid_move_to_valid_moves_list(x, y)
                         [x, y] = [x + direction[0], y + direction[1]]
                     elif possible_next_move.color != self.color:

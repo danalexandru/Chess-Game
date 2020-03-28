@@ -1,11 +1,5 @@
 # region imports
-from piece import Piece
-from piece import Bishop
-from piece import King
-from piece import Knight
-from piece import Queen
-from piece import Pawn
-from piece import Rook
+from piece import Empty, Bishop, King, Knight, Queen, Pawn, Rook
 from globals import *
 
 
@@ -31,7 +25,13 @@ class Board:
                 'black': 0
             }
 
-            self.board = [[0 for x in range(8)] for _ in range(rows)]
+            self.board = []
+            for x in range(8):
+                row = []
+                for y in range(8):
+                    row.append(Empty(x, y, None))
+
+                self.board.append(row)
 
             self.board[0][0] = Rook(0, 0, 'black')
             self.board[0][1] = Knight(0, 1, 'black')
@@ -70,7 +70,7 @@ class Board:
         try:
             for i in range(self.rows):
                 for j in range(self.cols):
-                    if not isinstance(self.board[i][j], int):
+                    if not isinstance(self.board[i][j], Empty):
                         self.board[i][j].draw(win)
 
             return True
@@ -90,10 +90,10 @@ class Board:
 
             for i in range(self.rows):
                 for j in range(self.cols):
-                    if not isinstance(self.board[i][j], int):
+                    if not isinstance(self.board[i][j], Empty):
                         self.board[i][j].is_selected = False
 
-            if not isinstance(self.board[x][y], int) and \
+            if not isinstance(self.board[x][y], Empty) and \
                     self.validate_current_color(self.board[x][y].color) is True:
                 self.board[x][y].is_selected = True
                 console.log('chess piece \"%s\".is_selected = %d' % (str(self.board[x][y].image_index).capitalize(),
@@ -122,13 +122,13 @@ class Board:
             [x1, y1] = initial_position
             [x2, y2] = next_position
 
-            if isinstance(self.board[x1][y1], int):
+            if isinstance(self.board[x1][y1], Empty):
                 return False
 
             if self.board[x1][y1].validate_possible_next_position(next_position) is True and \
                     self.validate_current_color(self.board[x1][y1].color) is True:
 
-                if not isinstance(self.board[x2][y2], int):
+                if not isinstance(self.board[x2][y2], Empty):
                     self.score[self.current_color] += self.board[x2][y2].strength
                     console.log('score: %s' % str(self.score), console.LOG_SUCCESS, self.move_chess_piece.__name__)
 
@@ -136,7 +136,7 @@ class Board:
                 self.board[x1][y1].is_selected = False
                 self.change_current_color(self.board[x1][y1].color)
                 self.board[x2][y2] = self.board[x1][y1]
-                self.board[x1][y1] = 0
+                self.board[x1][y1] = Empty(x1, y1, None)
 
                 console.log('move chess piece \"%s\" from (%d, %d) to (%d, %d)' %
                             (str(self.board[x2][y2].image_index).capitalize(),
@@ -206,7 +206,7 @@ class Board:
         try:
             for i in range(self.rows):
                 for j in range(self.cols):
-                    if not isinstance(self.board[i][j], int):
+                    if not isinstance(self.board[i][j], Empty):
                         self.board[i][j].update_valid_moves_list(self.board)
         except Exception as error_message:
             console.log(error_message, console.LOG_ERROR, self.update_valid_moves_list.__name__)
