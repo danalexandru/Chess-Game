@@ -26,7 +26,7 @@ class Board:
                 'black': 0
             }
 
-            self.mode = GamePlayMode.MULTIPLAYER
+            self.game_mode = GameMode.SINGLEPLAYER
 
             self.board = []
             for x in range(8):
@@ -89,8 +89,8 @@ class Board:
         :return: Boolean (True or False
         """
         try:
-            if (self.mode is GamePlayMode.MULTIPLAYER or
-                    (self.mode is GamePlayMode.SINGLEPLAYER and self.current_color is 'white')):
+            if (self.game_mode is GameMode.MULTIPLAYER or
+                    (self.game_mode is GameMode.SINGLEPLAYER and self.current_color is 'white')):
                 [x, y] = position
 
                 for i in range(self.rows):
@@ -150,7 +150,7 @@ class Board:
                             console.LOG_INFO,
                             self.move_chess_piece.__name__)
 
-                if self.mode is GamePlayMode.SINGLEPLAYER and self.current_color is 'black':
+                if self.game_mode is GameMode.SINGLEPLAYER and self.current_color is 'black':
                     console.log('entered the singleplayer condition', console.LOG_INFO, self.move_chess_piece.__name__)
                     self.get_valid_moves_for_black_chess_pieces()
                     self.change_current_color(self.current_color)
@@ -257,13 +257,13 @@ class Board:
         }]
         """
         try:
-            if (self.mode is GamePlayMode.MULTIPLAYER or
-                    (self.mode is GamePlayMode.SINGLEPLAYER and self.current_color is 'white')):
+            if (self.game_mode is GameMode.MULTIPLAYER or
+                    (self.game_mode is GameMode.SINGLEPLAYER and self.current_color is 'white')):
                 console.log('Unexpected entry of %s method. \n'
                             '\t- Game mode: %s;\n'
                             '\t-Current player: %s' % (
                                 str(self.get_valid_moves_for_black_chess_pieces.__name__),
-                                str(self.mode.name),
+                                str(self.game_mode.name),
                                 str(self.current_color)
                             ),
                             console.LOG_WARNING,

@@ -107,7 +107,7 @@ class Piece(object):
             console.log(error_message, console.LOG_ERROR, self.reset_valid_moves_list.__name__)
             return False
 
-    def append_valid_move_to_valid_moves_list(self, valid_row, valid_col):
+    def append_valid_move_to_valid_moves_list(self, valid_row, valid_col, strength=0):
         """
         This method updates the \"valid_moves_list\" of the current chess piece. It appends a new
                     dictionary to the \"valid_moves_list\". The dictionary has the following format:
@@ -118,12 +118,14 @@ class Piece(object):
 
         :param valid_row: The row position of a valid next move
         :param valid_col: The column position of a valid next move
+        :param strength: The point increase should that chess piece be moved in this valid position
         :return: None
         """
         try:
             self.valid_moves_list.append({
                 'row': valid_row,
-                'col': valid_col
+                'col': valid_col,
+                'strength': strength
             })
 
             return True
@@ -153,7 +155,18 @@ class Piece(object):
                 'col': position[1]
             }
 
-            if dict_position in self.valid_moves_list:
+            def get_valid_moves_list_positions(valid_moves_list):
+                temp_valid_moves_list = []
+
+                for move in valid_moves_list:
+                    temp_valid_moves_list.append({
+                        'row': move['row'],
+                        'col': move['col']
+                    })
+
+                return temp_valid_moves_list
+
+            if dict_position in get_valid_moves_list_positions(self.valid_moves_list):
                 return True
 
             return False
@@ -203,10 +216,10 @@ class Bishop(Piece):
 
                     possible_next_move = board_inst[x][y]
                     if isinstance(possible_next_move, Empty):
-                        self.append_valid_move_to_valid_moves_list(x, y)
+                        self.append_valid_move_to_valid_moves_list(x, y, board_inst[x][y].strength)
                         [x, y] = [x + direction[0], y + direction[1]]
                     elif possible_next_move.color != self.color:
-                        self.append_valid_move_to_valid_moves_list(x, y)
+                        self.append_valid_move_to_valid_moves_list(x, y, board_inst[x][y].strength)
                         break
                     else:
                         break
@@ -249,7 +262,7 @@ class King(Piece):
                         self.color != possible_next_move.color:
 
                     if self.validate_next_position(board_inst, x, y) is True:
-                        self.append_valid_move_to_valid_moves_list(x, y)
+                        self.append_valid_move_to_valid_moves_list(x, y, board_inst[x][y].strength)
 
             return True
         except Exception as error_message:
@@ -367,7 +380,7 @@ class Knight(Piece):
                 possible_next_move = board_inst[x][y]
                 if isinstance(possible_next_move, Empty) or \
                         self.color != possible_next_move.color:
-                    self.append_valid_move_to_valid_moves_list(x, y)
+                    self.append_valid_move_to_valid_moves_list(x, y, board_inst[x][y].strength)
 
             return True
         except Exception as error_message:
@@ -409,10 +422,10 @@ class Queen(Piece):
 
                     possible_next_move = board_inst[x][y]
                     if isinstance(possible_next_move, Empty):
-                        self.append_valid_move_to_valid_moves_list(x, y)
+                        self.append_valid_move_to_valid_moves_list(x, y, board_inst[x][y].strength)
                         [x, y] = [x + direction[0], y + direction[1]]
                     elif possible_next_move.color != self.color:
-                        self.append_valid_move_to_valid_moves_list(x, y)
+                        self.append_valid_move_to_valid_moves_list(x, y, board_inst[x][y].strength)
                         break
                     else:
                         break
@@ -458,27 +471,27 @@ class Pawn(Piece):
                 # FORWARD
                 possible_next_move = board_inst[i + k][j]
                 if isinstance(possible_next_move, Empty):
-                    self.append_valid_move_to_valid_moves_list(i + k, j)
+                    self.append_valid_move_to_valid_moves_list(i + k, j, board_inst[i + k][j].strength)
 
                 # DIAGONAL
                 if j < 7:
                     possible_next_move = board_inst[i + k][j + 1]
                     if not isinstance(possible_next_move, Empty) and \
                             self.color != possible_next_move.color:
-                        self.append_valid_move_to_valid_moves_list(i + k, j + 1)
+                        self.append_valid_move_to_valid_moves_list(i + k, j + 1, board_inst[i + k][j + k].strength)
 
                 if j > 0:
                     possible_next_move = board_inst[i + k][j - 1]
                     if not isinstance(possible_next_move, Empty) and \
                             self.color != possible_next_move.color:
-                        self.append_valid_move_to_valid_moves_list(i + k, j - 1)
+                        self.append_valid_move_to_valid_moves_list(i + k, j - 1, board_inst[i + k][j - 1].strength)
 
             if self.initial_position is True:
                 if (self.color == 'black' and i == 1) or \
                         (self.color == 'white' and i == 6):
                     possible_next_move = board_inst[i + 2 * k][j]
                     if isinstance(possible_next_move, Empty):
-                        self.append_valid_move_to_valid_moves_list(i + 2 * k, j)
+                        self.append_valid_move_to_valid_moves_list(i + 2 * k, j, board_inst[i + 2 * k][j].strength)
 
             return True
         except Exception as error_message:
@@ -535,10 +548,10 @@ class Rook(Piece):
 
                     possible_next_move = board_inst[x][y]
                     if isinstance(possible_next_move, Empty):
-                        self.append_valid_move_to_valid_moves_list(x, y)
+                        self.append_valid_move_to_valid_moves_list(x, y, board_inst[x][y].strength)
                         [x, y] = [x + direction[0], y + direction[1]]
                     elif possible_next_move.color != self.color:
-                        self.append_valid_move_to_valid_moves_list(x, y)
+                        self.append_valid_move_to_valid_moves_list(x, y, board_inst[x][y].strength)
                         break
                     else:
                         break
