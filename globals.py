@@ -3,6 +3,8 @@ import pygame
 import os
 import sys
 
+from enum import Enum
+
 
 # endregion imports
 
@@ -359,3 +361,12 @@ class Console(object):
 
 console = Console()
 # endregion class Console
+
+
+# region class GamePlayMode
+class GamePlayMode(Enum):
+    SINGLEPLAYER = 0x00
+    MULTIPLAYER = 0x01
+
+
+# endregion class GamePlayMode

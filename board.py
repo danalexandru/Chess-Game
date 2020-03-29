@@ -25,6 +25,8 @@ class Board:
                 'black': 0
             }
 
+            self.mode = GamePlayMode.MULTIPLAYER
+
             self.board = []
             for x in range(8):
                 row = []
@@ -86,23 +88,25 @@ class Board:
         :return: Boolean (True or False
         """
         try:
-            [x, y] = position
+            if (self.mode is GamePlayMode.MULTIPLAYER or
+                    (self.mode is GamePlayMode.SINGLEPLAYER and self.current_color is 'white')):
+                [x, y] = position
 
-            for i in range(self.rows):
-                for j in range(self.cols):
-                    if not isinstance(self.board[i][j], Empty):
-                        self.board[i][j].is_selected = False
+                for i in range(self.rows):
+                    for j in range(self.cols):
+                        if not isinstance(self.board[i][j], Empty):
+                            self.board[i][j].is_selected = False
 
-            if not isinstance(self.board[x][y], Empty) and \
-                    self.validate_current_color(self.board[x][y].color) is True:
-                self.board[x][y].is_selected = True
-                console.log('chess piece \"%s\".is_selected = %d' % (str(self.board[x][y].image_index).capitalize(),
-                                                                     self.board[x][y].is_selected),
-                            console.LOG_INFO,
-                            self.select_chess_piece.__name__)
+                if not isinstance(self.board[x][y], Empty) and \
+                        self.validate_current_color(self.board[x][y].color) is True:
+                    self.board[x][y].is_selected = True
+                    console.log('chess piece \"%s\".is_selected = %d' % (str(self.board[x][y].image_index).capitalize(),
+                                                                         self.board[x][y].is_selected),
+                                console.LOG_INFO,
+                                self.select_chess_piece.__name__)
 
-                self.update_valid_moves_list()
-                return True
+                    self.update_valid_moves_list()
+                    return True
 
             return False
 
