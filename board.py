@@ -1,12 +1,13 @@
-# region imports
+"""
+This script will contain the broad functionality of the chess board and it's components, regarding selecting, validating
+and moving a chess piece
+"""
+# %% imports
 from piece import Empty, Bishop, King, Knight, Queen, Pawn, Rook
 from globals import *
 
 
-# endregion imports
-
-
-# region class Board
+# %% Class Board
 class Board:
     def __init__(self, rows=8, cols=8):
         """
@@ -293,5 +294,3 @@ class Board:
         except Exception as error_message:
             console.log(error_message, console.LOG_ERROR, self.get_valid_moves_for_black_chess_pieces.__name__)
             return False
-
-# endregion class Board

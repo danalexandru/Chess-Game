@@ -1,12 +1,12 @@
-# region imports
+"""
+This script will contain all the individual logic for each chess piece type, regarding selecting, validating and moving
+set chess piece
+"""
+# %% Imports
 from globals import *
-import copy
 
 
-# endregion imports
-
-
-# region class Piece
+# %% Class Piece
 class Piece(object):
     image_index = ''
     x_position = CHESSBOARD_INITIAL_POSITION[0]
@@ -162,18 +162,14 @@ class Piece(object):
             return False
 
 
-# endregion class Piece
+# %% Pieces
 
-
-# region Pieces
-
-# region Empty
+# %% Empty
 class Empty(Piece):
     pass
-# endregion Empty
 
 
-# region Bishop
+# %% Bishop
 class Bishop(Piece):
     image_index = 'bishop'
 
@@ -219,10 +215,7 @@ class Bishop(Piece):
             return False
 
 
-# endregion Bishop
-
-
-# region King
+# %% King
 class King(Piece):
     image_index = 'king'
 
@@ -321,10 +314,7 @@ class King(Piece):
             return False
 
 
-# endregion King
-
-
-# region Knight
+# %% Knight
 class Knight(Piece):
     image_index = 'knight'
 
@@ -385,10 +375,7 @@ class Knight(Piece):
             return False
 
 
-# endregion Knight
-
-
-# region Queen
+# %% Queen
 class Queen(Piece):
     image_index = 'queen'
 
@@ -436,10 +423,7 @@ class Queen(Piece):
             return False
 
 
-# endregion Queen
-
-
-# region Pawn
+# %% Pawn
 class Pawn(Piece):
     image_index = 'pawn'
 
@@ -517,10 +501,7 @@ class Pawn(Piece):
             return False
 
 
-# endregion Pawn
-
-
-# region Rook
+# %% Rook
 class Rook(Piece):
     image_index = 'rook'
 
@@ -566,6 +547,3 @@ class Rook(Piece):
         except Exception as error_message:
             console.log(error_message, console.LOG_ERROR, self.update_valid_moves_list.__name__)
             return False
-# endregion Rook
-
-# endregion Pieces

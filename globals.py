@@ -1,14 +1,14 @@
-# region imports
+"""
+This script will contain all the global constants, object instances, and functions used across all the project
+"""
+# %% Imports
 import pygame
 import os
 import sys
 
 from enum import Enum
 
-
-# endregion imports
-
-# region global variables
+# %% Global variables
 WINDOW_WIDTH = 800
 WINDOW_HEIGHT = 600
 
@@ -37,21 +37,15 @@ PLAYER_LED = {
     'initial_position': (720, 140)
 }
 
-
-# endregion global variables
-
-
-# region chessboard
+# %% Chessboard
 board = pygame.transform.scale(pygame.image.load(os.path.join('pics',
                                                               'boards',
                                                               'chessboard_wallpaper_1.jpg')),
                                (WINDOW_WIDTH, WINDOW_HEIGHT))
-# endregion chessboard
 
+# %% Chess pieces
 
-# region chess pieces
-
-# region black pieces
+# %% Black pieces
 dict_black_pieces = {}
 
 if PIECES_TYPE_3D is False:
@@ -122,9 +116,8 @@ else:
                                                                                       'black',
                                                                                       'chess_piece_illustration_black_rook.png')),
                                                        (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND))
-# endregion black pieces
 
-# region white pieces
+# %% White pieces
 dict_white_pieces = {}
 if PIECES_TYPE_3D is False:
     dict_white_pieces['bishop'] = pygame.transform.scale(pygame.image.load(os.path.join('pics',
@@ -194,12 +187,8 @@ else:
                                                                                       'white',
                                                                                       'chess_piece_illustration_white_rook.png')),
                                                        (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND))
-# endregion white pieces
 
-# endregion chess pieces
-
-
-# region application surface
+# %% Application surface
 pygame.display.set_caption('Chess Game')
 
 icon = pygame.transform.scale(pygame.image.load(os.path.join('pics',
@@ -213,10 +202,7 @@ highlighted_square = pygame.Surface((PIECE_WIDTH, PIECE_HEIGHT), pygame.SRCALPHA
 highlighted_square.fill((66, 134, 244, 70))  # blue
 
 
-# endregion application surface
-
-
-# region global functions
+# %% Global functions
 def click_on_chessboard(mouse_position):
     """
     This function returns the mouse position on the chessboard
@@ -252,10 +238,8 @@ def click_on_chessboard(mouse_position):
         console.log(error_message, console.LOG_ERROR, click_on_chessboard.__name__)
         return False
 
-# endregion global functions
 
-
-# region class Console
+# %% Class Console
 class Console(object):
     """
     This class is used in order to print color coded messages:
@@ -265,7 +249,7 @@ class Console(object):
     def __init__(self):
         self._traceback_step = -2
 
-        # region console log flags
+        # %% Console log flags
         self.LOG_ERROR = 0x00
         self.LOG_WARNING = 0x01
         self.LOG_SUCCESS = 0x02
@@ -273,9 +257,8 @@ class Console(object):
         self.LOG_DEFAULT = 0x04
 
         self.LOG_MAX_PRIORITY = self.LOG_SUCCESS
-        # endregion console log flags
 
-        # region messages color codes
+        # %% Messages color codes
         self._CODE_RED = '\033[1;31;49m'
         self._CODE_YELLOW = '\033[1;33;49m'
         self._CODE_GREEN = '\033[1;32;49m'
@@ -283,7 +266,6 @@ class Console(object):
         self._CODE_WHITE = '\033[1;39;49m'
         self._CODE_HIGHLIGHT = '\033[1;95;49m'
         self._CODE_DEFAULT = '\033[1;39;49m'
-        # endregion messages color codes
 
     def log(self, message, priority=None, location=None):
         """
@@ -360,13 +342,9 @@ class Console(object):
 
 
 console = Console()
-# endregion class Console
 
 
-# region class GamePlayMode
+# %% Class GamePlayMode
 class GamePlayMode(Enum):
     SINGLEPLAYER = 0x00
     MULTIPLAYER = 0x01
-
-
-# endregion class GamePlayMode

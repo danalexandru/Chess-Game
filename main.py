@@ -1,18 +1,14 @@
 """
-Documentation:
-    This file will constitute the basis on which all the python game will be constructed
+This script will constitute the basis on which all the python game will be constructed
 """
 
-# region imports
+# %% Imports
 from board import Board
 
 from globals import *
 
 
-# endregion imports
-
-
-# region local functions
+# %% Local functions
 def redraw_game_window():
     """
     This function draws the chess board, as well as all of the chess pieces that are still present in
@@ -95,10 +91,7 @@ def draw_player_score():
         return False
 
 
-# endregion local functions
-
-
-# region debug
+# %% Debug
 def find_chessboard_edges():
     """
     Debugging function used to identify the location of the chessboard inside the image, alongside the
@@ -126,10 +119,7 @@ def find_chessboard_edges():
         return False
 
 
-# endregion debug
-
-
-# region main
+# %% Main
 def main():
     """
     This function calls the 'redraw_game_window' at every iteration in order to redraw the chess board.
@@ -182,5 +172,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-# endregion main
