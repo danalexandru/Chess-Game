@@ -149,6 +149,11 @@ class Board:
                             console.LOG_INFO,
                             self.move_chess_piece.__name__)
 
+                if self.mode is GamePlayMode.SINGLEPLAYER and self.current_color is 'black':
+                    console.log('entered the singleplayer condition', console.LOG_INFO, self.move_chess_piece.__name__)
+                    self.get_valid_moves_for_black_chess_pieces()
+                    self.change_current_color(self.current_color)
+
                 return True
 
             return False
@@ -238,5 +243,55 @@ class Board:
             console.log(error_message, console.LOG_ERROR, self.get_chessboard_score.__name__)
             return False
 
+    def get_valid_moves_for_black_chess_pieces(self):
+        """
+        This method gets all the valid moves for the black chess pieces in order to use them in the AI algorythm
+
+        :return: (List) A list containing dictionaries of the chess piece type, location, and valid moves
+        [{
+            'type': <Piece>,
+            'row': <Integer>,
+            'col': <Integer>,
+            'valid_moves_list': <List>
+        }]
+        """
+        try:
+            if (self.mode is GamePlayMode.MULTIPLAYER or
+                    (self.mode is GamePlayMode.SINGLEPLAYER and self.current_color is 'white')):
+                console.log('Unexpected entry of %s method. \n'
+                            '\t- Game mode: %s;\n'
+                            '\t-Current player: %s' % (
+                                str(self.get_valid_moves_for_black_chess_pieces.__name__),
+                                str(self.mode.name),
+                                str(self.current_color)
+                            ),
+                            console.LOG_WARNING,
+                            self.get_valid_moves_for_black_chess_pieces.__name__)
+                return False
+
+            self.update_valid_moves_list()
+
+            list_valid_moves = []
+            for i in range(self.rows):
+                for j in range(self.cols):
+                    chess_piece = self.board[i][j]
+                    if not isinstance(chess_piece, Empty) and \
+                            chess_piece.color is 'black' and \
+                            len(chess_piece.valid_moves_list) is not 0:
+                        list_valid_moves.append({
+                            'type': type(chess_piece),
+                            'row': i,
+                            'col': j,
+                            'valid_moves_list': chess_piece.valid_moves_list
+                        })
+
+            console.log('list valid moves: %s' % str(list_valid_moves),
+                        console.LOG_INFO,
+                        self.get_valid_moves_for_black_chess_pieces.__name__)
+
+            return list_valid_moves
+        except Exception as error_message:
+            console.log(error_message, console.LOG_ERROR, self.get_valid_moves_for_black_chess_pieces.__name__)
+            return False
 
 # endregion class Board
