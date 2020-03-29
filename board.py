@@ -152,7 +152,7 @@ class Board:
 
                 if self.game_mode is GameMode.SINGLEPLAYER and self.current_color is 'black':
                     console.log('entered the singleplayer condition', console.LOG_INFO, self.move_chess_piece.__name__)
-                    self.get_valid_moves_for_black_chess_pieces()
+                    self.get_valid_moves()
                     self.change_current_color(self.current_color)
 
                 return True
@@ -244,17 +244,26 @@ class Board:
             console.log(error_message, console.LOG_ERROR, self.get_chessboard_score.__name__)
             return False
 
-    def get_valid_moves_for_black_chess_pieces(self):
+    def get_valid_moves(self):
         """
-        This method gets all the valid moves for the black chess pieces in order to use them in the AI algorythm
+        This method gets all the valid moves for the chess pieces in order to use them in the AI algorythm
 
-        :return: (List) A list containing dictionaries of the chess piece type, location, and valid moves
-        [{
-            'type': <Piece>,
-            'row': <Integer>,
-            'col': <Integer>,
-            'valid_moves_list': <List>
-        }]
+        :return: (Dictionary) A dictionary containing 2 lists with dictionaries of the chess piece type, location,
+        and valid moves
+        {
+            'black': [{
+                'type': <Piece>,
+                'row': <Integer>,
+                'col': <Integer>,
+                'valid_moves_list': <List>
+            }],
+            'white': [{
+                'type': <Piece>,
+                'row': <Integer>,
+                'col': <Integer>,
+                'valid_moves_list': <List>
+            }]
+        }
         """
         try:
             if (self.game_mode is GameMode.MULTIPLAYER or
@@ -262,35 +271,38 @@ class Board:
                 console.log('Unexpected entry of %s method. \n'
                             '\t- Game mode: %s;\n'
                             '\t-Current player: %s' % (
-                                str(self.get_valid_moves_for_black_chess_pieces.__name__),
+                                str(self.get_valid_moves.__name__),
                                 str(self.game_mode.name),
                                 str(self.current_color)
                             ),
                             console.LOG_WARNING,
-                            self.get_valid_moves_for_black_chess_pieces.__name__)
+                            self.get_valid_moves.__name__)
                 return False
 
             self.update_valid_moves_list()
 
-            list_valid_moves = []
+            dict_valid_moves = {
+                'black': [],
+                'white': []
+            }
+
             for i in range(self.rows):
                 for j in range(self.cols):
                     chess_piece = self.board[i][j]
                     if not isinstance(chess_piece, Empty) and \
-                            chess_piece.color is 'black' and \
                             len(chess_piece.valid_moves_list) is not 0:
-                        list_valid_moves.append({
+                        dict_valid_moves[chess_piece.color].append({
                             'type': type(chess_piece),
                             'row': i,
                             'col': j,
                             'valid_moves_list': chess_piece.valid_moves_list
                         })
 
-            console.log('list valid moves: %s' % str(list_valid_moves),
+            console.log('list valid moves: %s' % str(dict_valid_moves),
                         console.LOG_INFO,
-                        self.get_valid_moves_for_black_chess_pieces.__name__)
+                        self.get_valid_moves.__name__)
 
-            return list_valid_moves
+            return dict_valid_moves
         except Exception as error_message:
-            console.log(error_message, console.LOG_ERROR, self.get_valid_moves_for_black_chess_pieces.__name__)
+            console.log(error_message, console.LOG_ERROR, self.get_valid_moves.__name__)
             return False
