@@ -3,6 +3,7 @@ This script will contain the broad functionality of the chess board and it's com
 and moving a chess piece
 """
 # %% imports
+from globals import GamePlayMode
 from piece import Empty, Bishop, King, Knight, Queen, Pawn, Rook
 from bot import mini_max
 from globals import *
@@ -10,6 +11,8 @@ from globals import *
 
 # %% Class Board
 class Board:
+    gameplay_mode: GamePlayMode
+
     def __init__(self, rows=8, cols=8):
         """
         Initialize the chessboard with the chess pieces in their initial positions
@@ -27,7 +30,7 @@ class Board:
                 'black': 0
             }
 
-            self.game_mode = GameMode.SINGLEPLAYER
+            self.gameplay_mode = GamePlayMode.CURRENT_MODE
 
             self.board = []
             for x in range(8):
@@ -90,8 +93,8 @@ class Board:
         :return: Boolean (True or False
         """
         try:
-            if (self.game_mode is GameMode.MULTIPLAYER or
-                    (self.game_mode is GameMode.SINGLEPLAYER and self.current_color is 'white')):
+            if (self.gameplay_mode is GamePlayMode.MULTIPLAYER or
+                    (self.gameplay_mode is GamePlayMode.SINGLEPLAYER and self.current_color is 'white')):
                 [x, y] = position
 
                 for i in range(self.rows):
@@ -151,7 +154,7 @@ class Board:
                             console.LOG_INFO,
                             self.move_chess_piece.__name__)
 
-                if self.game_mode is GameMode.SINGLEPLAYER and self.current_color is 'black':
+                if self.gameplay_mode is GamePlayMode.SINGLEPLAYER and self.current_color is 'black':
                     console.log('entered the singleplayer condition', console.LOG_INFO, self.move_chess_piece.__name__)
                     self.get_valid_moves()
                     dict_best_move = mini_max.find_next_best_move(
@@ -271,13 +274,13 @@ class Board:
         }
         """
         try:
-            if (self.game_mode is GameMode.MULTIPLAYER or
-                    (self.game_mode is GameMode.SINGLEPLAYER and self.current_color is 'white')):
+            if (self.gameplay_mode is GamePlayMode.MULTIPLAYER or
+                    (self.gameplay_mode is GamePlayMode.SINGLEPLAYER and self.current_color is 'white')):
                 console.log('Unexpected entry of %s method. \n'
                             '\t- Game mode: %s;\n'
                             '\t-Current player: %s' % (
                                 str(self.get_valid_moves.__name__),
-                                str(self.game_mode.name),
+                                str(self.gameplay_mode.name),
                                 str(self.current_color)
                             ),
                             console.LOG_WARNING,

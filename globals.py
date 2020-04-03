@@ -6,23 +6,27 @@ import pygame
 import os
 import sys
 
+from config import config
 from enum import Enum
 
 # %% Global variables
-WINDOW_WIDTH = 800
-WINDOW_HEIGHT = 600
+WINDOW_WIDTH = config.get('window.width')
+WINDOW_HEIGHT = config.get('window.height')
 
-CHESSBOARD_WIDTH = 520
-CHESSBOARD_HEIGHT = 517
-CHESSBOARD_INITIAL_POSITION = [140, 40]
+CHESSBOARD_WIDTH = config.get('chessboard.width')
+CHESSBOARD_HEIGHT = config.get('chessboard.height')
+CHESSBOARD_INITIAL_POSITION = [
+    config.get('chessboard.initial.position.x'),
+    config.get('chessboard.initial.position.y')
+]
 
-PIECE_OFFSET = 10
+PIECE_OFFSET = config.get('chessboard.piece.offset')
 PIECE_WIDTH = CHESSBOARD_WIDTH / 8
 PIECE_HEIGHT = CHESSBOARD_HEIGHT / 8
 
 PIECE_WIDTH_ROUND = round(PIECE_WIDTH - 0.5) - PIECE_OFFSET
 PIECE_HEIGHT_ROUND = round(PIECE_HEIGHT - 0.5) - PIECE_OFFSET
-PIECES_TYPE_3D = False
+PIECES_TYPE_3D = config.get('chessboard.pieces.icon.3d')
 
 PLAYER_LED = {
     'black': {
@@ -33,15 +37,19 @@ PLAYER_LED = {
         # 'initial_position': (720, 460),
         'color': (255, 255, 255)
     },
-    'radius': 20,
-    'initial_position': (720, 140)
+    'radius': config.get('player.led.radius'),
+    'initial_position': (
+        config.get('player.led.initial.position.x'),
+        config.get('player.led.initial.position.y')
+    )
 }
 
 # %% Chessboard
-board = pygame.transform.scale(pygame.image.load(os.path.join('pics',
-                                                              'boards',
-                                                              'chessboard_wallpaper_1.jpg')),
-                               (WINDOW_WIDTH, WINDOW_HEIGHT))
+board = pygame.transform.scale(
+    pygame.image.load(os.path.join(config.get('app.folder.pics.main'),
+                                   config.get('app.folder.pics.chessboard.boards'),
+                                   config.get('chessboard.wallpaper.image'))),
+    (WINDOW_WIDTH, WINDOW_HEIGHT))
 
 # %% Chess pieces
 
@@ -49,144 +57,189 @@ board = pygame.transform.scale(pygame.image.load(os.path.join('pics',
 dict_black_pieces = {}
 
 if PIECES_TYPE_3D is False:
-    dict_black_pieces['bishop'] = pygame.transform.scale(pygame.image.load(os.path.join('pics',
-                                                                                        'chess_pieces',
-                                                                                        'black',
-                                                                                        'Chess_bdt60.png')),
-                                                         (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND))
-    dict_black_pieces['king'] = pygame.transform.scale(pygame.image.load(os.path.join('pics',
-                                                                                      'chess_pieces',
-                                                                                      'black',
-                                                                                      'Chess_kdt60.png')),
-                                                       (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND))
-    dict_black_pieces['knight'] = pygame.transform.scale(pygame.image.load(os.path.join('pics',
-                                                                                        'chess_pieces',
-                                                                                        'black',
-                                                                                        'Chess_ndt60.png')),
-                                                         (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND))
-    dict_black_pieces['pawn'] = pygame.transform.scale(pygame.image.load(os.path.join('pics',
-                                                                                      'chess_pieces',
-                                                                                      'black',
-                                                                                      'Chess_pdt60.png')),
-                                                       (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND))
-    dict_black_pieces['queen'] = pygame.transform.scale(pygame.image.load(os.path.join('pics',
-                                                                                       'chess_pieces',
-                                                                                       'black',
-                                                                                       'Chess_qdt60.png')),
-                                                        (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND))
-    dict_black_pieces['rook'] = pygame.transform.scale(pygame.image.load(os.path.join('pics',
-                                                                                      'chess_pieces',
-                                                                                      'black',
-                                                                                      'Chess_rdt60.png')),
-                                                       (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND))
+    dict_black_pieces = {
+        'king': pygame.transform.scale(
+            pygame.image.load(os.path.join(config.get('app.folder.pics.main'),
+                                           config.get('app.folder.pics.chessboard.pieces'),
+                                           config.get('app.folder.pics.chessboard.2d'),
+                                           config.get('app.folder.piece.color.black'),
+                                           config.get('piece.2d.icon.black.king'))),
+            (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND)),
+        'queen': pygame.transform.scale(
+            pygame.image.load(os.path.join(config.get('app.folder.pics.main'),
+                                           config.get('app.folder.pics.chessboard.pieces'),
+                                           config.get('app.folder.pics.chessboard.2d'),
+                                           config.get('app.folder.piece.color.black'),
+                                           config.get('piece.2d.icon.black.queen'))),
+            (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND)),
+        'rook': pygame.transform.scale(
+            pygame.image.load(os.path.join(config.get('app.folder.pics.main'),
+                                           config.get('app.folder.pics.chessboard.pieces'),
+                                           config.get('app.folder.pics.chessboard.2d'),
+                                           config.get('app.folder.piece.color.black'),
+                                           config.get('piece.2d.icon.black.rook'))),
+            (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND)),
+        'knight': pygame.transform.scale(
+            pygame.image.load(os.path.join(config.get('app.folder.pics.main'),
+                                           config.get('app.folder.pics.chessboard.pieces'),
+                                           config.get('app.folder.pics.chessboard.2d'),
+                                           config.get('app.folder.piece.color.black'),
+                                           config.get('piece.2d.icon.black.knight'))),
+            (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND)),
+        'bishop': pygame.transform.scale(
+            pygame.image.load(os.path.join(config.get('app.folder.pics.main'),
+                                           config.get('app.folder.pics.chessboard.pieces'),
+                                           config.get('app.folder.pics.chessboard.2d'),
+                                           config.get('app.folder.piece.color.black'),
+                                           config.get('piece.2d.icon.black.bishop'))),
+            (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND)),
+        'pawn': pygame.transform.scale(
+            pygame.image.load(os.path.join(config.get('app.folder.pics.main'),
+                                           config.get('app.folder.pics.chessboard.pieces'),
+                                           config.get('app.folder.pics.chessboard.2d'),
+                                           config.get('app.folder.piece.color.black'),
+                                           config.get('piece.2d.icon.black.pawn'))),
+            (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND))
+    }
+
 else:
-    dict_black_pieces['bishop'] = pygame.transform.scale(pygame.image.load(os.path.join('pics',
-                                                                                        'chess_pieces',
-                                                                                        '3Ds',
-                                                                                        'black',
-                                                                                        'chess_piece_illustration_black_bishop.png')),
-                                                         (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND))
-    dict_black_pieces['king'] = pygame.transform.scale(pygame.image.load(os.path.join('pics',
-                                                                                      'chess_pieces',
-                                                                                      '3Ds',
-                                                                                      'black',
-                                                                                      'chess_piece_illustration_black_king.png')),
-                                                       (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND))
-    dict_black_pieces['knight'] = pygame.transform.scale(pygame.image.load(os.path.join('pics',
-                                                                                        'chess_pieces',
-                                                                                        '3Ds',
-                                                                                        'black',
-                                                                                        'chess_piece_illustration_black_knight.png')),
-                                                         (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND))
-    dict_black_pieces['pawn'] = pygame.transform.scale(pygame.image.load(os.path.join('pics',
-                                                                                      'chess_pieces',
-                                                                                      '3Ds',
-                                                                                      'black',
-                                                                                      'chess_piece_illustration_black_pawn.png')),
-                                                       (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND))
-    dict_black_pieces['queen'] = pygame.transform.scale(pygame.image.load(os.path.join('pics',
-                                                                                       'chess_pieces',
-                                                                                       '3Ds',
-                                                                                       'black',
-                                                                                       'chess_piece_illustration_black_queen.png')),
-                                                        (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND))
-    dict_black_pieces['rook'] = pygame.transform.scale(pygame.image.load(os.path.join('pics',
-                                                                                      'chess_pieces',
-                                                                                      '3Ds',
-                                                                                      'black',
-                                                                                      'chess_piece_illustration_black_rook.png')),
-                                                       (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND))
+    dict_black_pieces = {
+        'king': pygame.transform.scale(
+            pygame.image.load(os.path.join(config.get('app.folder.pics.main'),
+                                           config.get('app.folder.pics.chessboard.pieces'),
+                                           config.get('app.folder.pics.chessboard.3d'),
+                                           config.get('app.folder.piece.color.black'),
+                                           config.get('piece.3d.icon.black.king'))),
+            (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND)),
+        'queen': pygame.transform.scale(
+            pygame.image.load(os.path.join(config.get('app.folder.pics.main'),
+                                           config.get('app.folder.pics.chessboard.pieces'),
+                                           config.get('app.folder.pics.chessboard.3d'),
+                                           config.get('app.folder.piece.color.black'),
+                                           config.get('piece.3d.icon.black.queen'))),
+            (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND)),
+        'rook': pygame.transform.scale(
+            pygame.image.load(os.path.join(config.get('app.folder.pics.main'),
+                                           config.get('app.folder.pics.chessboard.pieces'),
+                                           config.get('app.folder.pics.chessboard.3d'),
+                                           config.get('app.folder.piece.color.black'),
+                                           config.get('piece.3d.icon.black.rook'))),
+            (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND)),
+        'knight': pygame.transform.scale(
+            pygame.image.load(os.path.join(config.get('app.folder.pics.main'),
+                                           config.get('app.folder.pics.chessboard.pieces'),
+                                           config.get('app.folder.pics.chessboard.3d'),
+                                           config.get('app.folder.piece.color.black'),
+                                           config.get('piece.3d.icon.black.knight'))),
+            (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND)),
+        'bishop': pygame.transform.scale(
+            pygame.image.load(os.path.join(config.get('app.folder.pics.main'),
+                                           config.get('app.folder.pics.chessboard.pieces'),
+                                           config.get('app.folder.pics.chessboard.3d'),
+                                           config.get('app.folder.piece.color.black'),
+                                           config.get('piece.3d.icon.black.bishop'))),
+            (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND)),
+        'pawn': pygame.transform.scale(
+            pygame.image.load(os.path.join(config.get('app.folder.pics.main'),
+                                           config.get('app.folder.pics.chessboard.pieces'),
+                                           config.get('app.folder.pics.chessboard.3d'),
+                                           config.get('app.folder.piece.color.black'),
+                                           config.get('piece.3d.icon.black.pawn'))),
+            (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND))
+    }
 
 # %% White pieces
 dict_white_pieces = {}
 if PIECES_TYPE_3D is False:
-    dict_white_pieces['bishop'] = pygame.transform.scale(pygame.image.load(os.path.join('pics',
-                                                                                        'chess_pieces',
-                                                                                        'white',
-                                                                                        'Chess_blt60.png')),
-                                                         (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND))
-    dict_white_pieces['king'] = pygame.transform.scale(pygame.image.load(os.path.join('pics',
-                                                                                      'chess_pieces',
-                                                                                      'white',
-                                                                                      'Chess_klt60.png')),
-                                                       (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND))
-    dict_white_pieces['knight'] = pygame.transform.scale(pygame.image.load(os.path.join('pics',
-                                                                                        'chess_pieces',
-                                                                                        'white',
-                                                                                        'Chess_nlt60.png')),
-                                                         (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND))
-    dict_white_pieces['pawn'] = pygame.transform.scale(pygame.image.load(os.path.join('pics',
-                                                                                      'chess_pieces',
-                                                                                      'white',
-                                                                                      'Chess_plt60.png')),
-                                                       (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND))
-    dict_white_pieces['queen'] = pygame.transform.scale(pygame.image.load(os.path.join('pics',
-                                                                                       'chess_pieces',
-                                                                                       'white',
-                                                                                       'Chess_qlt60.png')),
-                                                        (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND))
-    dict_white_pieces['rook'] = pygame.transform.scale(pygame.image.load(os.path.join('pics',
-                                                                                      'chess_pieces',
-                                                                                      'white',
-                                                                                      'Chess_rlt60.png')),
-                                                       (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND))
+    dict_white_pieces = {
+        'king': pygame.transform.scale(
+            pygame.image.load(os.path.join(config.get('app.folder.pics.main'),
+                                           config.get('app.folder.pics.chessboard.pieces'),
+                                           config.get('app.folder.pics.chessboard.2d'),
+                                           config.get('app.folder.piece.color.white'),
+                                           config.get('piece.2d.icon.white.king'))),
+            (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND)),
+        'queen': pygame.transform.scale(
+            pygame.image.load(os.path.join(config.get('app.folder.pics.main'),
+                                           config.get('app.folder.pics.chessboard.pieces'),
+                                           config.get('app.folder.pics.chessboard.2d'),
+                                           config.get('app.folder.piece.color.white'),
+                                           config.get('piece.2d.icon.white.queen'))),
+            (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND)),
+        'rook': pygame.transform.scale(
+            pygame.image.load(os.path.join(config.get('app.folder.pics.main'),
+                                           config.get('app.folder.pics.chessboard.pieces'),
+                                           config.get('app.folder.pics.chessboard.2d'),
+                                           config.get('app.folder.piece.color.white'),
+                                           config.get('piece.2d.icon.white.rook'))),
+            (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND)),
+        'knight': pygame.transform.scale(
+            pygame.image.load(os.path.join(config.get('app.folder.pics.main'),
+                                           config.get('app.folder.pics.chessboard.pieces'),
+                                           config.get('app.folder.pics.chessboard.2d'),
+                                           config.get('app.folder.piece.color.white'),
+                                           config.get('piece.2d.icon.white.knight'))),
+            (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND)),
+        'bishop': pygame.transform.scale(
+            pygame.image.load(os.path.join(config.get('app.folder.pics.main'),
+                                           config.get('app.folder.pics.chessboard.pieces'),
+                                           config.get('app.folder.pics.chessboard.2d'),
+                                           config.get('app.folder.piece.color.white'),
+                                           config.get('piece.2d.icon.white.bishop'))),
+            (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND)),
+        'pawn': pygame.transform.scale(
+            pygame.image.load(os.path.join(config.get('app.folder.pics.main'),
+                                           config.get('app.folder.pics.chessboard.pieces'),
+                                           config.get('app.folder.pics.chessboard.2d'),
+                                           config.get('app.folder.piece.color.white'),
+                                           config.get('piece.2d.icon.white.pawn'))),
+            (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND))
+    }
 else:
-    dict_white_pieces['bishop'] = pygame.transform.scale(pygame.image.load(os.path.join('pics',
-                                                                                        'chess_pieces',
-                                                                                        '3Ds',
-                                                                                        'white',
-                                                                                        'chess_piece_illustration_white_bishop.png')),
-                                                         (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND))
-    dict_white_pieces['king'] = pygame.transform.scale(pygame.image.load(os.path.join('pics',
-                                                                                      'chess_pieces',
-                                                                                      '3Ds',
-                                                                                      'white',
-                                                                                      'chess_piece_illustration_white_king.png')),
-                                                       (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND))
-    dict_white_pieces['knight'] = pygame.transform.scale(pygame.image.load(os.path.join('pics',
-                                                                                        'chess_pieces',
-                                                                                        '3Ds',
-                                                                                        'white',
-                                                                                        'chess_piece_illustration_white_knight.png')),
-                                                         (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND))
-    dict_white_pieces['pawn'] = pygame.transform.scale(pygame.image.load(os.path.join('pics',
-                                                                                      'chess_pieces',
-                                                                                      '3Ds',
-                                                                                      'white',
-                                                                                      'chess_piece_illustration_white_pawn.png')),
-                                                       (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND))
-    dict_white_pieces['queen'] = pygame.transform.scale(pygame.image.load(os.path.join('pics',
-                                                                                       'chess_pieces',
-                                                                                       '3Ds',
-                                                                                       'white',
-                                                                                       'chess_piece_illustration_white_queen.png')),
-                                                        (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND))
-    dict_white_pieces['rook'] = pygame.transform.scale(pygame.image.load(os.path.join('pics',
-                                                                                      'chess_pieces',
-                                                                                      '3Ds',
-                                                                                      'white',
-                                                                                      'chess_piece_illustration_white_rook.png')),
-                                                       (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND))
+    dict_white_pieces = {
+        'king': pygame.transform.scale(
+            pygame.image.load(os.path.join(config.get('app.folder.pics.main'),
+                                           config.get('app.folder.pics.chessboard.pieces'),
+                                           config.get('app.folder.pics.chessboard.3d'),
+                                           config.get('app.folder.piece.color.white'),
+                                           config.get('piece.3d.icon.white.king'))),
+            (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND)),
+        'queen': pygame.transform.scale(
+            pygame.image.load(os.path.join(config.get('app.folder.pics.main'),
+                                           config.get('app.folder.pics.chessboard.pieces'),
+                                           config.get('app.folder.pics.chessboard.3d'),
+                                           config.get('app.folder.piece.color.white'),
+                                           config.get('piece.3d.icon.white.queen'))),
+            (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND)),
+        'rook': pygame.transform.scale(
+            pygame.image.load(os.path.join(config.get('app.folder.pics.main'),
+                                           config.get('app.folder.pics.chessboard.pieces'),
+                                           config.get('app.folder.pics.chessboard.3d'),
+                                           config.get('app.folder.piece.color.white'),
+                                           config.get('piece.3d.icon.white.rook'))),
+            (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND)),
+        'knight': pygame.transform.scale(
+            pygame.image.load(os.path.join(config.get('app.folder.pics.main'),
+                                           config.get('app.folder.pics.chessboard.pieces'),
+                                           config.get('app.folder.pics.chessboard.3d'),
+                                           config.get('app.folder.piece.color.white'),
+                                           config.get('piece.3d.icon.white.knight'))),
+            (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND)),
+        'bishop': pygame.transform.scale(
+            pygame.image.load(os.path.join(config.get('app.folder.pics.main'),
+                                           config.get('app.folder.pics.chessboard.pieces'),
+                                           config.get('app.folder.pics.chessboard.3d'),
+                                           config.get('app.folder.piece.color.white'),
+                                           config.get('piece.3d.icon.white.bishop'))),
+            (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND)),
+        'pawn': pygame.transform.scale(
+            pygame.image.load(os.path.join(config.get('app.folder.pics.main'),
+                                           config.get('app.folder.pics.chessboard.pieces'),
+                                           config.get('app.folder.pics.chessboard.3d'),
+                                           config.get('app.folder.piece.color.white'),
+                                           config.get('piece.3d.icon.white.pawn'))),
+            (PIECE_WIDTH_ROUND, PIECE_HEIGHT_ROUND))
+    }
 
 # %% Application surface
 pygame.display.set_caption('Chess Game')
@@ -345,6 +398,7 @@ console = Console()
 
 
 # %% Class GameMode
-class GameMode(Enum):
-    SINGLEPLAYER = 0x00
-    MULTIPLAYER = 0x01
+class GamePlayMode(Enum):
+    SINGLEPLAYER = config.get('app.gameplay.mode.singleplayer')
+    MULTIPLAYER = config.get('app.gameplay.mode.multiplayer')
+    CURRENT_MODE = config.get('app.gameplay.mode.current')
