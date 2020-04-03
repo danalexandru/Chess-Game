@@ -242,12 +242,14 @@ else:
     }
 
 # %% Application surface
-pygame.display.set_caption('Chess Game')
+pygame.init()
+pygame.display.set_caption(config.get('app.title'))
 
-icon = pygame.transform.scale(pygame.image.load(os.path.join('pics',
-                                                             'chess_pieces',
-                                                             'king.png')),
-                              (32, 32))
+icon = pygame.transform.scale(
+    pygame.image.load(os.path.join(config.get('app.folder.pics.main'),
+                                   config.get('app.folder.pics.chessboard.pieces'),
+                                   config.get('app.icon'))),
+    (32, 32))
 
 pygame.display.set_icon(icon)
 
