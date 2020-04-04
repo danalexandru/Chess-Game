@@ -53,7 +53,7 @@ class Bot(object):
         """
         This method identifies the best move looking at 'self.level' possible moves ahead
 
-        :param board_inst: (Board) The board instance with the current placement of the chess pieces on the chessboard
+        :param board_inst: (Matrix) The board instance with the current placement of the chess pieces on the chessboard
         :param current_score: (Integer) The current score of the game (White Score - Black Score)
         :return: (Dictionary) A dictionary containing the initial position of the piece and the next position of the
         piece
@@ -101,7 +101,107 @@ class BruteForce(object):
         """
         This method identifies the best move looking at 'self.level' possible moves ahead
 
-        :param board_inst: (Board) The board instance with the current placement of the chess pieces on the chessboard
+        :param board_inst: (Matrix) The board instance with the current placement of the chess pieces on the chessboard
+        :param current_score: (Integer) The current score of the game (White Score - Black Score)
+        :return: (Dictionary) A dictionary containing the initial position of the piece and the next position of the
+        piece
+        {
+            'initial_position': {
+                'row': <Integer>,
+                'col': <Integer>
+            },
+            'next_position: {
+                'row': <Integer>,
+                'col': <Integer>
+            }
+        }
+        """
+        try:
+            if self.current_level < self.min_level or \
+                    self.current_level > self.max_level:
+                console.log('Incorrect level %d. It should be between [%d, %d]' % (
+                    self.current_level,
+                    self.min_level,
+                    self.max_level
+                ),
+                            console.LOG_WARNING,
+                            self.find_next_best_move.__name__)
+                return False
+
+            list_valid_moves_tree = Tree()
+            for i in range(self.current_level):
+                for j in range(len(list_valid_moves_tree.children)):
+                    board_handler = self.generate_board_copy(board_inst, current_score)
+                    dict_valid_moves = board_handler.get_valid_moves()
+                    # TODO add the valid moves to the tree
+
+        except Exception as error_message:
+            console.log(error_message, console.LOG_ERROR, self.find_next_best_move.__name__)
+            return False
+
+    def generate_board_copy(self, board_inst, current_score):
+        """
+        This method generates a copy of the current chessboard, with the positions and score
+
+        :param board_inst: (Matrix) The board instance with the current placement of the chess pieces on the chessboard
+        :param current_score: (Integer) The current score of the game (White Score - Black Score)
+        :return: (Board)
+        """
+        try:
+            from board import Board
+            board_handler = Board(8, 8)
+            board_handler.gameplay_mode = GamePlayMode.MULTIPLAYER
+
+            board_handler.board_inst = board_inst.copy()
+            board_handler.score = current_score.copy()
+
+            return board_handler
+        except Exception as error_message:
+            console.log(error_message, console.LOG_ERROR, self.generate_board_copy.__name__)
+            return False
+
+    def find_next_tree_leaf(self, list_valid_moves_tree):
+        """
+        This method looks through the current version if the 'list_valid_moves_tree' and tries to find the first leaf
+        for the current level
+
+        :param list_valid_moves_tree: (Tree) The current tree with all the nodes
+        :return: (Tree) The first leaf found without a parent, searched from left to right and from top to bottom
+        """
+        try:
+            assert isinstance(list_valid_moves_tree, Tree)
+            parent_node = list_valid_moves_tree.copy()
+            current_node = parent_node.copy()
+            current_row = 0
+            next_node_index = 1
+
+            while True:
+                for child in current_node.children:
+                    if len(child.children) is 0:
+                        return child
+
+            # TODO find the first leaf of the tree
+
+        except Exception as error_message:
+            console.log(error_message, console.LOG_ERROR, self.find_next_tree_leaf.__name__)
+            return False
+
+
+# %% Class ReinforcedLearning
+class ReinforcedLearning(object):
+    """
+    This class will contain all the necessary requirements to implement a reinforced learning algorithm for the bot
+    portion of the chess application
+    """
+
+    def __init__(self):
+        pass
+
+    def find_next_best_move(self, board_inst, current_score):
+        """
+        This method identifies the best move looking at 'self.level' possible moves ahead
+
+        :param board_inst: (Matrix) The board instance with the current placement of the chess pieces on the chessboard
         :param current_score: (Integer) The current score of the game (White Score - Black Score)
         :return: (Dictionary) A dictionary containing the initial position of the piece and the next position of the
         piece
@@ -123,39 +223,38 @@ class BruteForce(object):
             return False
 
 
-# %% Class ReinforcedLearning
-class ReinforcedLearning(object):
+# %% Class Tree
+class Tree(object):
     """
-    This class will contain all the necessary requirements to implement a reinforced learning algorithm for the bot
-    portion of the chess application
+    This is a generic tree class
     """
+    def __init__(self, node_index=0, data=None, parent=None, children=[]):
+        self.node_index = node_index
+        self.data = data
+        self.parent = parent
+        self.children = children
 
-    def __init__(self):
-        pass
-
-    def find_next_best_move(self, board_inst, current_score):
+    def add_child(self, node):
         """
-        This method identifies the best move looking at 'self.level' possible moves ahead
-
-        :param board_inst: (Board) The board instance with the current placement of the chess pieces on the chessboard
-        :param current_score: (Integer) The current score of the game (White Score - Black Score)
-        :return: (Dictionary) A dictionary containing the initial position of the piece and the next position of the
-        piece
-        {
-            'initial_position': {
-                'row': <Integer>,
-                'col': <Integer>
-            },
-            'next_position: {
-                'row': <Integer>,
-                'col': <Integer>
-            }
-        }
+        This method adds a new child to the current node
         """
         try:
-            pass
+            assert isinstance(node, Tree)
+            self.children.append(node)
+
+            return True
         except Exception as error_message:
-            console.log(error_message, console.LOG_ERROR, self.find_next_best_move.__name__)
+            console.log(error_message, console.LOG_ERROR, self.add_child.__name__)
+            return False
+
+    def copy(self):
+        """
+        This method will return an instance of the current Tree
+        """
+        try:
+            return Tree(self.node_index, self.data, self.parent, self.children)
+        except Exception as error_message:
+            console.log(error_message, console.LOG_ERROR, self.copy.__name__)
             return False
 
 

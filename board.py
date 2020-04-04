@@ -105,8 +105,9 @@ class Board:
                 if not isinstance(self.board_inst[x][y], Empty) and \
                         self.validate_current_color(self.board_inst[x][y].color) is True:
                     self.board_inst[x][y].is_selected = True
-                    console.log('chess piece \"%s\".is_selected = %d' % (str(self.board_inst[x][y].image_index).capitalize(),
-                                                                         self.board_inst[x][y].is_selected),
+                    console.log('chess piece \"%s\".is_selected = %d' % (
+                        str(self.board_inst[x][y].image_index).capitalize(),
+                        self.board_inst[x][y].is_selected),
                                 console.LOG_INFO,
                                 self.select_chess_piece.__name__)
 
