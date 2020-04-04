@@ -163,3 +163,33 @@ class ReinforcedLearning(object):
 bot_handler = Bot()
 brute_force_handler = BruteForce()
 reinforced_learning_handler = ReinforcedLearning()
+
+
+# %% Main (Debug mode)
+def run_debug_mode():
+    """
+    This method is meant to be run individually form the rest of the project. It is a method of testing the
+    bot functionality separately.
+
+    :return: Boolean (True or False)
+    """
+    try:
+        if config.get('app.gameplay.mode.singleplayer.debug.mode') is not True:
+            console.log('Unexpected entry on the %s method.', console.LOG_WARNING, run_debug_mode.__name__)
+            return False
+
+        from board import Board
+        board_handler = Board(8, 8)
+
+        return bot_handler.find_next_best_move(
+            board_handler.board_inst,
+            board_handler.score['white'] - board_handler.score['black']
+        )
+
+    except Exception as error_message:
+        console.log(error_message, console.LOG_ERROR, run_debug_mode.__name__)
+        return False
+
+
+if __name__ == '__main__':
+    run_debug_mode()

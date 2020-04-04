@@ -32,35 +32,35 @@ class Board:
 
             self.gameplay_mode = GamePlayMode.CURRENT_MODE
 
-            self.board = []
+            self.board_inst = []
             for x in range(8):
                 row = []
                 for y in range(8):
                     row.append(Empty(x, y, None))
 
-                self.board.append(row)
+                self.board_inst.append(row)
 
-            self.board[0][0] = Rook(0, 0, 'black')
-            self.board[0][1] = Knight(0, 1, 'black')
-            self.board[0][2] = Bishop(0, 2, 'black')
-            self.board[0][3] = King(0, 3, 'black')
-            self.board[0][4] = Queen(0, 4, 'black')
-            self.board[0][5] = Bishop(0, 5, 'black')
-            self.board[0][6] = Knight(0, 6, 'black')
-            self.board[0][7] = Rook(0, 7, 'black')
+            self.board_inst[0][0] = Rook(0, 0, 'black')
+            self.board_inst[0][1] = Knight(0, 1, 'black')
+            self.board_inst[0][2] = Bishop(0, 2, 'black')
+            self.board_inst[0][3] = King(0, 3, 'black')
+            self.board_inst[0][4] = Queen(0, 4, 'black')
+            self.board_inst[0][5] = Bishop(0, 5, 'black')
+            self.board_inst[0][6] = Knight(0, 6, 'black')
+            self.board_inst[0][7] = Rook(0, 7, 'black')
 
-            self.board[7][0] = Rook(7, 0, 'white')
-            self.board[7][1] = Knight(7, 1, 'white')
-            self.board[7][2] = Bishop(7, 2, 'white')
-            self.board[7][3] = King(7, 3, 'white')
-            self.board[7][4] = Queen(7, 4, 'white')
-            self.board[7][5] = Bishop(7, 5, 'white')
-            self.board[7][6] = Knight(7, 6, 'white')
-            self.board[7][7] = Rook(7, 7, 'white')
+            self.board_inst[7][0] = Rook(7, 0, 'white')
+            self.board_inst[7][1] = Knight(7, 1, 'white')
+            self.board_inst[7][2] = Bishop(7, 2, 'white')
+            self.board_inst[7][3] = King(7, 3, 'white')
+            self.board_inst[7][4] = Queen(7, 4, 'white')
+            self.board_inst[7][5] = Bishop(7, 5, 'white')
+            self.board_inst[7][6] = Knight(7, 6, 'white')
+            self.board_inst[7][7] = Rook(7, 7, 'white')
 
             for i in range(8):
-                self.board[1][i] = Pawn(1, i, 'black')
-                self.board[6][i] = Pawn(6, i, 'white')
+                self.board_inst[1][i] = Pawn(1, i, 'black')
+                self.board_inst[6][i] = Pawn(6, i, 'white')
 
             return
         except Exception as error_message:
@@ -77,8 +77,8 @@ class Board:
         try:
             for i in range(self.rows):
                 for j in range(self.cols):
-                    if not isinstance(self.board[i][j], Empty):
-                        self.board[i][j].draw(win)
+                    if not isinstance(self.board_inst[i][j], Empty):
+                        self.board_inst[i][j].draw(win)
 
             return True
         except Exception as error_message:
@@ -99,14 +99,14 @@ class Board:
 
                 for i in range(self.rows):
                     for j in range(self.cols):
-                        if not isinstance(self.board[i][j], Empty):
-                            self.board[i][j].is_selected = False
+                        if not isinstance(self.board_inst[i][j], Empty):
+                            self.board_inst[i][j].is_selected = False
 
-                if not isinstance(self.board[x][y], Empty) and \
-                        self.validate_current_color(self.board[x][y].color) is True:
-                    self.board[x][y].is_selected = True
-                    console.log('chess piece \"%s\".is_selected = %d' % (str(self.board[x][y].image_index).capitalize(),
-                                                                         self.board[x][y].is_selected),
+                if not isinstance(self.board_inst[x][y], Empty) and \
+                        self.validate_current_color(self.board_inst[x][y].color) is True:
+                    self.board_inst[x][y].is_selected = True
+                    console.log('chess piece \"%s\".is_selected = %d' % (str(self.board_inst[x][y].image_index).capitalize(),
+                                                                         self.board_inst[x][y].is_selected),
                                 console.LOG_INFO,
                                 self.select_chess_piece.__name__)
 
@@ -131,24 +131,24 @@ class Board:
             [x1, y1] = initial_position
             [x2, y2] = next_position
 
-            if isinstance(self.board[x1][y1], Empty):
+            if isinstance(self.board_inst[x1][y1], Empty):
                 return False
 
-            if self.board[x1][y1].validate_possible_next_position(next_position) is True and \
-                    self.validate_current_color(self.board[x1][y1].color) is True:
+            if self.board_inst[x1][y1].validate_possible_next_position(next_position) is True and \
+                    self.validate_current_color(self.board_inst[x1][y1].color) is True:
 
-                if not isinstance(self.board[x2][y2], Empty):
-                    self.score[self.current_color] += self.board[x2][y2].strength
+                if not isinstance(self.board_inst[x2][y2], Empty):
+                    self.score[self.current_color] += self.board_inst[x2][y2].strength
                     console.log('score: %s' % str(self.score), console.LOG_SUCCESS, self.move_chess_piece.__name__)
 
-                self.board[x1][y1].move(next_position)
-                self.board[x1][y1].is_selected = False
-                self.change_current_color(self.board[x1][y1].color)
-                self.board[x2][y2] = self.board[x1][y1]
-                self.board[x1][y1] = Empty(x1, y1, None)
+                self.board_inst[x1][y1].move(next_position)
+                self.board_inst[x1][y1].is_selected = False
+                self.change_current_color(self.board_inst[x1][y1].color)
+                self.board_inst[x2][y2] = self.board_inst[x1][y1]
+                self.board_inst[x1][y1] = Empty(x1, y1, None)
 
                 console.log('move chess piece \"%s\" from (%d, %d) to (%d, %d)' %
-                            (str(self.board[x2][y2].image_index).capitalize(),
+                            (str(self.board_inst[x2][y2].image_index).capitalize(),
                              x1, y1,
                              x2, y2),
                             console.LOG_INFO,
@@ -158,9 +158,10 @@ class Board:
                     console.log('entered the singleplayer condition', console.LOG_INFO, self.move_chess_piece.__name__)
                     self.get_valid_moves()
                     dict_best_move = bot_handler.find_next_best_move(
-                        self.board,
+                        self.board_inst,
                         self.score['white'] - self.score['black']
                     )
+                    self.execute_next_best_move(dict_best_move)
                     self.change_current_color(self.current_color)
 
                 return True
@@ -224,8 +225,8 @@ class Board:
         try:
             for i in range(self.rows):
                 for j in range(self.cols):
-                    if not isinstance(self.board[i][j], Empty):
-                        self.board[i][j].update_valid_moves_list(self.board)
+                    if not isinstance(self.board_inst[i][j], Empty):
+                        self.board_inst[i][j].update_valid_moves_list(self.board_inst)
         except Exception as error_message:
             console.log(error_message, console.LOG_ERROR, self.update_valid_moves_list.__name__)
             return False
@@ -296,7 +297,7 @@ class Board:
 
             for i in range(self.rows):
                 for j in range(self.cols):
-                    chess_piece = self.board[i][j]
+                    chess_piece = self.board_inst[i][j]
                     if not isinstance(chess_piece, Empty) and \
                             len(chess_piece.valid_moves_list) is not 0:
                         dict_valid_moves[chess_piece.color].append({
@@ -313,4 +314,30 @@ class Board:
             return dict_valid_moves
         except Exception as error_message:
             console.log(error_message, console.LOG_ERROR, self.get_valid_moves.__name__)
+            return False
+
+    def execute_next_best_move(self, dict_best_move):
+        """
+        This method executes the next best move available (only in singleplayer mode)
+
+        :param dict_best_move: (Dictionary) A dictionary containing the initial position of the piece and the next
+        position of the piece
+        {
+            'initial_position': {
+                'row': <Integer>,
+                'col': <Integer>
+            },
+            'next_position: {
+                'row': <Integer>,
+                'col': <Integer>
+            }
+        }
+        :return Boolean (True or False)
+        """
+        try:
+            console.log(dict_best_move, console.LOG_INFO, self.execute_next_best_move.__name__)
+
+            return True
+        except Exception as error_message:
+            console.log(error_message, console.LOG_ERROR, self.execute_next_best_move.__name__)
             return False

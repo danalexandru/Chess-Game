@@ -21,7 +21,7 @@ def redraw_game_window():
         win.blit(board, (0, 0))
         # find_chessboard_edges()
 
-        board_inst.draw(win)
+        board_handler.draw(win)
         draw_player_led()
         draw_player_score()
         # find_chessboard_edges()
@@ -39,7 +39,7 @@ def draw_player_led():
     :return: Boolean (True or False)
     """
     try:
-        current_color = board_inst.current_color
+        current_color = board_handler.current_color
         if current_color == 'white' or current_color == 'black':
             pygame.draw.circle(win, PLAYER_LED[current_color]['color'],
                                PLAYER_LED['initial_position'],
@@ -68,11 +68,11 @@ def draw_player_score():
         score_panels = {
             'black': {
                 'panel': pygame.Surface((123, 50), pygame.SRCALPHA, 32),
-                'text': font.render('Score: %d' % board_inst.get_chessboard_score('black'), True, (255, 255, 255))
+                'text': font.render('Score: %d' % board_handler.get_chessboard_score('black'), True, (255, 255, 255))
             },
             'white': {
                 'panel': pygame.Surface((123, 50), pygame.SRCALPHA, 32),
-                'text': font.render('Score: %d' % board_inst.get_chessboard_score('white'), True, (0, 0, 0))
+                'text': font.render('Score: %d' % board_handler.get_chessboard_score('white'), True, (0, 0, 0))
             }
         }
 
@@ -132,10 +132,10 @@ def main():
         clock = pygame.time.Clock()
         run = True
 
-        global win, board_inst
+        global win, board_handler
         win = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 
-        board_inst = Board(8, 8)
+        board_handler = Board(8, 8)
 
         position = False
 
@@ -158,10 +158,10 @@ def main():
                     position = click_on_chessboard(mouse_current_position)
 
                     if position is not False:
-                        board_inst.select_chess_piece(position)
+                        board_handler.select_chess_piece(position)
 
                     if position is not False and last_position is not False:
-                        if board_inst.move_chess_piece(last_position, position) is True:
+                        if board_handler.move_chess_piece(last_position, position) is True:
                             position = False
 
         return True
