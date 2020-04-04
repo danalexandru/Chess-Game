@@ -5,7 +5,7 @@ and moving a chess piece
 # %% imports
 from globals import GamePlayMode
 from piece import Empty, Bishop, King, Knight, Queen, Pawn, Rook
-from bot import mini_max
+from bot import bot_handler
 from globals import *
 
 
@@ -157,7 +157,7 @@ class Board:
                 if self.gameplay_mode is GamePlayMode.SINGLEPLAYER and self.current_color is 'black':
                     console.log('entered the singleplayer condition', console.LOG_INFO, self.move_chess_piece.__name__)
                     self.get_valid_moves()
-                    dict_best_move = mini_max.find_next_best_move(
+                    dict_best_move = bot_handler.find_next_best_move(
                         self.board,
                         self.score['white'] - self.score['black']
                     )
