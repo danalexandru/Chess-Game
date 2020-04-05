@@ -2,7 +2,8 @@
 This script will contain the broad functionality of the chess board and it's components, regarding selecting, validating
 and moving a chess piece
 """
-# %% imports
+# %% Imports
+import copy
 from globals import GamePlayMode
 from piece import Empty, Bishop, King, Knight, Queen, Pawn, Rook
 from bot import bot_handler
@@ -159,11 +160,13 @@ class Board:
                     console.log('entered the singleplayer condition', console.LOG_INFO, self.move_chess_piece.__name__)
                     self.get_valid_moves()
                     dict_best_move = bot_handler.find_next_best_move(
-                        self.board_inst,
-                        self.score['white'] - self.score['black']
+                        copy.deepcopy(self.board_inst.copy()),
+                        copy.deepcopy(self.score.copy())
                     )
-                    self.execute_next_best_move(dict_best_move)
-                    self.change_current_color(self.current_color)
+
+                    self.gameplay_mode = GamePlayMode.MULTIPLAYER
+                    self.move_chess_piece(dict_best_move['initial_position'], dict_best_move['next_position'])
+                    self.gameplay_mode = GamePlayMode.CURRENT_MODE
 
                 return True
 
@@ -276,19 +279,6 @@ class Board:
         }
         """
         try:
-            if (self.gameplay_mode is GamePlayMode.MULTIPLAYER or
-                    (self.gameplay_mode is GamePlayMode.SINGLEPLAYER and self.current_color is 'white')):
-                console.log('Unexpected entry of %s method. \n'
-                            '\t- Game mode: %s;\n'
-                            '\t-Current player: %s' % (
-                                str(self.get_valid_moves.__name__),
-                                str(self.gameplay_mode.name),
-                                str(self.current_color)
-                            ),
-                            console.LOG_WARNING,
-                            self.get_valid_moves.__name__)
-                return False
-
             self.update_valid_moves_list()
 
             dict_valid_moves = {
@@ -317,28 +307,3 @@ class Board:
             console.log(error_message, console.LOG_ERROR, self.get_valid_moves.__name__)
             return False
 
-    def execute_next_best_move(self, dict_best_move):
-        """
-        This method executes the next best move available (only in singleplayer mode)
-
-        :param dict_best_move: (Dictionary) A dictionary containing the initial position of the piece and the next
-        position of the piece
-        {
-            'initial_position': {
-                'row': <Integer>,
-                'col': <Integer>
-            },
-            'next_position: {
-                'row': <Integer>,
-                'col': <Integer>
-            }
-        }
-        :return Boolean (True or False)
-        """
-        try:
-            console.log(dict_best_move, console.LOG_INFO, self.execute_next_best_move.__name__)
-
-            return True
-        except Exception as error_message:
-            console.log(error_message, console.LOG_ERROR, self.execute_next_best_move.__name__)
-            return False

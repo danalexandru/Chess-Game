@@ -7,6 +7,7 @@ import numpy as np
 from globals import *
 from config import config
 from enum import Enum
+import copy
 
 
 # %% Class Bot Method
@@ -58,17 +59,12 @@ class Bot(object):
         :return: (Dictionary) A dictionary containing the initial position of the piece and the next position of the
         piece
         {
-            'initial_position': {
-                'row': <Integer>,
-                'col': <Integer>
-            },
-            'next_position: {
-                'row': <Integer>,
-                'col': <Integer>
-            }
+            'initial_position': (<Integer>, <Integer>),
+            'next_position: (<Integer>, <Integer>)
         }
         """
         try:
+
             if BotMethod.CURRENT_METHOD == BotMethod.BRUTE_FORCE:
                 return brute_force_handler.find_next_best_move(board_inst, current_score)
             elif BotMethod.CURRENT_METHOD == BotMethod.REINFORCED_LEARNING:
@@ -106,14 +102,8 @@ class BruteForce(object):
         :return: (Dictionary) A dictionary containing the initial position of the piece and the next position of the
         piece
         {
-            'initial_position': {
-                'row': <Integer>,
-                'col': <Integer>
-            },
-            'next_position: {
-                'row': <Integer>,
-                'col': <Integer>
-            }
+            'initial_position': (<Integer>, <Integer>),
+            'next_position: (<Integer>, <Integer>)
         }
         """
         try:
@@ -128,15 +118,104 @@ class BruteForce(object):
                             self.find_next_best_move.__name__)
                 return False
 
-            list_valid_moves_tree = Tree()
-            for i in range(self.current_level):
-                for j in range(len(list_valid_moves_tree.children)):
-                    board_handler = self.generate_board_copy(board_inst, current_score)
-                    dict_valid_moves = board_handler.get_valid_moves()
-                    # TODO add the valid moves to the tree
+            list_valid_moves_tree = self.generate_list_valid_moves_tree(board_inst, current_score)
+            leafs = list_valid_moves_tree.find_leafs()
+            best_leaf = Tree(
+                node_index=-1,
+                parent=None,
+                children=[],
+                data={
+                    'board_inst': None,
+                    'current_score': {
+                        'white': np.inf,
+                        'black': 0
+                    },
+                    'next_color': None,
+                    'initial_position': [],
+                    'next_position': []
+                }
+            )
+            for leaf in leafs:
+                if ((best_leaf.data['current_score']['white'] - best_leaf.data['current_score']['black']) >
+                        (leaf.data['current_score']['white'] - leaf.data['current_score']['black'])):
+                    best_leaf = leaf.copy()
+
+            while best_leaf.node_index != 1:
+                best_leaf = best_leaf.parent.copy()
+
+            return {
+                'initial_position': best_leaf.data['initial_position'],
+                'next_position': best_leaf.data['next_position']
+            }
 
         except Exception as error_message:
             console.log(error_message, console.LOG_ERROR, self.find_next_best_move.__name__)
+            return False
+
+    def generate_list_valid_moves_tree(self, board_inst, current_score):
+        """
+        This method generates a Tree with all the possible moves for the next 'self.current_level' levels
+
+        :param board_inst: (Matrix) The board instance with the current placement of the chess pieces on the chessboard
+        :param current_score: (Integer) The current score of the game (White Score - Black Score)
+        :return: (Tree) The parent node of the tree
+        """
+        try:
+            list_valid_moves_tree = Tree(0)
+            list_valid_moves_tree.data = {
+                'board_inst': board_inst.copy(),
+                'current_score': current_score.copy(),
+                'next_color': 'black',
+                'initial_position': [],
+                'next_position': []
+            }
+
+            for i in range(self.current_level):
+                leafs = list_valid_moves_tree.find_leafs()
+                for leaf in leafs:
+                    board_handler = self.generate_board_copy(
+                        list_valid_moves_tree.data['board_inst'],
+                        list_valid_moves_tree.data['current_score']
+                    )
+
+                    board_handler.current_color = leaf.data['next_color']
+                    dict_valid_moves = board_handler.get_valid_moves()
+                    board_handler = None
+
+                    for piece in dict_valid_moves[leaf.data['next_color']]:
+                        for move in piece['valid_moves_list']:
+                            board_handler = self.generate_board_copy(
+                                leaf.data['board_inst'],
+                                leaf.data['current_score']
+                            )
+                            board_handler.current_color = leaf.data['next_color']
+
+                            board_handler.move_chess_piece(
+                                initial_position=(piece['row'], piece['col']),
+                                next_position=(move['row'], move['col'])
+                            )
+
+                            leaf.add_child(Tree(
+                                node_index=i + 1,
+                                parent=leaf,
+                                children=[],
+                                data={
+                                    'board_inst': board_handler.board_inst.copy(),
+                                    'current_score': board_handler.score.copy(),
+                                    'next_color': board_handler.current_color,
+                                    'initial_position': (piece['row'], piece['col']),
+                                    'next_position': (move['row'], move['col'])
+                                }
+                            ))
+
+            console.log('Successfully generated the tree of valid moves for the next %d possible moves.' %
+                        self.current_level,
+                        console.LOG_SUCCESS,
+                        self.generate_list_valid_moves_tree.__name__)
+            return list_valid_moves_tree
+
+        except Exception as error_message:
+            console.log(error_message, console.LOG_ERROR, self.generate_list_valid_moves_tree.__name__)
             return False
 
     def generate_board_copy(self, board_inst, current_score):
@@ -152,8 +231,8 @@ class BruteForce(object):
             board_handler = Board(8, 8)
             board_handler.gameplay_mode = GamePlayMode.MULTIPLAYER
 
-            board_handler.board_inst = board_inst.copy()
-            board_handler.score = current_score.copy()
+            board_handler.board_inst = copy.deepcopy(board_inst)
+            board_handler.score = copy.deepcopy(current_score)
 
             return board_handler
         except Exception as error_message:
@@ -180,14 +259,8 @@ class ReinforcedLearning(object):
         :return: (Dictionary) A dictionary containing the initial position of the piece and the next position of the
         piece
         {
-            'initial_position': {
-                'row': <Integer>,
-                'col': <Integer>
-            },
-            'next_position: {
-                'row': <Integer>,
-                'col': <Integer>
-            }
+            'initial_position': (<Integer>, <Integer>),
+            'next_position: (<Integer>, <Integer>)
         }
         """
         try:
@@ -202,6 +275,7 @@ class Tree(object):
     """
     This is a generic tree class
     """
+
     def __init__(self, node_index=0, data=None, parent=None, children=[]):
         self.node_index = node_index
         self.data = data
@@ -272,7 +346,7 @@ def run_debug_mode():
 
         return bot_handler.find_next_best_move(
             board_handler.board_inst,
-            board_handler.score['white'] - board_handler.score['black']
+            board_handler.score
         )
 
     except Exception as error_message:

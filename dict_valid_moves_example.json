@@ -1,0 +1,346 @@
+{
+  "black": [
+    {
+      "type": "<class'      'piece.Knight'      '>",
+      "row": 0,
+      "col": 1,
+      "valid_moves_list": [
+        {
+          "row": 2,
+          "col": 0,
+          "strength": 0
+        },
+        {
+          "row": 2,
+          "col": 2,
+          "strength": 0
+        }
+      ]
+    },
+    {
+      "type": "<class'      'piece.Knight'      '>",
+      "row": 0,
+      "col": 6,
+      "valid_moves_list": [
+        {
+          "row": 2,
+          "col": 5,
+          "strength": 0
+        },
+        {
+          "row": 2,
+          "col": 7,
+          "strength": 0
+        }
+      ]
+    },
+    {
+      "type": "<class'      'piece.Pawn'      '>",
+      "row": 1,
+      "col": 0,
+      "valid_moves_list": [
+        {
+          "row": 2,
+          "col": 0,
+          "strength": 0
+        },
+        {
+          "row": 3,
+          "col": 0,
+          "strength": 0
+        }
+      ]
+    },
+    {
+      "type": "<class'      'piece.Pawn'      '>",
+      "row": 1,
+      "col": 1,
+      "valid_moves_list": [
+        {
+          "row": 2,
+          "col": 1,
+          "strength": 0
+        },
+        {
+          "row": 3,
+          "col": 1,
+          "strength": 0
+        }
+      ]
+    },
+    {
+      "type": "<class'      'piece.Pawn'      '>",
+      "row": 1,
+      "col": 2,
+      "valid_moves_list": [
+        {
+          "row": 2,
+          "col": 2,
+          "strength": 0
+        },
+        {
+          "row": 3,
+          "col": 2,
+          "strength": 0
+        }
+      ]
+    },
+    {
+      "type": "<class'      'piece.Pawn'      '>",
+      "row": 1,
+      "col": 3,
+      "valid_moves_list": [
+        {
+          "row": 2,
+          "col": 3,
+          "strength": 0
+        },
+        {
+          "row": 3,
+          "col": 3,
+          "strength": 0
+        }
+      ]
+    },
+    {
+      "type": "<class'      'piece.Pawn'      '>",
+      "row": 1,
+      "col": 4,
+      "valid_moves_list": [
+        {
+          "row": 2,
+          "col": 4,
+          "strength": 0
+        },
+        {
+          "row": 3,
+          "col": 4,
+          "strength": 0
+        }
+      ]
+    },
+    {
+      "type": "<class'      'piece.Pawn'      '>",
+      "row": 1,
+      "col": 5,
+      "valid_moves_list": [
+        {
+          "row": 2,
+          "col": 5,
+          "strength": 0
+        },
+        {
+          "row": 3,
+          "col": 5,
+          "strength": 0
+        }
+      ]
+    },
+    {
+      "type": "<class'      'piece.Pawn'      '>",
+      "row": 1,
+      "col": 6,
+      "valid_moves_list": [
+        {
+          "row": 2,
+          "col": 6,
+          "strength": 0
+        },
+        {
+          "row": 3,
+          "col": 6,
+          "strength": 0
+        }
+      ]
+    },
+    {
+      "type": "<class'      'piece.Pawn'      '>",
+      "row": 1,
+      "col": 7,
+      "valid_moves_list": [
+        {
+          "row": 2,
+          "col": 7,
+          "strength": 0
+        },
+        {
+          "row": 3,
+          "col": 7,
+          "strength": 0
+        }
+      ]
+    }
+  ],
+  "white": [
+    {
+      "type": "<class'      'piece.Pawn'      '>",
+      "row": 6,
+      "col": 0,
+      "valid_moves_list": [
+        {
+          "row": 5,
+          "col": 0,
+          "strength": 0
+        },
+        {
+          "row": 4,
+          "col": 0,
+          "strength": 0
+        }
+      ]
+    },
+    {
+      "type": "<class'      'piece.Pawn'      '>",
+      "row": 6,
+      "col": 1,
+      "valid_moves_list": [
+        {
+          "row": 5,
+          "col": 1,
+          "strength": 0
+        },
+        {
+          "row": 4,
+          "col": 1,
+          "strength": 0
+        }
+      ]
+    },
+    {
+      "type": "<class'      'piece.Pawn'      '>",
+      "row": 6,
+      "col": 2,
+      "valid_moves_list": [
+        {
+          "row": 5,
+          "col": 2,
+          "strength": 0
+        },
+        {
+          "row": 4,
+          "col": 2,
+          "strength": 0
+        }
+      ]
+    },
+    {
+      "type": "<class'      'piece.Pawn'      '>",
+      "row": 6,
+      "col": 3,
+      "valid_moves_list": [
+        {
+          "row": 5,
+          "col": 3,
+          "strength": 0
+        },
+        {
+          "row": 4,
+          "col": 3,
+          "strength": 0
+        }
+      ]
+    },
+    {
+      "type": "<class'      'piece.Pawn'      '>",
+      "row": 6,
+      "col": 4,
+      "valid_moves_list": [
+        {
+          "row": 5,
+          "col": 4,
+          "strength": 0
+        },
+        {
+          "row": 4,
+          "col": 4,
+          "strength": 0
+        }
+      ]
+    },
+    {
+      "type": "<class'      'piece.Pawn'      '>",
+      "row": 6,
+      "col": 5,
+      "valid_moves_list": [
+        {
+          "row": 5,
+          "col": 5,
+          "strength": 0
+        },
+        {
+          "row": 4,
+          "col": 5,
+          "strength": 0
+        }
+      ]
+    },
+    {
+      "type": "<class'      'piece.Pawn'      '>",
+      "row": 6,
+      "col": 6,
+      "valid_moves_list": [
+        {
+          "row": 5,
+          "col": 6,
+          "strength": 0
+        },
+        {
+          "row": 4,
+          "col": 6,
+          "strength": 0
+        }
+      ]
+    },
+    {
+      "type": "<class'      'piece.Pawn'      '>",
+      "row": 6,
+      "col": 7,
+      "valid_moves_list": [
+        {
+          "row": 5,
+          "col": 7,
+          "strength": 0
+        },
+        {
+          "row": 4,
+          "col": 7,
+          "strength": 0
+        }
+      ]
+    },
+    {
+      "type": "<class'      'piece.Knight'      '>",
+      "row": 7,
+      "col": 1,
+      "valid_moves_list": [
+        {
+          "row": 5,
+          "col": 0,
+          "strength": 0
+        },
+        {
+          "row": 5,
+          "col": 2,
+          "strength": 0
+        }
+      ]
+    },
+    {
+      "type": "<class'      'piece.Knight'      '>",
+      "row": 7,
+      "col": 6,
+      "valid_moves_list": [
+        {
+          "row": 5,
+          "col": 5,
+          "strength": 0
+        },
+        {
+          "row": 5,
+          "col": 7,
+          "strength": 0
+        }
+      ]
+    }
+  ]
+}
