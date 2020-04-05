@@ -160,32 +160,6 @@ class BruteForce(object):
             console.log(error_message, console.LOG_ERROR, self.generate_board_copy.__name__)
             return False
 
-    def find_next_tree_leaf(self, list_valid_moves_tree):
-        """
-        This method looks through the current version if the 'list_valid_moves_tree' and tries to find the first leaf
-        for the current level
-
-        :param list_valid_moves_tree: (Tree) The current tree with all the nodes
-        :return: (Tree) The first leaf found without a parent, searched from left to right and from top to bottom
-        """
-        try:
-            assert isinstance(list_valid_moves_tree, Tree)
-            parent_node = list_valid_moves_tree.copy()
-            current_node = parent_node.copy()
-            current_row = 0
-            next_node_index = 1
-
-            while True:
-                for child in current_node.children:
-                    if len(child.children) is 0:
-                        return child
-
-            # TODO find the first leaf of the tree
-
-        except Exception as error_message:
-            console.log(error_message, console.LOG_ERROR, self.find_next_tree_leaf.__name__)
-            return False
-
 
 # %% Class ReinforcedLearning
 class ReinforcedLearning(object):
@@ -255,6 +229,22 @@ class Tree(object):
             return Tree(self.node_index, self.data, self.parent, self.children)
         except Exception as error_message:
             console.log(error_message, console.LOG_ERROR, self.copy.__name__)
+            return False
+
+    def find_leafs(self):
+        """
+        This method finds all the leafs for a parent node
+
+        :return: (List) A list of nodes (Trees)
+        """
+        try:
+            if len(self.children) == 0:
+                yield self
+            else:
+                for child in self.children:
+                    yield from child.find_leafs()
+        except Exception as error_message:
+            console.log(error_message, console.LOG_ERROR, self.find_leafs.__name__)
             return False
 
 
