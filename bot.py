@@ -8,6 +8,8 @@ from globals import *
 from config import config
 from enum import Enum
 import copy
+import multiprocessing
+from functools import partial
 
 
 # %% Class Bot Method
@@ -66,7 +68,16 @@ class Bot(object):
         try:
 
             if BotMethod.CURRENT_METHOD == BotMethod.BRUTE_FORCE:
-                return brute_force_handler.find_next_best_move(board_inst, current_score)
+                p = multiprocessing.Pool(1)
+                __find_next_best_move = partial(
+                    brute_force_handler.find_next_best_move,
+                    current_score=current_score)
+
+                dict_best_move = p.map(__find_next_best_move, [board_inst])[0]
+                p.terminate()
+                p.join()
+
+                return dict_best_move
             elif BotMethod.CURRENT_METHOD == BotMethod.REINFORCED_LEARNING:
                 return reinforced_learning_handler.find_next_best_move(board_inst, current_score)
             else:
@@ -172,7 +183,9 @@ class BruteForce(object):
 
             for i in range(self.current_level):
                 leafs = list_valid_moves_tree.find_leafs()
+                nr_of_leafs = 0
                 for leaf in leafs:
+                    nr_of_leafs += 1
                     board_handler = self.generate_board_copy(
                         list_valid_moves_tree.data['board_inst'],
                         list_valid_moves_tree.data['current_score']
@@ -180,7 +193,6 @@ class BruteForce(object):
 
                     board_handler.current_color = leaf.data['next_color']
                     dict_valid_moves = board_handler.get_valid_moves()
-                    board_handler = None
 
                     for piece in dict_valid_moves[leaf.data['next_color']]:
                         for move in piece['valid_moves_list']:
@@ -207,6 +219,9 @@ class BruteForce(object):
                                     'next_position': (move['row'], move['col'])
                                 }
                             ))
+                console.log('Nr of leafs: %d' % nr_of_leafs,
+                            console.LOG_SUCCESS,
+                            self.generate_list_valid_moves_tree.__name__)
 
             console.log('Successfully generated the tree of valid moves for the next %d possible moves.' %
                         self.current_level,

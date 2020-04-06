@@ -141,7 +141,6 @@ class Board:
 
                 if not isinstance(self.board_inst[x2][y2], Empty):
                     self.score[self.current_color] += self.board_inst[x2][y2].strength
-                    console.log('score: %s' % str(self.score), console.LOG_SUCCESS, self.move_chess_piece.__name__)
 
                 self.board_inst[x1][y1].move(next_position)
                 self.board_inst[x1][y1].is_selected = False
