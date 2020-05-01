@@ -285,15 +285,70 @@ class Board:
                 'white': []
             }
 
-            for i in range(self.rows):
-                for j in range(self.cols):
-                    chess_piece = self.board_inst[i][j]
+            rows = int(self.rows)
+            cols = int(self.cols)
+
+            # for i in range(self.rows):
+            #     for j in range(self.cols):
+            #         chess_piece = self.board_inst[i][j]
+            #         if not isinstance(chess_piece, Empty) and \
+            #                 len(chess_piece.valid_moves_list) is not 0:
+            #             dict_valid_moves[chess_piece.color].append({
+            #                 'type': type(chess_piece),
+            #                 'row': i,
+            #                 'col': j,
+            #                 'valid_moves_list': chess_piece.valid_moves_list
+            #             })
+
+            # get lower-right quadrant
+            for row in range(int(rows/2), rows, 1):
+                for col in range(int(cols/2), cols, 1):
+                    chess_piece = self.board_inst[row][col]
                     if not isinstance(chess_piece, Empty) and \
                             len(chess_piece.valid_moves_list) is not 0:
                         dict_valid_moves[chess_piece.color].append({
                             'type': type(chess_piece),
-                            'row': i,
-                            'col': j,
+                            'row': row,
+                            'col': col,
+                            'valid_moves_list': chess_piece.valid_moves_list
+                        })
+
+            # get lower-left quadrant
+            for row in range(int(rows/2), rows, 1):
+                for col in range(int(cols/2) - 1, -1, -1):
+                    chess_piece = self.board_inst[row][col]
+                    if not isinstance(chess_piece, Empty) and \
+                            len(chess_piece.valid_moves_list) is not 0:
+                        dict_valid_moves[chess_piece.color].append({
+                            'type': type(chess_piece),
+                            'row': row,
+                            'col': col,
+                            'valid_moves_list': chess_piece.valid_moves_list
+                        })
+
+            # get upper-left quadrant
+            for row in range(int(rows/2) - 1, -1, -1):
+                for col in range(int(cols/2) - 1, -1, -1):
+                    chess_piece = self.board_inst[row][col]
+                    if not isinstance(chess_piece, Empty) and \
+                            len(chess_piece.valid_moves_list) is not 0:
+                        dict_valid_moves[chess_piece.color].append({
+                            'type': type(chess_piece),
+                            'row': row,
+                            'col': col,
+                            'valid_moves_list': chess_piece.valid_moves_list
+                        })
+
+            # get upper-right quadrant
+            for row in range(int(rows/2) - 1, -1, -1):
+                for col in range(int(cols/2), cols, 1):
+                    chess_piece = self.board_inst[row][col]
+                    if not isinstance(chess_piece, Empty) and \
+                            len(chess_piece.valid_moves_list) is not 0:
+                        dict_valid_moves[chess_piece.color].append({
+                            'type': type(chess_piece),
+                            'row': row,
+                            'col': col,
                             'valid_moves_list': chess_piece.valid_moves_list
                         })
 

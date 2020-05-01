@@ -1,7 +1,7 @@
 {
   "black": [
     {
-      "type": "<class'      'piece.Knight'      '>",
+      "type": "<class' 'piece.Knight' '>",
       "row": 0,
       "col": 1,
       "valid_moves_list": [
@@ -18,7 +18,7 @@
       ]
     },
     {
-      "type": "<class'      'piece.Knight'      '>",
+      "type": "<class' 'piece.Knight' '>",
       "row": 0,
       "col": 6,
       "valid_moves_list": [
@@ -35,7 +35,7 @@
       ]
     },
     {
-      "type": "<class'      'piece.Pawn'      '>",
+      "type": "<class' 'piece.Pawn' '>",
       "row": 1,
       "col": 0,
       "valid_moves_list": [
@@ -52,7 +52,7 @@
       ]
     },
     {
-      "type": "<class'      'piece.Pawn'      '>",
+      "type": "<class' 'piece.Pawn' '>",
       "row": 1,
       "col": 1,
       "valid_moves_list": [
@@ -69,7 +69,7 @@
       ]
     },
     {
-      "type": "<class'      'piece.Pawn'      '>",
+      "type": "<class' 'piece.Pawn' '>",
       "row": 1,
       "col": 2,
       "valid_moves_list": [
@@ -86,7 +86,7 @@
       ]
     },
     {
-      "type": "<class'      'piece.Pawn'      '>",
+      "type": "<class' 'piece.Pawn' '>",
       "row": 1,
       "col": 3,
       "valid_moves_list": [
@@ -103,7 +103,7 @@
       ]
     },
     {
-      "type": "<class'      'piece.Pawn'      '>",
+      "type": "<class' 'piece.Pawn' '>",
       "row": 1,
       "col": 4,
       "valid_moves_list": [
@@ -120,7 +120,7 @@
       ]
     },
     {
-      "type": "<class'      'piece.Pawn'      '>",
+      "type": "<class' 'piece.Pawn' '>",
       "row": 1,
       "col": 5,
       "valid_moves_list": [
@@ -137,7 +137,7 @@
       ]
     },
     {
-      "type": "<class'      'piece.Pawn'      '>",
+      "type": "<class' 'piece.Pawn' '>",
       "row": 1,
       "col": 6,
       "valid_moves_list": [
@@ -154,7 +154,7 @@
       ]
     },
     {
-      "type": "<class'      'piece.Pawn'      '>",
+      "type": "<class' 'piece.Pawn' '>",
       "row": 1,
       "col": 7,
       "valid_moves_list": [
@@ -173,7 +173,7 @@
   ],
   "white": [
     {
-      "type": "<class'      'piece.Pawn'      '>",
+      "type": "<class' 'piece.Pawn' '>",
       "row": 6,
       "col": 0,
       "valid_moves_list": [
@@ -190,7 +190,7 @@
       ]
     },
     {
-      "type": "<class'      'piece.Pawn'      '>",
+      "type": "<class' 'piece.Pawn' '>",
       "row": 6,
       "col": 1,
       "valid_moves_list": [
@@ -207,7 +207,7 @@
       ]
     },
     {
-      "type": "<class'      'piece.Pawn'      '>",
+      "type": "<class' 'piece.Pawn' '>",
       "row": 6,
       "col": 2,
       "valid_moves_list": [
@@ -224,7 +224,7 @@
       ]
     },
     {
-      "type": "<class'      'piece.Pawn'      '>",
+      "type": "<class' 'piece.Pawn' '>",
       "row": 6,
       "col": 3,
       "valid_moves_list": [
@@ -241,7 +241,7 @@
       ]
     },
     {
-      "type": "<class'      'piece.Pawn'      '>",
+      "type": "<class' 'piece.Pawn' '>",
       "row": 6,
       "col": 4,
       "valid_moves_list": [
@@ -258,7 +258,7 @@
       ]
     },
     {
-      "type": "<class'      'piece.Pawn'      '>",
+      "type": "<class' 'piece.Pawn' '>",
       "row": 6,
       "col": 5,
       "valid_moves_list": [
@@ -275,7 +275,7 @@
       ]
     },
     {
-      "type": "<class'      'piece.Pawn'      '>",
+      "type": "<class' 'piece.Pawn' '>",
       "row": 6,
       "col": 6,
       "valid_moves_list": [
@@ -292,7 +292,7 @@
       ]
     },
     {
-      "type": "<class'      'piece.Pawn'      '>",
+      "type": "<class' 'piece.Pawn' '>",
       "row": 6,
       "col": 7,
       "valid_moves_list": [
@@ -309,7 +309,7 @@
       ]
     },
     {
-      "type": "<class'      'piece.Knight'      '>",
+      "type": "<class' 'piece.Knight' '>",
       "row": 7,
       "col": 1,
       "valid_moves_list": [
@@ -326,7 +326,7 @@
       ]
     },
     {
-      "type": "<class'      'piece.Knight'      '>",
+      "type": "<class' 'piece.Knight' '>",
       "row": 7,
       "col": 6,
       "valid_moves_list": [

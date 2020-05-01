@@ -311,7 +311,7 @@ class Console(object):
         self.LOG_INFO = 0x03
         self.LOG_DEFAULT = 0x04
 
-        self.LOG_MAX_PRIORITY = self.LOG_INFO
+        self.LOG_MAX_PRIORITY = self.LOG_SUCCESS
 
         # %% Messages color codes
         self._CODE_RED = '\033[1;31;49m'

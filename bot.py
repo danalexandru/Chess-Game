@@ -130,7 +130,7 @@ class BruteForce(object):
                 return False
 
             list_valid_moves_tree = self.generate_list_valid_moves_tree(board_inst, current_score)
-            leafs = list_valid_moves_tree.find_leafs()
+            leafs = list(list_valid_moves_tree.find_leafs())
             best_leaf = Tree(
                 node_index=-1,
                 parent=None,
@@ -141,14 +141,18 @@ class BruteForce(object):
                         'white': np.inf,
                         'black': 0
                     },
+                    'total_score': {
+                        'white': np.inf,
+                        'black': 0
+                    },
                     'next_color': None,
                     'initial_position': [],
                     'next_position': []
                 }
             )
             for leaf in leafs:
-                if ((best_leaf.data['current_score']['white'] - best_leaf.data['current_score']['black']) >
-                        (leaf.data['current_score']['white'] - leaf.data['current_score']['black'])):
+                if ((best_leaf.data['total_score']['white'] - best_leaf.data['total_score']['black']) >
+                        (leaf.data['total_score']['white'] - leaf.data['total_score']['black'])):
                     best_leaf = leaf.copy()
 
             while best_leaf.node_index != 1:
@@ -176,6 +180,7 @@ class BruteForce(object):
             list_valid_moves_tree.data = {
                 'board_inst': board_inst.copy(),
                 'current_score': current_score.copy(),
+                'total_score': current_score.copy(),
                 'next_color': 'black',
                 'initial_position': [],
                 'next_position': []
@@ -187,8 +192,8 @@ class BruteForce(object):
                 for leaf in leafs:
                     nr_of_leafs += 1
                     board_handler = self.generate_board_copy(
-                        list_valid_moves_tree.data['board_inst'],
-                        list_valid_moves_tree.data['current_score']
+                        leaf.data['board_inst'],
+                        leaf.data['current_score']
                     )
 
                     board_handler.current_color = leaf.data['next_color']
@@ -200,7 +205,15 @@ class BruteForce(object):
                                 leaf.data['board_inst'],
                                 leaf.data['current_score']
                             )
+
                             board_handler.current_color = leaf.data['next_color']
+
+                            if type(board_handler.board_inst[piece['row']][piece['col']]) != piece['type'] or \
+                                    board_handler.board_inst[piece['row']][piece['col']].color != board_handler.current_color:
+                                console.log('Mismatch between board instance and pieces',
+                                            console.LOG_WARNING,
+                                            self.generate_list_valid_moves_tree.__name__)
+                                return False
 
                             board_handler.move_chess_piece(
                                 initial_position=(piece['row'], piece['col']),
@@ -214,6 +227,10 @@ class BruteForce(object):
                                 data={
                                     'board_inst': board_handler.board_inst.copy(),
                                     'current_score': board_handler.score.copy(),
+                                    'total_score': {
+                                        'white': leaf.data['total_score']['white'] + board_handler.score['white'],
+                                        'black': leaf.data['total_score']['black'] + board_handler.score['black']
+                                    },
                                     'next_color': board_handler.current_color,
                                     'initial_position': (piece['row'], piece['col']),
                                     'next_position': (move['row'], move['col'])
