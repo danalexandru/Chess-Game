@@ -283,43 +283,17 @@ class King(Piece):
             rows = 8
             cols = 8
 
-            possible_next_move = {
-                'row': next_row,
-                'col': next_col
-            }
-
-            if self.color == 'white':
-                pawn_check_direction = 1
-            elif self.color == 'black':
-                pawn_check_direction = -1
-            else:
-                return False
-
             for i in range(rows):
                 for j in range(cols):
-                    if not isinstance(board_inst[i][j], Empty) and \
-                            board_inst[i][j].color != self.color:
-                        if board_inst[i][j].image_index == 'pawn' and \
-                                0 <= i + pawn_check_direction <= 7:
-                            list_pawn_check_moves = []
-                            if j - 1 >= 0:
-                                list_pawn_check_moves.append({
-                                    'row': i + pawn_check_direction,
-                                    'col': j - 1
-                                })
+                    if isinstance(board_inst[i][j], Empty) or \
+                            board_inst[i][j].color == self.color or \
+                            len(board_inst[i][j].valid_moves_list) == 0:
+                        continue
 
-                            if j + 1 <= 7:
-                                list_pawn_check_moves.append({
-                                    'row': i + pawn_check_direction,
-                                    'col': j + 1
-                                })
-
-                            if possible_next_move in list_pawn_check_moves:
-                                return False
-
-                        elif possible_next_move in board_inst[i][j].valid_moves_list:
+                    for move in board_inst[i][j].valid_moves_list:
+                        if move['row'] == next_row and \
+                                move['col'] == next_col:
                             return False
-
             return True
 
         except Exception as error_message:
