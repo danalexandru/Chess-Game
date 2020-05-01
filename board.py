@@ -63,6 +63,9 @@ class Board:
                 self.board_inst[1][i] = Pawn(1, i, 'black')
                 self.board_inst[6][i] = Pawn(6, i, 'white')
 
+            king_positions_handler.set_value((0, 3), 'black')
+            king_positions_handler.set_value((7, 3), 'white')
+
             return
         except Exception as error_message:
             console.log(error_message, console.LOG_ERROR, self.__init__.__name__)
@@ -148,6 +151,10 @@ class Board:
                 self.board_inst[x2][y2] = self.board_inst[x1][y1]
                 self.board_inst[x1][y1] = Empty(x1, y1, None)
 
+                # update kings positions
+                if isinstance(self.board_inst[x2][y2], King):
+                    king_positions_handler.set_value((x2, y2), self.board_inst[x2][y2].color)
+
                 console.log('move chess piece \"%s\" from (%d, %d) to (%d, %d)' %
                             (str(self.board_inst[x2][y2].image_index).capitalize(),
                              x1, y1,
@@ -232,28 +239,6 @@ class Board:
                         self.board_inst[i][j].update_valid_moves_list(self.board_inst)
         except Exception as error_message:
             console.log(error_message, console.LOG_ERROR, self.update_valid_moves_list.__name__)
-            return False
-
-    def get_chessboard_score(self, current_color=None):
-        """
-        This method returns the score of the chess game
-
-        :param current_color: (String) The color for which the score should be returned (Default: both)
-        :return: (Dictionary or Integer) The score for the specific selected color or for both
-        """
-        try:
-            if current_color is None:
-                return self.score
-            elif current_color in ['black', 'white']:
-                return self.score[current_color]
-
-            console.log('Current color not found: %s' % current_color,
-                        console.LOG_WARNING,
-                        self.get_chessboard_score.__name__)
-            return False
-
-        except Exception as error_message:
-            console.log(error_message, console.LOG_ERROR, self.get_chessboard_score.__name__)
             return False
 
     def get_valid_moves(self):

@@ -68,11 +68,11 @@ def draw_player_score():
         score_panels = {
             'black': {
                 'panel': pygame.Surface((123, 50), pygame.SRCALPHA, 32),
-                'text': font.render('Score: %d' % board_handler.get_chessboard_score('black'), True, (255, 255, 255))
+                'text': font.render('Score: %d' % board_handler.score['black'], True, (255, 255, 255))
             },
             'white': {
                 'panel': pygame.Surface((123, 50), pygame.SRCALPHA, 32),
-                'text': font.render('Score: %d' % board_handler.get_chessboard_score('white'), True, (0, 0, 0))
+                'text': font.render('Score: %d' % board_handler.score['white'], True, (0, 0, 0))
             }
         }
 

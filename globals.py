@@ -404,3 +404,66 @@ class GamePlayMode(Enum):
     SINGLEPLAYER = config.get('app.gameplay.mode.singleplayer')
     MULTIPLAYER = config.get('app.gameplay.mode.multiplayer')
     CURRENT_MODE = config.get('app.gameplay.mode.current')
+
+
+# %% Class King Positions
+class KingPositions(object):
+    """
+    This class is used in order to send the king position of a certain color to different files
+    """
+
+    def __init__(self):
+        self.black = {'row': None, 'col': None}
+        self.white = {'row': None, 'col': None}
+
+    def get_value(self, color):
+        """
+        This method returns the position of the king of a certain color
+
+        :param color: (String) The current color (Either 'black' or 'white')
+        :return: (Dictionary) A dictionary containing the current position of the king
+        """
+        try:
+            if color == 'black':
+                return self.black
+            elif color == 'white':
+                return self.white
+            else:
+                console.log('Invalid color \'%s\'. It should be either \'black\' or \'white\'' % str(color),
+                            console.LOG_WARNING,
+                            self.get_value.__name__)
+                return False
+        except Exception as error_message:
+            console.log(error_message, console.LOG_ERROR, self.get_value.__name__)
+            return False
+
+    def set_value(self, new_position, color):
+        """
+        This method sets the new position of a king
+
+        :param new_position: (List) The new position of the king
+        :param color: (String) The current color (Either 'black' or 'white')
+        :return: (Boolean) True of False
+        """
+        try:
+            if color == 'black':
+                self.black = {
+                    'row': new_position[0],
+                    'col': new_position[1]
+                }
+            elif color == 'white':
+                self.white = {
+                    'row': new_position[0],
+                    'col': new_position[1]
+                }
+            else:
+                console.log('Invalid color \'%s\'. It should be either \'black\' or \'white\'' % str(color),
+                            console.LOG_WARNING,
+                            self.get_value.__name__)
+                return False
+        except Exception as error_message:
+            console.log(error_message, console.LOG_ERROR, self.set_value.__name__)
+            return False
+
+
+king_positions_handler = KingPositions()
