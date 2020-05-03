@@ -97,6 +97,7 @@ class Board:
         :return: Boolean (True or False
         """
         try:
+            self.update_valid_moves_list()
             if (self.gameplay_mode is GamePlayMode.MULTIPLAYER or
                     (self.gameplay_mode is GamePlayMode.SINGLEPLAYER and self.current_color is 'white')):
                 [x, y] = position
@@ -115,7 +116,6 @@ class Board:
                                 console.LOG_INFO,
                                 self.select_chess_piece.__name__)
 
-                    self.update_valid_moves_list()
                     return True
 
             return False

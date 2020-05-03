@@ -3,6 +3,7 @@ This script will contain all the individual logic for each chess piece type, reg
 set chess piece
 """
 # %% Imports
+import copy
 from globals import *
 
 
@@ -283,14 +284,21 @@ class King(Piece):
             rows = 8
             cols = 8
 
+            from board import Board
+            board_handler = Board(8, 8)
+            board_handler.board_inst = copy.deepcopy(board_inst)
+
+            board_handler.board_inst[self.row][self.col] = Empty(self.row, self.col, None)
+            board_handler.update_valid_moves_list()
+
             for i in range(rows):
                 for j in range(cols):
-                    if isinstance(board_inst[i][j], Empty) or \
-                            board_inst[i][j].color == self.color or \
-                            len(board_inst[i][j].valid_moves_list) == 0:
+                    if isinstance(board_handler.board_inst[i][j], Empty) or \
+                            board_handler.board_inst[i][j].color == self.color or \
+                            len(board_handler.board_inst[i][j].valid_moves_list) == 0:
                         continue
 
-                    for move in board_inst[i][j].valid_moves_list:
+                    for move in board_handler.board_inst[i][j].valid_moves_list:
                         if move['row'] == next_row and \
                                 move['col'] == next_col:
                             return False
