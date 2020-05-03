@@ -4,7 +4,7 @@ and moving a chess piece
 """
 # %% Imports
 import copy
-from globals import GamePlayMode
+import numpy as np
 from piece import Empty, Bishop, King, Knight, Queen, Pawn, Rook
 from bot import bot_handler
 from globals import *
@@ -274,8 +274,8 @@ class Board:
             cols = int(self.cols)
 
             # get lower-right quadrant
-            for row in range(int(rows/2), rows, 1):
-                for col in range(int(cols/2), cols, 1):
+            for row in range(int(rows / 2), rows, 1):
+                for col in range(int(cols / 2), cols, 1):
                     chess_piece = self.board_inst[row][col]
                     if not isinstance(chess_piece, Empty) and \
                             len(chess_piece.valid_moves_list) is not 0:
@@ -287,8 +287,8 @@ class Board:
                         })
 
             # get lower-left quadrant
-            for row in range(int(rows/2), rows, 1):
-                for col in range(int(cols/2) - 1, -1, -1):
+            for row in range(int(rows / 2), rows, 1):
+                for col in range(int(cols / 2) - 1, -1, -1):
                     chess_piece = self.board_inst[row][col]
                     if not isinstance(chess_piece, Empty) and \
                             len(chess_piece.valid_moves_list) is not 0:
@@ -300,8 +300,8 @@ class Board:
                         })
 
             # get upper-left quadrant
-            for row in range(int(rows/2) - 1, -1, -1):
-                for col in range(int(cols/2) - 1, -1, -1):
+            for row in range(int(rows / 2) - 1, -1, -1):
+                for col in range(int(cols / 2) - 1, -1, -1):
                     chess_piece = self.board_inst[row][col]
                     if not isinstance(chess_piece, Empty) and \
                             len(chess_piece.valid_moves_list) is not 0:
@@ -313,8 +313,8 @@ class Board:
                         })
 
             # get upper-right quadrant
-            for row in range(int(rows/2) - 1, -1, -1):
-                for col in range(int(cols/2), cols, 1):
+            for row in range(int(rows / 2) - 1, -1, -1):
+                for col in range(int(cols / 2), cols, 1):
                     chess_piece = self.board_inst[row][col]
                     if not isinstance(chess_piece, Empty) and \
                             len(chess_piece.valid_moves_list) is not 0:
@@ -334,3 +334,34 @@ class Board:
             console.log(error_message, console.LOG_ERROR, self.get_valid_moves.__name__)
             return False
 
+    def convert_board_inst_to_numeric(self):
+        """
+        This method returns the numeric equivalent of the board instance at the current moment
+
+        :return: (List) An 8x8 matrix with all the strength of the chess pieces
+        """
+        try:
+            resulted_board_inst = []
+            for i in range(self.rows):
+                row = []
+                for j in range(self.cols):
+                    if isinstance(self.board_inst[i][j], Empty):
+                        row.append(0)
+                    elif self.board_inst[i][j].color == 'black':
+                        row.append(-self.board_inst[i][j].strength)
+                    elif self.board_inst[i][j].color == 'white':
+                        row.append(self.board_inst[i][j].strength)
+                    else:
+                        console.log('Invalid color \'%s\' at position (%d, %d).'
+                                    'It should be either \'black\' or \'white\'.' %
+                                    (str(self.board_inst[i][j].color), i, j),
+                                    console.LOG_WARNING,
+                                    self.convert_board_inst_to_numeric.__name__)
+                        return False
+
+                resulted_board_inst.append(row)
+
+            return np.array(resulted_board_inst)
+        except Exception as error_message:
+            console.log(error_message, console.LOG_ERROR, self.convert_board_inst_to_numeric.__name__)
+            return False
