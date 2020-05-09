@@ -10,6 +10,7 @@ from enum import Enum
 import copy
 import multiprocessing
 from functools import partial
+import chess.pgn
 
 
 # %% Class Bot Method
@@ -63,7 +64,7 @@ class Bot(object):
         piece
         {
             'initial_position': (<Integer>, <Integer>),
-            'next_position: (<Integer>, <Integer>)
+            'next_position': (<Integer>, <Integer>)
         }
         """
         try:
@@ -117,7 +118,7 @@ class BruteForce(object):
         piece
         {
             'initial_position': (<Integer>, <Integer>),
-            'next_position: (<Integer>, <Integer>)
+            'next_position': (<Integer>, <Integer>)
         }
         """
         try:
@@ -295,7 +296,7 @@ class ReinforcedLearning(object):
         piece
         {
             'initial_position': (<Integer>, <Integer>),
-            'next_position: (<Integer>, <Integer>)
+            'next_position': (<Integer>, <Integer>)
         }
         """
         try:
@@ -325,7 +326,7 @@ class DeepLearning(object):
         piece
         {
             'initial_position': (<Integer>, <Integer>),
-            'next_position: (<Integer>, <Integer>)
+            'next_position': (<Integer>, <Integer>)
         }
         """
         try:
@@ -333,6 +334,47 @@ class DeepLearning(object):
         except Exception as error_message:
             console.log(error_message, console.LOG_ERROR, self.find_next_best_move.__name__)
             return False
+
+    def get_pgn_games(self):
+        """
+        This method reads the pgn file from the project and saves the result in a local parameter
+
+        :returns: (TextIOWrapper) The pgn file with all games required for training
+        """
+        try:
+            pgn = open(os.path.join(config.get('app.folder.training.data'),
+                       config.get('app.file.training.data')))
+
+            return pgn
+        except Exception as error_message:
+            console.log(error_message, console.LOG_ERROR, self.get_pgn_games.__name__)
+            return False
+
+    def convert_output_into_positions(self, output):
+        """
+        This method converts the output of the neural network into the next move that should be made by the bot
+
+        :param output: (Numpy Array) An array containing 32 elements (each either 0 or 1) telling the initial row, col,
+        and the next row ,col (Splitting the output into 4 arrays of length 8, each having the 1 value at the correct
+        index)
+        """
+        try:
+            if not isinstance(output, np.ndarray):
+                output = np.array(output)
+
+            return {
+                'initial_position': (
+                    np.argmax(output[0:8]),
+                    np.argmax(output[8:16])
+                ),
+                'next_position': (
+                    np.argmax(output[16:24]),
+                    np.argmax(output[24:32])
+                )
+            }
+
+        except Exception as error_message:
+            console.log(error_message, console.LOG_ERROR, self.convert_output_into_positions.__name__)
 
 
 # %% Class Tree
@@ -403,18 +445,24 @@ def run_debug_mode():
     :return: Boolean (True or False)
     """
     try:
-        if config.get('app.gameplay.mode.singleplayer.debug.mode') is not True:
-            console.log('Unexpected entry on the %s method.', console.LOG_WARNING, run_debug_mode.__name__)
-            return False
+        # Call bot
+        if False:
+            if config.get('app.gameplay.mode.singleplayer.debug.mode') is not True:
+                console.log('Unexpected entry on the %s method.', console.LOG_WARNING, run_debug_mode.__name__)
+                return False
 
-        from board import Board
-        board_handler = Board(8, 8)
+            from board import Board
+            board_handler = Board(8, 8)
 
-        return bot_handler.find_next_best_move(
-            board_handler.board_inst,
-            board_handler.score
-        )
+            return bot_handler.find_next_best_move(
+                board_handler.board_inst,
+                board_handler.score
+            )
 
+        if True:
+            deep_learning_handler.get_pgn_games()
+
+        return True
     except Exception as error_message:
         console.log(error_message, console.LOG_ERROR, run_debug_mode.__name__)
         return False
