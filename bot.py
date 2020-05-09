@@ -428,11 +428,11 @@ class DeepLearning(object):
             return {
                 'initial_position': (
                     int(ord(move_elements[0]) - 96) - 1,
-                    int(move_elements[1]) - 1
+                    8 - int(move_elements[1])
                 ),
                 'next_position': (
                     int(ord(move_elements[2]) - 96) - 1,
-                    int(move_elements[3]) - 1
+                    8 - int(move_elements[3]) - 1
                 )
             }
 
@@ -507,6 +507,17 @@ class DeepLearning(object):
 
         except Exception as error_message:
             console.log(error_message, console.LOG_ERROR, self.preprocess_training_data_for_current_game.__name__)
+            return False
+
+    def get_neural_network_model(self):
+        """
+        This method generates a neural network model using keras
+
+        """
+        try:
+            pass
+        except Exception as error_message:
+            console.log(error_message, console.LOG_ERROR, self.get_neural_network_model.__name__)
             return False
 
 
