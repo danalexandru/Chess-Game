@@ -4,13 +4,16 @@ This script will contain all the ai elements of the project
 
 # %% Imports
 import numpy as np
+import copy
+import multiprocessing
+import chess.pgn
+import keras
+
 from globals import *
 from config import config
 from enum import Enum
-import copy
-import multiprocessing
 from functools import partial
-import chess.pgn
+from sklearn.model_selection import train_test_split
 
 
 # %% Class Bot Method
@@ -211,7 +214,7 @@ class BruteForce(object):
                             )
 
                             board_handler.current_color = leaf.data['next_color']
-
+                            board_handler.update_valid_moves_list()
                             if type(board_handler.board_inst[piece['row']][piece['col']]) != piece['type'] or \
                                     board_handler.board_inst[piece['row']][
                                         piece['col']].color != board_handler.current_color:
@@ -333,7 +336,9 @@ class DeepLearning(object):
         try:
             pgn = self.get_pgn_games()
 
-            [X, y] = self.preprocess_training_data(pgn)
+            dict_preprocessed_data = self.preprocess_training_data(pgn)
+            [dict_training_data, dict_test_data] = self.get_split_preprocessed_data(dict_preprocessed_data, 0.2)
+
             return {}
         except Exception as error_message:
             console.log(error_message, console.LOG_ERROR, self.find_next_best_move.__name__)
@@ -427,12 +432,12 @@ class DeepLearning(object):
 
             return {
                 'initial_position': (
-                    int(ord(move_elements[0]) - 96) - 1,
-                    8 - int(move_elements[1])
+                    8 - int(move_elements[1]),
+                    int(ord(move_elements[0]) - 96) - 1
                 ),
                 'next_position': (
-                    int(ord(move_elements[2]) - 96) - 1,
-                    8 - int(move_elements[3]) - 1
+                    8 - int(move_elements[3]),
+                    int(ord(move_elements[2]) - 96) - 1
                 )
             }
 
@@ -488,17 +493,30 @@ class DeepLearning(object):
         try:
             from board import Board
             board_handler = Board(8, 8)
+            board_handler.gameplay_mode = GamePlayMode.MULTIPLAYER
 
             X = []
             y = []
             for move in game.mainline_moves():
                 move = str(move).lower()
                 dict_position = self.convert_move_to_positions(move)
+
+                initial_position = list(dict_position['initial_position'])
+                next_position = list(dict_position['next_position'])
+
                 X.append(board_handler.convert_board_inst_to_binary())
-                y.append(self.convert_positions_to_output(
-                    dict_position['initial_position'],
-                    dict_position['next_position'])
-                )
+                y.append(self.convert_positions_to_output(initial_position, next_position))
+
+                board_handler.update_valid_moves_list()
+                if not board_handler.move_chess_piece(initial_position, next_position):
+                    console.log('The move of the \'%s\' chess piece from (%d, %d) to (%d, %d) was unsuccessful.' % (
+                        str(board_handler.board_inst[initial_position[0]][initial_position[1]].image_index).capitalize(),
+                        initial_position[0], initial_position[1],
+                        next_position[0], next_position[1]
+                    ),
+                                console.LOG_WARNING,
+                                self.preprocess_training_data_for_current_game.__name__)
+                    return {}
 
             return {
                 'X': np.array(X),
@@ -509,15 +527,55 @@ class DeepLearning(object):
             console.log(error_message, console.LOG_ERROR, self.preprocess_training_data_for_current_game.__name__)
             return False
 
-    def get_neural_network_model(self):
+    def get_neural_network_model(self, hidden_layers=16, number_of_neurons=128):
         """
         This method generates a neural network model using keras
 
+        :param hidden_layers: (Integer) The number of hidden layers
+        :param number_of_neurons: (Integer) The number of neurons per hidden layer
+        :return: (Model) The Neural Network model
         """
         try:
-            pass
+            model = keras.Sequential()
+            model.add(keras.layers.Flatten(input_shape=(8, 8, 12)))  # input layer
+
+            for _ in range(hidden_layers):
+                model.add(keras.layers.Dense(number_of_neurons, activation='sigmoid'))  # hidden layers
+
+            model.add(keras.layers.Dense(32, activation='softmax'))  # output layer
+
+            model.compile(optimizer='adam',
+                          loss='sparse_categorical_crossentropy',
+                          metrics=['accuracy'])
+
+            return model
         except Exception as error_message:
             console.log(error_message, console.LOG_ERROR, self.get_neural_network_model.__name__)
+            return False
+
+    def get_split_preprocessed_data(self, dict_preprocessed_data, test_size=0.2):
+        """
+        This method splits the preprocessed data aquired from the 'preprocess_training_data' method into training and
+        test data
+        """
+        try:
+            (X_train, X_test, y_train, y_test) = train_test_split(
+                dict_preprocessed_data['X'],
+                dict_preprocessed_data['y'],
+                test_size=test_size,
+                random_state=0
+            )
+
+            return [{
+                'X': X_train,
+                'y': y_train
+            }, {
+                'X': X_test,
+                'y': y_test
+            }]
+
+        except Exception as error_message:
+            console.log(error_message, console.LOG_ERROR, self.get_split_preprocessed_data.__name__)
             return False
 
 
