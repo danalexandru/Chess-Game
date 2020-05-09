@@ -186,6 +186,13 @@ class Board:
                     self.board_inst[x1][3] = self.board_inst[x1][0]
                     self.board_inst[x1][0] = Empty(x1, 7, None)
 
+                # replace Pawn with Queen
+                if x2 == 0 and isinstance(self.board_inst[x2][y2], Pawn) and self.board_inst[x2][y2].color == 'white':
+                    self.board_inst[x2][y2] = Queen(x2, y2, 'white')
+
+                if x2 == 7 and isinstance(self.board_inst[x2][y2], Pawn) and self.board_inst[x2][y2].color == 'black':
+                    self.board_inst[x2][y2] = Queen(x2, y2, 'black')
+
                 console.log('move chess piece \"%s\" from (%d, %d) to (%d, %d)' %
                             (str(self.board_inst[x2][y2].image_index).capitalize(),
                              x1, y1,
