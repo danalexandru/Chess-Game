@@ -365,3 +365,47 @@ class Board:
         except Exception as error_message:
             console.log(error_message, console.LOG_ERROR, self.convert_board_inst_to_numeric.__name__)
             return False
+
+    def convert_board_inst_to_binary(self):
+        """
+        This method looks at all the board chess pieces and returns for each position whether or not a certain chess
+        piece is there
+
+        :return: (Matrix) An 8 x 8 x 12 matrix with whether or not a chess piece exists in a position
+        """
+        try:
+            resulted_board_inst = []
+            number_of_distinct_chess_pieces = 12
+            dict_chess_pieces_index = {
+                'white': {
+                    Pawn.image_index: 0,
+                    Bishop.image_index: 1,
+                    Knight.image_index: 2,
+                    Rook.image_index: 3,
+                    Queen.image_index: 4,
+                    King.image_index: 5
+                },
+                'black': {
+                    Pawn.image_index: 6,
+                    Bishop.image_index: 7,
+                    Knight.image_index: 8,
+                    Rook.image_index: 9,
+                    Queen.image_index: 10,
+                    King.image_index: 11
+                }
+            }
+            for i in range(self.rows):
+                row = []
+                for j in range(self.cols):
+                    col = [0] * 12
+                    piece = self.board_inst[i][j]
+                    if not isinstance(self.board_inst[i][j], Empty):
+                        col[dict_chess_pieces_index[piece.color][piece.image_index]] = 1
+
+                    row.append(col)
+
+                resulted_board_inst.append(row)
+            return np.array(resulted_board_inst)
+        except Exception as error_message:
+            console.log(error_message, console.LOG_ERROR, self.convert_board_inst_to_binary.__name__)
+            return False
