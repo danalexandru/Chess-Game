@@ -213,7 +213,8 @@ class BruteForce(object):
                             board_handler.current_color = leaf.data['next_color']
 
                             if type(board_handler.board_inst[piece['row']][piece['col']]) != piece['type'] or \
-                                    board_handler.board_inst[piece['row']][piece['col']].color != board_handler.current_color:
+                                    board_handler.board_inst[piece['row']][
+                                        piece['col']].color != board_handler.current_color:
                                 console.log('Mismatch between board instance and pieces',
                                             console.LOG_WARNING,
                                             self.generate_list_valid_moves_tree.__name__)
@@ -330,7 +331,10 @@ class DeepLearning(object):
         }
         """
         try:
-            pass
+            pgn = self.get_pgn_games()
+
+            [X, y] = self.preprocess_training_data(pgn)
+            return {}
         except Exception as error_message:
             console.log(error_message, console.LOG_ERROR, self.find_next_best_move.__name__)
             return False
@@ -343,7 +347,7 @@ class DeepLearning(object):
         """
         try:
             pgn = open(os.path.join(config.get('app.folder.training.data'),
-                       config.get('app.file.training.data')))
+                                    config.get('app.file.training.data')))
 
             return pgn
         except Exception as error_message:
@@ -393,10 +397,10 @@ class DeepLearning(object):
         """
         try:
             output = np.zeros(32)
-            output[initial_position[0] + 8*0] = 1
-            output[initial_position[1] + 8*1] = 1
-            output[next_position[0] + 8*2] = 1
-            output[next_position[1] + 8*3] = 1
+            output[initial_position[0] + 8 * 0] = 1
+            output[initial_position[1] + 8 * 1] = 1
+            output[next_position[0] + 8 * 2] = 1
+            output[next_position[1] + 8 * 3] = 1
 
             return output
         except Exception as error_message:
@@ -434,6 +438,75 @@ class DeepLearning(object):
 
         except Exception as error_message:
             console.log(error_message, console.LOG_ERROR, self.convert_move_to_positions.__name__)
+            return False
+
+    def preprocess_training_data(self, pgn):
+        """
+        This method looks at the moves of one game and converts it into an 8x8x12 matrix for the neural network input
+        layer, and an 2x2x8 array for the output layer
+
+        :param pgn: (TextIOWrapper) The pgn file with all games required for training
+        :return: (Dictionary) 2 Elements representing the preprocessed input and output layers of the neural network
+        {
+            'X': <Numpy Array> (Nx(Mx(8x8x12))),
+            'y': <Numpy Array> (Nx(Mx(2x2x8)))
+        }
+        """
+        try:
+            X = []
+            y = []
+
+            while True:
+                game = chess.pgn.read_game(pgn)
+                if game is None:
+                    break  # end of the file
+
+                dict_preprocessed_data = self.preprocess_training_data_for_current_game(game)
+                X.append(dict_preprocessed_data['X'])
+                y.append(dict_preprocessed_data['y'])
+
+            return {
+                'X': np.array(X),
+                'y': np.array(y)
+            }
+        except Exception as error_message:
+            console.log(error_message, console.LOG_ERROR, self.preprocess_training_data.__name__)
+            return False
+
+    def preprocess_training_data_for_current_game(self, game):
+        """
+        This method looks at the moves of one game and converts it into an 8x8x12 matrix for the neural network input
+        layer, and an 2x2x8 array for the output layer
+
+        :param game: (TextIOWrapper) The current pgn game with all the moves made during that game
+        :return: (Dictionary) 2 Elements representing the preprocessed input and output layers of the neural network
+        {
+            'X': <Numpy Array> (Mx(8x8x12)),
+            'y': <Numpy Array> (Mx(2x2x8))
+        }
+        """
+        try:
+            from board import Board
+            board_handler = Board(8, 8)
+
+            X = []
+            y = []
+            for move in game.mainline_moves():
+                move = str(move).lower()
+                dict_position = self.convert_move_to_positions(move)
+                X.append(board_handler.convert_board_inst_to_binary())
+                y.append(self.convert_positions_to_output(
+                    dict_position['initial_position'],
+                    dict_position['next_position'])
+                )
+
+            return {
+                'X': np.array(X),
+                'y': np.array(y)
+            }
+
+        except Exception as error_message:
+            console.log(error_message, console.LOG_ERROR, self.preprocess_training_data_for_current_game.__name__)
             return False
 
 
@@ -520,7 +593,7 @@ def run_debug_mode():
             )
 
         if True:
-            deep_learning_handler.get_pgn_games()
+            deep_learning_handler.find_next_best_move(None, None)
 
         return True
     except Exception as error_message:
