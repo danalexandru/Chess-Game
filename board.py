@@ -145,6 +145,25 @@ class Board:
                 if not isinstance(self.board_inst[x2][y2], Empty):
                     self.score[self.current_color] += self.board_inst[x2][y2].strength
 
+                small_castling = False
+                big_castling = False
+
+                # check for small castling
+                if isinstance(self.board_inst[x1][y1], King) and \
+                        isinstance(self.board_inst[x1][7], Rook) and \
+                        self.board_inst[x1][y1].has_been_moved is False and \
+                        self.board_inst[x1][7].has_been_moved is False and \
+                        x2 == x1 and y2 == 6:
+                    small_castling = True
+
+                # check for long castling
+                if isinstance(self.board_inst[x1][y1], King) and \
+                        isinstance(self.board_inst[x1][0], Rook) and \
+                        self.board_inst[x1][y1].has_been_moved is False and \
+                        self.board_inst[x1][7].has_been_moved is False and \
+                        x2 == x1 and y2 == 2:
+                    big_castling = True
+
                 self.board_inst[x1][y1].move(next_position)
                 self.board_inst[x1][y1].is_selected = False
                 self.change_current_color(self.board_inst[x1][y1].color)
@@ -154,6 +173,18 @@ class Board:
                 # update kings positions
                 if isinstance(self.board_inst[x2][y2], King):
                     king_positions_handler.set_value((x2, y2), self.board_inst[x2][y2].color)
+
+                # small castling
+                if small_castling is True:
+                    self.board_inst[x1][7].move((x1, 5))
+                    self.board_inst[x1][5] = self.board_inst[x1][7]
+                    self.board_inst[x1][7] = Empty(x1, 7, None)
+
+                # big castling
+                if big_castling is True:
+                    self.board_inst[x1][0].move((x1, 3))
+                    self.board_inst[x1][3] = self.board_inst[x1][0]
+                    self.board_inst[x1][0] = Empty(x1, 7, None)
 
                 console.log('move chess piece \"%s\" from (%d, %d) to (%d, %d)' %
                             (str(self.board_inst[x2][y2].image_index).capitalize(),

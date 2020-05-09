@@ -236,6 +236,7 @@ class King(Piece):
     def __init__(self, row, col, color):
         super().__init__(row, col, color)
         self.strength = 90
+        self.has_been_moved = False
 
     def update_valid_moves_list(self, board_inst):
         """
@@ -265,7 +266,27 @@ class King(Piece):
                     if self.validate_next_position(board_inst, x, y) is True:
                         self.append_valid_move_to_valid_moves_list(x, y, board_inst[x][y].strength)
 
-            return True
+            # small castling
+            if self.has_been_moved is False and \
+                    self.col == 4 and \
+                    isinstance(board_inst[self.row][7], Rook) and \
+                    board_inst[self.row][7].has_been_moved is False and \
+                    isinstance(board_inst[self.row][5], Empty) and \
+                    isinstance(board_inst[self.row][6], Empty) and \
+                    self.validate_next_position(board_inst, self.row, 6) is True:
+                self.append_valid_move_to_valid_moves_list(self.row, 6, 0)
+
+            # long castling
+            if self.has_been_moved is False and \
+                    self.col == 4 and \
+                    isinstance(board_inst[self.row][0], Rook) and \
+                    board_inst[self.row][0].has_been_moved is False and \
+                    isinstance(board_inst[self.row][3], Empty) and \
+                    isinstance(board_inst[self.row][2], Empty) and \
+                    isinstance(board_inst[self.row][1], Empty) and \
+                    self.validate_next_position(board_inst, self.row, 2) is True:
+                self.append_valid_move_to_valid_moves_list(self.row, 2, 0)
+                return True
         except Exception as error_message:
             console.log(error_message, console.LOG_ERROR, self.update_valid_moves_list.__name__)
             return False
@@ -306,6 +327,22 @@ class King(Piece):
 
         except Exception as error_message:
             console.log(error_message, console.LOG_ERROR, self.validate_next_position.__name__)
+            return False
+
+    def move(self, position):
+        """
+        This function is used to change the position of the piece
+
+        :param position: an Array with 2 Integers (the new x_position and y_position)
+        :return: Boolean (True or False)
+        """
+        try:
+            super().move(position)
+            self.has_been_moved = True
+
+            return True
+        except Exception as error_message:
+            console.log(error_message, console.LOG_ERROR, self.move.__name__)
             return False
 
 
@@ -503,6 +540,7 @@ class Rook(Piece):
     def __init__(self, row, col, color):
         super().__init__(row, col, color)
         self.strength = 5
+        self.has_been_moved = False
 
     def update_valid_moves_list(self, board_inst):
         """
@@ -541,4 +579,20 @@ class Rook(Piece):
             return True
         except Exception as error_message:
             console.log(error_message, console.LOG_ERROR, self.update_valid_moves_list.__name__)
+            return False
+
+    def move(self, position):
+        """
+        This function is used to change the position of the piece
+
+        :param position: an Array with 2 Integers (the new x_position and y_position)
+        :return: Boolean (True or False)
+        """
+        try:
+            super().move(position)
+            self.has_been_moved = True
+
+            return True
+        except Exception as error_message:
+            console.log(error_message, console.LOG_ERROR, self.move.__name__)
             return False
