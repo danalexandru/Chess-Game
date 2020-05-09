@@ -310,6 +310,7 @@ class King(Piece):
             board_handler.board_inst = copy.deepcopy(board_inst)
 
             board_handler.board_inst[self.row][self.col] = Empty(self.row, self.col, None)
+            board_handler.board_inst[next_row][next_col] = Pawn(next_row, next_col, self.color)
             board_handler.update_valid_moves_list()
 
             for i in range(rows):
@@ -322,6 +323,12 @@ class King(Piece):
                     for move in board_handler.board_inst[i][j].valid_moves_list:
                         if move['row'] == next_row and \
                                 move['col'] == next_col:
+
+                            # special case for the Pawns
+                            if isinstance(board_handler.board_inst[i][j], Pawn) and \
+                                    next_col == j:
+                                continue
+
                             return False
             return True
 
