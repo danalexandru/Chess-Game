@@ -516,7 +516,9 @@ class DeepLearning(object):
                     ),
                                 console.LOG_WARNING,
                                 self.preprocess_training_data_for_current_game.__name__)
-                    return {}
+                    X.pop()
+                    y.pop()
+                    break
 
             return {
                 'X': np.array(X),
