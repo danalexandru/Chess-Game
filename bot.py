@@ -595,6 +595,8 @@ def run_debug_mode():
         if True:
             deep_learning_handler.find_next_best_move(None, None)
 
+        # Test Commit & Push 123
+
         return True
     except Exception as error_message:
         console.log(error_message, console.LOG_ERROR, run_debug_mode.__name__)
