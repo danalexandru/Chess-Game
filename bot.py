@@ -16,6 +16,7 @@ from functools import partial
 class BotMethod(Enum):
     BRUTE_FORCE = config.get('app.gameplay.mode.singleplayer.method.brute.force')
     REINFORCED_LEARNING = config.get('app.gameplay.mode.singleplayer.method.reinforced.learning')
+    DEEP_LEARNING = config.get('app.gameplay.mode.singleplayer.method.deep.learning')
     CURRENT_METHOD = config.get('app.gameplay.mode.singleplayer.method.current')
 
     @staticmethod
@@ -80,6 +81,8 @@ class Bot(object):
                 return dict_best_move
             elif BotMethod.CURRENT_METHOD == BotMethod.REINFORCED_LEARNING:
                 return reinforced_learning_handler.find_next_best_move(board_inst, current_score)
+            elif BotMethod.CURRENT_METHOD == BotMethod.DEEP_LEARNING:
+                return deep_learning_handler.find_next_best_move(board_inst, current_score)
             else:
                 console.log('Unrecognised method %s. It should be one of: %s' % (
                     str(BotMethod.CURRENT_METHOD.value),
@@ -302,6 +305,36 @@ class ReinforcedLearning(object):
             return False
 
 
+# %% Class DeepLearning
+class DeepLearning(object):
+    """
+    This class will contain all the necessary requirements to implement a deep learning algorithm for the bot
+    portion of the chess application
+    """
+
+    def __init__(self):
+        pass
+
+    def find_next_best_move(self, board_inst, current_score):
+        """
+        This method identifies the best move looking at 'self.level' possible moves ahead
+
+        :param board_inst: (Matrix) The board instance with the current placement of the chess pieces on the chessboard
+        :param current_score: (Integer) The current score of the game (White Score - Black Score)
+        :return: (Dictionary) A dictionary containing the initial position of the piece and the next position of the
+        piece
+        {
+            'initial_position': (<Integer>, <Integer>),
+            'next_position: (<Integer>, <Integer>)
+        }
+        """
+        try:
+            pass
+        except Exception as error_message:
+            console.log(error_message, console.LOG_ERROR, self.find_next_best_move.__name__)
+            return False
+
+
 # %% Class Tree
 class Tree(object):
     """
@@ -358,6 +391,7 @@ class Tree(object):
 bot_handler = Bot()
 brute_force_handler = BruteForce()
 reinforced_learning_handler = ReinforcedLearning()
+deep_learning_handler = DeepLearning()
 
 
 # %% Main (Debug mode)
