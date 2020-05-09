@@ -350,13 +350,19 @@ class DeepLearning(object):
             console.log(error_message, console.LOG_ERROR, self.get_pgn_games.__name__)
             return False
 
-    def convert_output_into_positions(self, output):
+    def convert_output_to_positions(self, output):
         """
         This method converts the output of the neural network into the next move that should be made by the bot
 
         :param output: (Numpy Array) An array containing 32 elements (each either 0 or 1) telling the initial row, col,
         and the next row ,col (Splitting the output into 4 arrays of length 8, each having the 1 value at the correct
         index)
+        :return: (Dictionary) A dictionary containing the initial position of the piece and the next position of the
+        piece
+        {
+            'initial_position': (<Integer>, <Integer>),
+            'next_position': (<Integer>, <Integer>)
+        }
         """
         try:
             if not isinstance(output, np.ndarray):
@@ -374,7 +380,61 @@ class DeepLearning(object):
             }
 
         except Exception as error_message:
-            console.log(error_message, console.LOG_ERROR, self.convert_output_into_positions.__name__)
+            console.log(error_message, console.LOG_ERROR, self.convert_output_to_positions.__name__)
+            return False
+
+    def convert_positions_to_output(self, initial_position, next_position):
+        """
+        This method converts the initial and next position of a chess piece into the output of the neural network
+
+        :return: (Numpy Array) An array containing 32 elements (each either 0 or 1) telling the initial row, col,
+        and the next row ,col (Splitting the output into 4 arrays of length 8, each having the 1 value at the correct
+        index)
+        """
+        try:
+            output = np.zeros(32)
+            output[initial_position[0] + 8*0] = 1
+            output[initial_position[1] + 8*1] = 1
+            output[next_position[0] + 8*2] = 1
+            output[next_position[1] + 8*3] = 1
+
+            return output
+        except Exception as error_message:
+            console.log(error_message, console.LOG_ERROR, self.convert_positions_to_output.__name__)
+            return False
+
+    def convert_move_to_positions(self, move):
+        """
+        This method takes one move from the current pgn game and converts it into positions that could be used when
+        calling the 'move_chess_piece' method from board
+
+        :return: (Dictionary) A dictionary containing the initial position of the piece and the next position of the
+        piece
+        {
+            'initial_position': (<Integer>, <Integer>),
+            'next_position': (<Integer>, <Integer>)
+        }
+        """
+        try:
+            move = str(move).lower()
+
+            move_elements = []
+            move_elements[:0] = move
+
+            return {
+                'initial_position': (
+                    int(ord(move_elements[0]) - 96) - 1,
+                    int(move_elements[1]) - 1
+                ),
+                'next_position': (
+                    int(ord(move_elements[2]) - 96) - 1,
+                    int(move_elements[3]) - 1
+                )
+            }
+
+        except Exception as error_message:
+            console.log(error_message, console.LOG_ERROR, self.convert_move_to_positions.__name__)
+            return False
 
 
 # %% Class Tree
