@@ -460,6 +460,7 @@ class DeepLearning(object):
         try:
             X = []
             y = []
+            turn = []
 
             max_number_of_games = config.get('app.gameplay.deep.learning.max.pgn.games')
             number_of_games = 0
@@ -472,13 +473,16 @@ class DeepLearning(object):
                 dict_preprocessed_data = self.preprocess_training_data_for_current_game(game)
                 X.append(dict_preprocessed_data['X'])
                 y.append(dict_preprocessed_data['y'])
+                turn.append(dict_preprocessed_data['turn'])
 
                 number_of_games += 1
 
             return {
                 'X': np.array(X),
-                'y': np.array(y)
+                'y': np.array(y),
+                'turn': np.array(turn)
             }
+
         except Exception as error_message:
             console.log(error_message, console.LOG_ERROR, self.preprocess_training_data.__name__)
             return False
@@ -502,6 +506,9 @@ class DeepLearning(object):
 
             X = []
             y = []
+            turn = []
+            current_turn = True  # True for white, False for Black
+
             for move in game.mainline_moves():
                 move = str(move).lower()
                 dict_position = self.convert_move_to_positions(move)
@@ -511,6 +518,8 @@ class DeepLearning(object):
 
                 X.append(board_handler.convert_board_inst_to_binary())
                 y.append(self.convert_positions_to_output(initial_position, next_position))
+                turn.append(int(current_turn))
+                current_turn = not current_turn
 
                 board_handler.update_valid_moves_list()
                 if not board_handler.move_chess_piece(initial_position, next_position):
@@ -528,14 +537,15 @@ class DeepLearning(object):
 
             return {
                 'X': np.array(X),
-                'y': np.array(y)
+                'y': np.array(y),
+                'turn': np.array(turn)
             }
 
         except Exception as error_message:
             console.log(error_message, console.LOG_ERROR, self.preprocess_training_data_for_current_game.__name__)
             return False
 
-    def get_neural_network_model(self, hidden_layers=16, number_of_neurons=128):
+    def __get_neural_network_model(self, hidden_layers=16, number_of_neurons=128):
         """
         This method generates a neural network model using keras
 
@@ -552,6 +562,49 @@ class DeepLearning(object):
 
             # model.add(keras.layers.Dense(32, activation='softmax'))  # output layer (all probabilities add up to 1)
             model.add(keras.layers.Dense(32, activation='sigmoid'))  # output layer (all probabilities are independent)
+
+            model.compile(optimizer='adam',
+                          loss='sparse_categorical_crossentropy',
+                          metrics=['accuracy'])
+
+            return model
+        except Exception as error_message:
+            console.log(error_message, console.LOG_ERROR, self.__get_neural_network_model.__name__)
+            return False
+
+    def get_neural_network_model(self, hidden_layers=16, number_of_neurons=128):
+        """
+        This method generates a neural network model using keras
+
+        :param hidden_layers: (Integer) The number of hidden layers
+        :param number_of_neurons: (Integer) The number of neurons per hidden layer
+        :return: (Model) The Neural Network model
+        """
+        try:
+            # board_input = keras.layers.Input(shape=(8, 8, 12))
+            # turn_input = keras.layers.Input(shape=(1, 1))
+
+            board_input = keras.layers.Input(shape=(-1,))
+            turn_input = keras.layers.Input(shape=(-1,))
+
+            merged_inputs = keras.layers.Concatenate()([board_input, turn_input])
+
+            last_hidden_layer = None
+            new_hidden_layer = keras.layers.Dense(number_of_neurons, activation='sigmoid')(merged_inputs)
+
+            for _ in range(hidden_layers - 1):
+                last_hidden_layer = new_hidden_layer
+                new_hidden_layer = keras.layers.Dense(number_of_neurons, activation='sigmoid')(last_hidden_layer)
+
+            output_init_row = keras.layers.Dense(8, activation='softmax')(new_hidden_layer)
+            output_init_col = keras.layers.Dense(8, activation='softmax')(new_hidden_layer)
+            output_next_row = keras.layers.Dense(8, activation='softmax')(new_hidden_layer)
+            output_next_col = keras.layers.Dense(8, activation='softmax')(new_hidden_layer)
+
+            model = keras.models.Model(inputs=[board_input, turn_input], output=[
+                output_init_row, output_init_col,
+                output_next_row, output_next_col
+            ])
 
             model.compile(optimizer='adam',
                           loss='sparse_categorical_crossentropy',
