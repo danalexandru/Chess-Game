@@ -160,7 +160,7 @@ class Board:
                 if isinstance(self.board_inst[x1][y1], King) and \
                         isinstance(self.board_inst[x1][0], Rook) and \
                         self.board_inst[x1][y1].has_been_moved is False and \
-                        self.board_inst[x1][7].has_been_moved is False and \
+                        self.board_inst[x1][0].has_been_moved is False and \
                         x2 == x1 and y2 == 2:
                     big_castling = True
 

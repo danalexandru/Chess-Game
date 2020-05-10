@@ -517,7 +517,7 @@ class Pawn(Piece):
                             self.color != possible_next_move.color) or \
                             (isinstance(possible_next_move, Empty) and  # en passant
                              isinstance(board_inst[i][j - 1], Pawn) and
-                             board_inst[i][j + 1].color != self.color and
+                             board_inst[i][j - 1].color != self.color and
                              board_inst[i][j - 1].initial_move is True):
                         self.append_valid_move_to_valid_moves_list(i + k, j - 1, board_inst[i + k][j - 1].strength)
 
