@@ -460,7 +460,6 @@ class DeepLearning(object):
         try:
             X = []
             y = []
-            turn = []
 
             max_number_of_games = config.get('app.gameplay.deep.learning.max.pgn.games')
             number_of_games = 0
@@ -473,14 +472,12 @@ class DeepLearning(object):
                 dict_preprocessed_data = self.preprocess_training_data_for_current_game(game)
                 X.append(dict_preprocessed_data['X'])
                 y.append(dict_preprocessed_data['y'])
-                turn.append(dict_preprocessed_data['turn'])
 
                 number_of_games += 1
 
             return {
                 'X': np.array(X),
                 'y': np.array(y),
-                'turn': np.array(turn)
             }
 
         except Exception as error_message:
@@ -506,7 +503,6 @@ class DeepLearning(object):
 
             X = []
             y = []
-            turn = []
             current_turn = True  # True for white, False for Black
 
             for move in game.mainline_moves():
@@ -516,9 +512,8 @@ class DeepLearning(object):
                 initial_position = list(dict_position['initial_position'])
                 next_position = list(dict_position['next_position'])
 
-                X.append(board_handler.convert_board_inst_to_binary())
+                X.append([board_handler.convert_board_inst_to_binary(), int(current_turn)])
                 y.append(self.convert_positions_to_output(initial_position, next_position))
-                turn.append(int(current_turn))
                 current_turn = not current_turn
 
                 board_handler.update_valid_moves_list()
@@ -538,7 +533,6 @@ class DeepLearning(object):
             return {
                 'X': np.array(X),
                 'y': np.array(y),
-                'turn': np.array(turn)
             }
 
         except Exception as error_message:
@@ -584,24 +578,21 @@ class DeepLearning(object):
             # board_input = keras.layers.Input(shape=(8, 8, 12))
             # turn_input = keras.layers.Input(shape=(1, 1))
 
-            board_input = keras.layers.Input(shape=(-1,))
-            turn_input = keras.layers.Input(shape=(-1,))
-
-            merged_inputs = keras.layers.Concatenate()([board_input, turn_input])
+            input_layer = keras.layers.Input(shape=(None, 2))
 
             last_hidden_layer = None
-            new_hidden_layer = keras.layers.Dense(number_of_neurons, activation='sigmoid')(merged_inputs)
+            new_hidden_layer = keras.layers.Dense(number_of_neurons, activation='sigmoid')(input_layer)
 
             for _ in range(hidden_layers - 1):
                 last_hidden_layer = new_hidden_layer
                 new_hidden_layer = keras.layers.Dense(number_of_neurons, activation='sigmoid')(last_hidden_layer)
 
-            output_init_row = keras.layers.Dense(8, activation='softmax')(new_hidden_layer)
-            output_init_col = keras.layers.Dense(8, activation='softmax')(new_hidden_layer)
-            output_next_row = keras.layers.Dense(8, activation='softmax')(new_hidden_layer)
-            output_next_col = keras.layers.Dense(8, activation='softmax')(new_hidden_layer)
+            output_init_row = keras.layers.Dense(8, activation='softmax', name='init_row')(new_hidden_layer)
+            output_init_col = keras.layers.Dense(8, activation='softmax', name='init_col')(new_hidden_layer)
+            output_next_row = keras.layers.Dense(8, activation='softmax', name='next_row')(new_hidden_layer)
+            output_next_col = keras.layers.Dense(8, activation='softmax', name='next_col')(new_hidden_layer)
 
-            model = keras.models.Model(inputs=[board_input, turn_input], output=[
+            model = keras.Model(inputs=input_layer, output=[
                 output_init_row, output_init_col,
                 output_next_row, output_next_col
             ])
