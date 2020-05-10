@@ -598,7 +598,12 @@ class DeepLearning(object):
             ])
 
             model.compile(optimizer='adam',
-                          loss='sparse_categorical_crossentropy',
+                          loss={
+                              'init_row': 'binary_crossentropy',
+                              'init_col': 'binary_crossentropy',
+                              'next_row': 'binary_crossentropy',
+                              'next_col': 'binary_crossentropy'
+                          },
                           metrics=['accuracy'])
 
             return model
