@@ -164,6 +164,28 @@ class Board:
                         x2 == x1 and y2 == 2:
                     big_castling = True
 
+                # reset special pawn case: en passant
+                for i in range(self.rows):
+                    for j in range(self.cols):
+                        if isinstance(self.board_inst[i][j], Pawn) and \
+                                self.board_inst[i][j].color == self.current_color:
+                            self.board_inst[i][j].initial_move = False
+
+                # special pawn case (first move)
+                if isinstance(self.board_inst[x1][y1], Pawn) and \
+                        self.board_inst[x1][y1].initial_position is True and \
+                        abs(x2 - x1) == 2:
+                    self.board_inst[x1][y1].initial_move = True
+
+                # special case: en passant
+                if isinstance(self.board_inst[x1][y1], Pawn) and \
+                        isinstance(self.board_inst[x2][y2], Empty) and \
+                        isinstance(self.board_inst[x1][y2], Pawn) and \
+                        self.board_inst[x1][y2].color != self.board_inst[x1][y1].color and \
+                        abs(y2 - y1) == 1:
+                    self.score[self.board_inst[x1][y1].color] += self.board_inst[x1][y2].strength
+                    self.board_inst[x1][y2] = Empty(x1, y2, None)
+
                 self.board_inst[x1][y1].move(next_position)
                 self.board_inst[x1][y1].is_selected = False
                 self.change_current_color(self.board_inst[x1][y1].color)

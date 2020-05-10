@@ -469,6 +469,7 @@ class Pawn(Piece):
     def __init__(self, row, col, color):
         super().__init__(row, col, color)
         self.initial_position = True
+        self.initial_move = False
         self.strength = 1
 
     def update_valid_moves_list(self, board_inst):
@@ -502,14 +503,22 @@ class Pawn(Piece):
                 # DIAGONAL
                 if j < 7:
                     possible_next_move = board_inst[i + k][j + 1]
-                    if not isinstance(possible_next_move, Empty) and \
-                            self.color != possible_next_move.color:
+                    if (not isinstance(possible_next_move, Empty) and
+                        self.color != possible_next_move.color) or \
+                            (isinstance(possible_next_move, Empty) and  # en passant
+                             isinstance(board_inst[i][j + 1], Pawn) and
+                             board_inst[i][j + 1].color != self.color and
+                             board_inst[i][j + 1].initial_move is True):
                         self.append_valid_move_to_valid_moves_list(i + k, j + 1, board_inst[i + k][j + k].strength)
 
                 if j > 0:
                     possible_next_move = board_inst[i + k][j - 1]
-                    if not isinstance(possible_next_move, Empty) and \
-                            self.color != possible_next_move.color:
+                    if (not isinstance(possible_next_move, Empty) and
+                            self.color != possible_next_move.color) or \
+                            (isinstance(possible_next_move, Empty) and  # en passant
+                             isinstance(board_inst[i][j - 1], Pawn) and
+                             board_inst[i][j + 1].color != self.color and
+                             board_inst[i][j - 1].initial_move is True):
                         self.append_valid_move_to_valid_moves_list(i + k, j - 1, board_inst[i + k][j - 1].strength)
 
             if self.initial_position is True:
