@@ -461,14 +461,19 @@ class DeepLearning(object):
             X = []
             y = []
 
+            max_number_of_games = config.get('app.gameplay.deep.learning.max.pgn.games')
+            number_of_games = 0
             while True:
                 game = chess.pgn.read_game(pgn)
-                if game is None:
+                if game is None or \
+                        number_of_games >= max_number_of_games:
                     break  # end of the file
 
                 dict_preprocessed_data = self.preprocess_training_data_for_current_game(game)
                 X.append(dict_preprocessed_data['X'])
                 y.append(dict_preprocessed_data['y'])
+
+                number_of_games += 1
 
             return {
                 'X': np.array(X),
@@ -510,7 +515,8 @@ class DeepLearning(object):
                 board_handler.update_valid_moves_list()
                 if not board_handler.move_chess_piece(initial_position, next_position):
                     console.log('The move of the \'%s\' chess piece from (%d, %d) to (%d, %d) was unsuccessful.' % (
-                        str(board_handler.board_inst[initial_position[0]][initial_position[1]].image_index).capitalize(),
+                        str(board_handler.board_inst[initial_position[0]][
+                                initial_position[1]].image_index).capitalize(),
                         initial_position[0], initial_position[1],
                         next_position[0], next_position[1]
                     ),
@@ -544,7 +550,8 @@ class DeepLearning(object):
             for _ in range(hidden_layers):
                 model.add(keras.layers.Dense(number_of_neurons, activation='sigmoid'))  # hidden layers
 
-            model.add(keras.layers.Dense(32, activation='softmax'))  # output layer
+            # model.add(keras.layers.Dense(32, activation='softmax'))  # output layer (all probabilities add up to 1)
+            model.add(keras.layers.Dense(32, activation='sigmoid'))  # output layer (all probabilities are independent)
 
             model.compile(optimizer='adam',
                           loss='sparse_categorical_crossentropy',
