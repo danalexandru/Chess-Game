@@ -392,6 +392,38 @@ class DeepLearning(object):
             console.log(error_message, console.LOG_ERROR, self.convert_output_to_positions.__name__)
             return False
 
+    def convert_output_to_positions_v2(self, output):
+        """
+        This method converts the output of the neural network into the next move that should be made by the bot
+
+        :param output: (Numpy Array) An array containing 8x4 elements (each either 0 or 1) telling the initial row, col,
+        and the next row ,col
+        :return: (Dictionary) A dictionary containing the initial position of the piece and the next position of the
+        piece
+        {
+            'initial_position': (<Integer>, <Integer>),
+            'next_position': (<Integer>, <Integer>)
+        }
+        """
+        try:
+            if not isinstance(output, np.ndarray):
+                output = np.array(output)
+
+            return {
+                'initial_position': (
+                    np.argmax(output[:, 0]),
+                    np.argmax(output[:, 1])
+                ),
+                'next_position': (
+                    np.argmax(output[:, 2]),
+                    np.argmax(output[:, 3])
+                )
+            }
+
+        except Exception as error_message:
+            console.log(error_message, console.LOG_ERROR, self.convert_output_to_positions_v2.__name__)
+            return False
+
     def convert_positions_to_output(self, initial_position, next_position):
         """
         This method converts the initial and next position of a chess piece into the output of the neural network
@@ -410,6 +442,26 @@ class DeepLearning(object):
             return output
         except Exception as error_message:
             console.log(error_message, console.LOG_ERROR, self.convert_positions_to_output.__name__)
+            return False
+
+    def convert_positions_to_output_v2(self, initial_position, next_position):
+        """
+        This method converts the initial and next position of a chess piece into the output of the neural network
+
+        :return: (Numpy Array) An array containing 32 elements (each either 0 or 1) telling the initial row, col,
+        and the next row ,col (Splitting the output into 4 arrays of length 8, each having the 1 value at the correct
+        index)
+        """
+        try:
+            output = np.zeros((8, 4))
+            output[initial_position[0]][0] = 1
+            output[initial_position[1]][1] = 1
+            output[next_position[0]][2] = 1
+            output[next_position[1]][3] = 1
+
+            return output
+        except Exception as error_message:
+            console.log(error_message, console.LOG_ERROR, self.convert_positions_to_output_v2.__name__)
             return False
 
     def convert_move_to_positions(self, move):
@@ -513,7 +565,7 @@ class DeepLearning(object):
                 next_position = list(dict_position['next_position'])
 
                 X.append([board_handler.convert_board_inst_to_binary(), int(current_turn)])
-                y.append(self.convert_positions_to_output(initial_position, next_position))
+                y.append(self.convert_positions_to_output_v2(initial_position, next_position))
                 current_turn = not current_turn
 
                 board_handler.update_valid_moves_list()
