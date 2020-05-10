@@ -564,7 +564,11 @@ class DeepLearning(object):
                 initial_position = list(dict_position['initial_position'])
                 next_position = list(dict_position['next_position'])
 
-                X.append([board_handler.convert_board_inst_to_binary(), int(current_turn)])
+                # X.append([board_handler.convert_board_inst_to_binary(), int(current_turn)])
+                X.append(np.concatenate([
+                        np.array(board_handler.convert_board_inst_to_binary()).flatten(),
+                        np.array([int(current_turn)])
+                    ]))
                 y.append(self.convert_positions_to_output_v2(initial_position, next_position))
                 current_turn = not current_turn
 
@@ -630,7 +634,7 @@ class DeepLearning(object):
             # board_input = keras.layers.Input(shape=(8, 8, 12))
             # turn_input = keras.layers.Input(shape=(1, 1))
 
-            input_layer = keras.layers.Input(shape=(None, 2))
+            input_layer = keras.layers.Input(shape=(769, ))
 
             last_hidden_layer = None
             new_hidden_layer = keras.layers.Dense(number_of_neurons, activation='sigmoid')(input_layer)
