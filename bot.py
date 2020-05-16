@@ -318,7 +318,7 @@ class DeepLearning(object):
     """
 
     def __init__(self):
-        pass
+        self.model = None
 
     def find_next_best_move(self, board_inst, current_score):
         """
@@ -334,12 +334,7 @@ class DeepLearning(object):
         }
         """
         try:
-            pgn = self.get_pgn_games()
-
-            dict_preprocessed_data = self.preprocess_training_data(pgn)
-            [dict_training_data, dict_test_data] = self.get_split_preprocessed_data(dict_preprocessed_data, 0.2)
-
-            return {}
+            pass
         except Exception as error_message:
             console.log(error_message, console.LOG_ERROR, self.find_next_best_move.__name__)
             return False
@@ -351,8 +346,8 @@ class DeepLearning(object):
         :returns: (TextIOWrapper) The pgn file with all games required for training
         """
         try:
-            pgn = open(os.path.join(config.get('app.folder.training.data'),
-                                    config.get('app.file.training.data')))
+            pgn = open(os.path.join(config.get('app.folder.deep.learning.training.data'),
+                                    config.get('app.file.deep.learning.training.data')))
 
             return pgn
         except Exception as error_message:
@@ -692,25 +687,54 @@ class DeepLearning(object):
             console.log(error_message, console.LOG_ERROR, self.get_split_preprocessed_data.__name__)
             return False
 
-    # TODO the following methods
+    # TODO 'build_model' method
     def build_model(self):
-        pass
+        """
+        This method builds a new model based on the pgn file from config: "app.file.deep.learning.training.data" and
+        saves it in the "models" folder (if the "app.save.deep.learning.model" property is set to True)
 
+        :returns: (Boolean) True or False
+        """
+        try:
+            pgn = self.get_pgn_games()
+
+            dict_preprocessed_data = self.preprocess_training_data(pgn)
+
+            if config.get(""):
+                self.save_preprocessed_data()  # Missing preprocessed data
+
+            [dict_training_data, dict_test_data] = self.get_split_preprocessed_data(dict_preprocessed_data, 0.2)
+            self.model = self.get_neural_network_model(hidden_layers=16, number_of_neurons=128)
+
+            if config.get("app.save.deep.learning.model"):
+                self.save_model()  # Missing model
+
+            return True
+        except Exception as error_message:
+            console.log(error_message, console.LOG_ERROR, self.build_model.__name__)
+            return False
+
+    # TODO 'save_model' method
     def save_model(self):
         pass
 
+    # TODO 'load_model' method
     def load_model(self):
         pass
 
+    # TODO 'train_model' method
     def train_model(self):
         pass
 
+    # TODO 'test_model' method
     def test_model(self):
         pass
 
+    # TODO 'predict_next_move' method
     def predict_next_move(self):
         pass
 
+    # TODO 'save_preprocessed_data' method
     def save_preprocessed_data(self):
         pass
 
@@ -783,8 +807,8 @@ def run_debug_mode():
     :return: Boolean (True or False)
     """
     try:
-        # Call bot
-        if False:
+        # Test Brute Force algorithm
+        if config.get("app.test.brute.force.algorithm"):
             if config.get('app.gameplay.mode.singleplayer.debug.mode') is not True:
                 console.log('Unexpected entry on the %s method.', console.LOG_WARNING, run_debug_mode.__name__)
                 return False
@@ -797,10 +821,9 @@ def run_debug_mode():
                 board_handler.score
             )
 
-        if True:
-            deep_learning_handler.find_next_best_move(None, None)
-
-        # Test Commit & Push 123
+        # Test Deep Learning algorithm
+        if config.get("app.test.deep.learning.algorithm"):
+            deep_learning_handler.build_model()
 
         return True
     except Exception as error_message:
