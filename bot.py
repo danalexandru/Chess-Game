@@ -692,6 +692,28 @@ class DeepLearning(object):
             console.log(error_message, console.LOG_ERROR, self.get_split_preprocessed_data.__name__)
             return False
 
+    # TODO the following methods
+    def build_model(self):
+        pass
+
+    def save_model(self):
+        pass
+
+    def load_model(self):
+        pass
+
+    def train_model(self):
+        pass
+
+    def test_model(self):
+        pass
+
+    def predict_next_move(self):
+        pass
+
+    def save_preprocessed_data(self):
+        pass
+
 
 # %% Class Tree
 class Tree(object):
