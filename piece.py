@@ -1,12 +1,13 @@
-# region imports
-from globals import *
+"""
+This script will contain all the individual logic for each chess piece type, regarding selecting, validating and moving
+set chess piece
+"""
+# %% Imports
 import copy
+from globals import *
 
 
-# endregion imports
-
-
-# region class Piece
+# %% Class Piece
 class Piece(object):
     image_index = ''
     x_position = CHESSBOARD_INITIAL_POSITION[0]
@@ -107,7 +108,7 @@ class Piece(object):
             console.log(error_message, console.LOG_ERROR, self.reset_valid_moves_list.__name__)
             return False
 
-    def append_valid_move_to_valid_moves_list(self, valid_row, valid_col):
+    def append_valid_move_to_valid_moves_list(self, valid_row, valid_col, strength=0):
         """
         This method updates the \"valid_moves_list\" of the current chess piece. It appends a new
                     dictionary to the \"valid_moves_list\". The dictionary has the following format:
@@ -118,12 +119,14 @@ class Piece(object):
 
         :param valid_row: The row position of a valid next move
         :param valid_col: The column position of a valid next move
+        :param strength: The point increase should that chess piece be moved in this valid position
         :return: None
         """
         try:
             self.valid_moves_list.append({
                 'row': valid_row,
-                'col': valid_col
+                'col': valid_col,
+                'strength': strength
             })
 
             return True
@@ -153,7 +156,18 @@ class Piece(object):
                 'col': position[1]
             }
 
-            if dict_position in self.valid_moves_list:
+            def get_valid_moves_list_positions(valid_moves_list):
+                temp_valid_moves_list = []
+
+                for move in valid_moves_list:
+                    temp_valid_moves_list.append({
+                        'row': move['row'],
+                        'col': move['col']
+                    })
+
+                return temp_valid_moves_list
+
+            if dict_position in get_valid_moves_list_positions(self.valid_moves_list):
                 return True
 
             return False
@@ -162,12 +176,14 @@ class Piece(object):
             return False
 
 
-# endregion class Piece
+# %% Pieces
+
+# %% Empty
+class Empty(Piece):
+    pass
 
 
-# region Pieces
-
-# region Bishop
+# %% Bishop
 class Bishop(Piece):
     image_index = 'bishop'
 
@@ -200,11 +216,11 @@ class Bishop(Piece):
                         break
 
                     possible_next_move = board_inst[x][y]
-                    if isinstance(possible_next_move, int):
-                        self.append_valid_move_to_valid_moves_list(x, y)
+                    if isinstance(possible_next_move, Empty):
+                        self.append_valid_move_to_valid_moves_list(x, y, board_inst[x][y].strength)
                         [x, y] = [x + direction[0], y + direction[1]]
                     elif possible_next_move.color != self.color:
-                        self.append_valid_move_to_valid_moves_list(x, y)
+                        self.append_valid_move_to_valid_moves_list(x, y, board_inst[x][y].strength)
                         break
                     else:
                         break
@@ -213,16 +229,14 @@ class Bishop(Piece):
             return False
 
 
-# endregion Bishop
-
-
-# region King
+# %% King
 class King(Piece):
     image_index = 'king'
 
     def __init__(self, row, col, color):
         super().__init__(row, col, color)
         self.strength = 90
+        self.has_been_moved = False
 
     def update_valid_moves_list(self, board_inst):
         """
@@ -246,13 +260,33 @@ class King(Piece):
                     continue
 
                 possible_next_move = board_inst[x][y]
-                if isinstance(possible_next_move, int) or \
+                if isinstance(possible_next_move, Empty) or \
                         self.color != possible_next_move.color:
 
                     if self.validate_next_position(board_inst, x, y) is True:
-                        self.append_valid_move_to_valid_moves_list(x, y)
+                        self.append_valid_move_to_valid_moves_list(x, y, board_inst[x][y].strength)
 
-            return True
+            # small castling
+            if self.has_been_moved is False and \
+                    self.col == 4 and \
+                    isinstance(board_inst[self.row][7], Rook) and \
+                    board_inst[self.row][7].has_been_moved is False and \
+                    isinstance(board_inst[self.row][5], Empty) and \
+                    isinstance(board_inst[self.row][6], Empty) and \
+                    self.validate_next_position(board_inst, self.row, 6) is True:
+                self.append_valid_move_to_valid_moves_list(self.row, 6, 0)
+
+            # long castling
+            if self.has_been_moved is False and \
+                    self.col == 4 and \
+                    isinstance(board_inst[self.row][0], Rook) and \
+                    board_inst[self.row][0].has_been_moved is False and \
+                    isinstance(board_inst[self.row][3], Empty) and \
+                    isinstance(board_inst[self.row][2], Empty) and \
+                    isinstance(board_inst[self.row][1], Empty) and \
+                    self.validate_next_position(board_inst, self.row, 2) is True:
+                self.append_valid_move_to_valid_moves_list(self.row, 2, 0)
+                return True
         except Exception as error_message:
             console.log(error_message, console.LOG_ERROR, self.update_valid_moves_list.__name__)
             return False
@@ -271,54 +305,55 @@ class King(Piece):
             rows = 8
             cols = 8
 
-            possible_next_move = {
-                'row': next_row,
-                'col': next_col
-            }
+            from board import Board
+            board_handler = Board(8, 8)
+            board_handler.board_inst = copy.deepcopy(board_inst)
 
-            if self.color == 'white':
-                pawn_check_direction = 1
-            elif self.color == 'black':
-                pawn_check_direction = -1
-            else:
-                return False
+            board_handler.board_inst[self.row][self.col] = Empty(self.row, self.col, None)
+            board_handler.board_inst[next_row][next_col] = Pawn(next_row, next_col, self.color)
+            board_handler.update_valid_moves_list()
 
             for i in range(rows):
                 for j in range(cols):
-                    if not isinstance(board_inst[i][j], int) and \
-                            board_inst[i][j].color != self.color:
-                        if board_inst[i][j].image_index == 'pawn' and \
-                                0 <= i + pawn_check_direction <= 7:
-                            list_pawn_check_moves = []
-                            if j - 1 >= 0:
-                                list_pawn_check_moves.append({
-                                    'row': i + pawn_check_direction,
-                                    'col': j - 1
-                                })
+                    if isinstance(board_handler.board_inst[i][j], Empty) or \
+                            board_handler.board_inst[i][j].color == self.color or \
+                            len(board_handler.board_inst[i][j].valid_moves_list) == 0:
+                        continue
 
-                            if j + 1 <= 7:
-                                list_pawn_check_moves.append({
-                                    'row': i + pawn_check_direction,
-                                    'col': j + 1
-                                })
+                    for move in board_handler.board_inst[i][j].valid_moves_list:
+                        if move['row'] == next_row and \
+                                move['col'] == next_col:
 
-                            if possible_next_move in list_pawn_check_moves:
-                                return False
+                            # special case for the Pawns
+                            if isinstance(board_handler.board_inst[i][j], Pawn) and \
+                                    next_col == j:
+                                continue
 
-                        elif possible_next_move in board_inst[i][j].valid_moves_list:
                             return False
-
             return True
 
         except Exception as error_message:
             console.log(error_message, console.LOG_ERROR, self.validate_next_position.__name__)
             return False
 
+    def move(self, position):
+        """
+        This function is used to change the position of the piece
 
-# endregion King
+        :param position: an Array with 2 Integers (the new x_position and y_position)
+        :return: Boolean (True or False)
+        """
+        try:
+            super().move(position)
+            self.has_been_moved = True
+
+            return True
+        except Exception as error_message:
+            console.log(error_message, console.LOG_ERROR, self.move.__name__)
+            return False
 
 
-# region Knight
+# %% Knight
 class Knight(Piece):
     image_index = 'knight'
 
@@ -369,9 +404,9 @@ class Knight(Piece):
             for position in list_positions:
                 (x, y) = (position['x'], position['y'])
                 possible_next_move = board_inst[x][y]
-                if isinstance(possible_next_move, int) or \
+                if isinstance(possible_next_move, Empty) or \
                         self.color != possible_next_move.color:
-                    self.append_valid_move_to_valid_moves_list(x, y)
+                    self.append_valid_move_to_valid_moves_list(x, y, board_inst[x][y].strength)
 
             return True
         except Exception as error_message:
@@ -379,10 +414,7 @@ class Knight(Piece):
             return False
 
 
-# endregion Knight
-
-
-# region Queen
+# %% Queen
 class Queen(Piece):
     image_index = 'queen'
 
@@ -415,11 +447,11 @@ class Queen(Piece):
                         break
 
                     possible_next_move = board_inst[x][y]
-                    if isinstance(possible_next_move, int):
-                        self.append_valid_move_to_valid_moves_list(x, y)
+                    if isinstance(possible_next_move, Empty):
+                        self.append_valid_move_to_valid_moves_list(x, y, board_inst[x][y].strength)
                         [x, y] = [x + direction[0], y + direction[1]]
                     elif possible_next_move.color != self.color:
-                        self.append_valid_move_to_valid_moves_list(x, y)
+                        self.append_valid_move_to_valid_moves_list(x, y, board_inst[x][y].strength)
                         break
                     else:
                         break
@@ -430,16 +462,14 @@ class Queen(Piece):
             return False
 
 
-# endregion Queen
-
-
-# region Pawn
+# %% Pawn
 class Pawn(Piece):
     image_index = 'pawn'
 
     def __init__(self, row, col, color):
         super().__init__(row, col, color)
         self.initial_position = True
+        self.initial_move = False
         self.strength = 1
 
     def update_valid_moves_list(self, board_inst):
@@ -467,28 +497,36 @@ class Pawn(Piece):
                     (self.color == 'white' and i > 0):
                 # FORWARD
                 possible_next_move = board_inst[i + k][j]
-                if isinstance(possible_next_move, int):
-                    self.append_valid_move_to_valid_moves_list(i + k, j)
+                if isinstance(possible_next_move, Empty):
+                    self.append_valid_move_to_valid_moves_list(i + k, j, board_inst[i + k][j].strength)
 
                 # DIAGONAL
                 if j < 7:
                     possible_next_move = board_inst[i + k][j + 1]
-                    if not isinstance(possible_next_move, int) and \
-                            self.color != possible_next_move.color:
-                        self.append_valid_move_to_valid_moves_list(i + k, j + 1)
+                    if (not isinstance(possible_next_move, Empty) and
+                        self.color != possible_next_move.color) or \
+                            (isinstance(possible_next_move, Empty) and  # en passant
+                             isinstance(board_inst[i][j + 1], Pawn) and
+                             board_inst[i][j + 1].color != self.color and
+                             board_inst[i][j + 1].initial_move is True):
+                        self.append_valid_move_to_valid_moves_list(i + k, j + 1, board_inst[i + k][j + k].strength)
 
                 if j > 0:
                     possible_next_move = board_inst[i + k][j - 1]
-                    if not isinstance(possible_next_move, int) and \
-                            self.color != possible_next_move.color:
-                        self.append_valid_move_to_valid_moves_list(i + k, j - 1)
+                    if (not isinstance(possible_next_move, Empty) and
+                            self.color != possible_next_move.color) or \
+                            (isinstance(possible_next_move, Empty) and  # en passant
+                             isinstance(board_inst[i][j - 1], Pawn) and
+                             board_inst[i][j - 1].color != self.color and
+                             board_inst[i][j - 1].initial_move is True):
+                        self.append_valid_move_to_valid_moves_list(i + k, j - 1, board_inst[i + k][j - 1].strength)
 
             if self.initial_position is True:
                 if (self.color == 'black' and i == 1) or \
                         (self.color == 'white' and i == 6):
                     possible_next_move = board_inst[i + 2 * k][j]
-                    if isinstance(possible_next_move, int):
-                        self.append_valid_move_to_valid_moves_list(i + 2 * k, j)
+                    if isinstance(possible_next_move, Empty):
+                        self.append_valid_move_to_valid_moves_list(i + 2 * k, j, board_inst[i + 2 * k][j].strength)
 
             return True
         except Exception as error_message:
@@ -511,16 +549,14 @@ class Pawn(Piece):
             return False
 
 
-# endregion Pawn
-
-
-# region Rook
+# %% Rook
 class Rook(Piece):
     image_index = 'rook'
 
     def __init__(self, row, col, color):
         super().__init__(row, col, color)
         self.strength = 5
+        self.has_been_moved = False
 
     def update_valid_moves_list(self, board_inst):
         """
@@ -547,11 +583,11 @@ class Rook(Piece):
                         break
 
                     possible_next_move = board_inst[x][y]
-                    if isinstance(possible_next_move, int):
-                        self.append_valid_move_to_valid_moves_list(x, y)
+                    if isinstance(possible_next_move, Empty):
+                        self.append_valid_move_to_valid_moves_list(x, y, board_inst[x][y].strength)
                         [x, y] = [x + direction[0], y + direction[1]]
                     elif possible_next_move.color != self.color:
-                        self.append_valid_move_to_valid_moves_list(x, y)
+                        self.append_valid_move_to_valid_moves_list(x, y, board_inst[x][y].strength)
                         break
                     else:
                         break
@@ -560,6 +596,19 @@ class Rook(Piece):
         except Exception as error_message:
             console.log(error_message, console.LOG_ERROR, self.update_valid_moves_list.__name__)
             return False
-# endregion Rook
 
-# endregion Pieces
+    def move(self, position):
+        """
+        This function is used to change the position of the piece
+
+        :param position: an Array with 2 Integers (the new x_position and y_position)
+        :return: Boolean (True or False)
+        """
+        try:
+            super().move(position)
+            self.has_been_moved = True
+
+            return True
+        except Exception as error_message:
+            console.log(error_message, console.LOG_ERROR, self.move.__name__)
+            return False

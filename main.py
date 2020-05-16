@@ -1,16 +1,14 @@
 """
-Documentation:
-    This file will constitute the basis on which all the python game will be constructed
+This script will constitute the basis on which all the python game will be constructed
 """
 
-# region imports
+# %% Imports
 from board import Board
 
 from globals import *
-# endregion imports
 
 
-# region local functions
+# %% Local functions
 def redraw_game_window():
     """
     This function draws the chess board, as well as all of the chess pieces that are still present in
@@ -23,8 +21,9 @@ def redraw_game_window():
         win.blit(board, (0, 0))
         # find_chessboard_edges()
 
-        board_inst.draw(win)
+        board_handler.draw(win)
         draw_player_led()
+        draw_player_score()
         # find_chessboard_edges()
 
         pygame.display.update()
@@ -40,7 +39,7 @@ def draw_player_led():
     :return: Boolean (True or False)
     """
     try:
-        current_color = board_inst.current_color
+        current_color = board_handler.current_color
         if current_color == 'white' or current_color == 'black':
             pygame.draw.circle(win, PLAYER_LED[current_color]['color'],
                                PLAYER_LED['initial_position'],
@@ -55,10 +54,44 @@ def draw_player_led():
     except Exception as error_message:
         console.log(error_message, console.LOG_ERROR, draw_player_led.__name__)
         return False
-# endregion local functions
 
 
-# region debug
+def draw_player_score():
+    """
+    This function draws the values of the players scores
+
+    :return Boolean (True or False)
+    """
+    try:
+        font = pygame.font.SysFont('Calibri', 25)
+
+        score_panels = {
+            'black': {
+                'panel': pygame.Surface((123, 50), pygame.SRCALPHA, 32),
+                'text': font.render('Score: %d' % board_handler.score['black'], True, (255, 255, 255))
+            },
+            'white': {
+                'panel': pygame.Surface((123, 50), pygame.SRCALPHA, 32),
+                'text': font.render('Score: %d' % board_handler.score['white'], True, (0, 0, 0))
+            }
+        }
+
+        score_panels['black']['panel'].fill((0, 0, 0, 100))
+        score_panels['white']['panel'].fill((255, 255, 255, 100))
+
+        win.blit(score_panels['black']['panel'], (2, 80))
+        win.blit(score_panels['black']['text'], (20, 90))
+
+        win.blit(score_panels['white']['panel'], (2, 470))
+        win.blit(score_panels['white']['text'], (20, 480))
+
+        return True
+    except Exception as error_message:
+        console.log(error_message, console.LOG_ERROR, draw_player_score.__name__)
+        return False
+
+
+# %% Debug
 def find_chessboard_edges():
     """
     Debugging function used to identify the location of the chessboard inside the image, alongside the
@@ -75,9 +108,9 @@ def find_chessboard_edges():
         for i in range(8):
             for j in range(8):
                 pygame.draw.rect(win, (0, 255, 0), [CHESSBOARD_INITIAL_POSITION[0] +
-                                                    j*PIECE_WIDTH,
+                                                    j * PIECE_WIDTH,
                                                     CHESSBOARD_INITIAL_POSITION[1] +
-                                                    i*PIECE_HEIGHT,
+                                                    i * PIECE_HEIGHT,
                                                     PIECE_WIDTH, PIECE_HEIGHT],
                                  1)
 
@@ -85,10 +118,8 @@ def find_chessboard_edges():
         console.log(error_message, console.LOG_ERROR, find_chessboard_edges.__name__)
         return False
 
-# endregion debug
 
-
-# region main
+# %% Main
 def main():
     """
     This function calls the 'redraw_game_window' at every iteration in order to redraw the chess board.
@@ -101,12 +132,14 @@ def main():
         clock = pygame.time.Clock()
         run = True
 
-        global win, board_inst
+        global win, board_handler
         win = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 
-        board_inst = Board(8, 8)
+        board_handler = Board(8, 8)
 
         position = False
+
+        pygame.font.init()
         while run:
             clock.tick(10)
             redraw_game_window()
@@ -125,10 +158,10 @@ def main():
                     position = click_on_chessboard(mouse_current_position)
 
                     if position is not False:
-                        board_inst.select_chess_piece(position)
+                        board_handler.select_chess_piece(position)
 
                     if position is not False and last_position is not False:
-                        if board_inst.move_chess_piece(last_position, position) is True:
+                        if board_handler.move_chess_piece(last_position, position) is True:
                             position = False
 
         return True
@@ -139,6 +172,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-
-# endregion main
