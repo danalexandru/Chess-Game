@@ -665,8 +665,25 @@ class DeepLearning(object):
 
     def get_split_preprocessed_data(self, dict_preprocessed_data, test_size=0.2):
         """
-        This method splits the preprocessed data aquired from the 'preprocess_training_data' method into training and
+        This method splits the preprocessed data acquired from the 'preprocess_training_data' method into training and
         test data
+
+        :param dict_preprocessed_data: (Dictionary) 2 Elements representing the preprocessed input and output layers of
+        the neural network
+        {
+            'X': <Numpy Array> (Nx(Mx(8x8x12))),
+            'y': <Numpy Array> (Nx(Mx(2x2x8)))
+        }
+        :param test_size: (Number) The percentage of the dataset that should be allocated for testing instead of
+        training
+        :return: (List) A list of 2 dictionaries, containing the preprocessed data split into training and test
+        [{
+            'X': <Numpy Array> (N1x(Mx(8x8x12))),
+            'y': <Numpy Array> (N1x(Mx(2x2x8)))
+        },{
+            'X': <Numpy Array> (N2x(Mx(8x8x12))),
+            'y': <Numpy Array> (N2x(Mx(2x2x8)))
+        }]
         """
         try:
             (X_train, X_test, y_train, y_test) = train_test_split(
@@ -717,19 +734,13 @@ class DeepLearning(object):
             # Split preprocessed data into training && test
             [dict_training_data, dict_test_data] = self.get_split_preprocessed_data(dict_preprocessed_data, 0.2)
 
-            if config.get('app.build.deep.learning.model'):
-                self.model = self.get_neural_network_model(hidden_layers=16, number_of_neurons=128)
-            elif config.get('app.load.deep.learning.model'):
-                self.model = self.load_model()
-            else:
-                console.log('Both configs for building and loading the model are set to False.',
-                            console.LOG_WARNING,
-                            self.build_model.__name__)
-                return False
+            # Generate model
+            model = self.get_neural_network_model(hidden_layers=16, number_of_neurons=128)
+            model = self.train_model(model, dict_training_data, epochs=100, batch_size=32)
 
             # Save model
             if config.get('app.save.deep.learning.model'):
-                self.save_model(self.model)
+                self.save_model(model)
 
             return True
         except Exception as error_message:
@@ -781,9 +792,38 @@ class DeepLearning(object):
             console.log(error_message, console.LOG_ERROR, self.load_model.__name__)
             return False
 
-    # TODO 'train_model' method
-    def train_model(self):
-        pass
+    def train_model(self, model, dict_training_data, epochs=100, batch_size=32):
+        """
+        This method trains the model generated using the 'get_neural_network_model' method
+
+        :param model: (Keras Model) The Neural Network model
+        :param dict_training_data:(Dictionary) 2 Elements representing the preprocessed input and output layers of the
+        neural network (only the training data)
+        {
+            'X': <Numpy Array> (N1x(Mx(8x8x12))),
+            'y': <Numpy Array> (N1x(Mx(2x2x8)))
+        }
+        :param epochs: (Integer) A hyperparameter that defines the number of time the learning algorithm will work
+        through the entire training dataset.
+        :param batch_size: (Integer) A hyperparameter that defines the number of samples to work through before
+        updating the internal model parameters.
+        :return: (Keras Model) The Neural Network model
+        """
+        try:
+            # Get preprocessed data
+            X = dict_training_data['X']
+            y = dict_training_data['y']
+
+            X = np.array([j for i in X for j in i])
+            y = np.array([j for i in y for j in i])
+
+            # Merge preprocessed data
+            model.fit(X, [y[:, :, 0], y[:, :, 1], y[:, :, 2], y[:, :, 3]], epochs=epochs, batch_size=batch_size)
+
+            return model
+        except Exception as error_message:
+            console.log(error_message, console.LOG_ERROR, self.train_model.__name__)
+            return False
 
     # TODO 'test_model' method
     def test_model(self):
@@ -854,8 +894,8 @@ class DeepLearning(object):
                                        config.get('app.file.deep.learning.preprocessed.data.y'))
 
             # Load numpy data
-            X = np.load(x_file_path)
-            y = np.load(y_file_path)
+            X = np.load(x_file_path, allow_pickle=True)
+            y = np.load(y_file_path, allow_pickle=True)
 
             return {
                 'X': X,
