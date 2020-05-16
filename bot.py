@@ -699,15 +699,27 @@ class DeepLearning(object):
         try:
             pgn = self.get_pgn_games()
 
-            dict_preprocessed_data = self.preprocess_training_data(pgn)
+            # Get preprocessed data
+            if config.get('app.build.deep.learning.preprocessed.data'):
+                dict_preprocessed_data = self.preprocess_training_data(pgn)
+            elif config.get('app.load.deep.learning.preprocessed.data'):
+                dict_preprocessed_data = self.load_preprocessed_data()
+            else:
+                console.log('Both configs for building and loading the preprocessed data are set to False.',
+                            console.LOG_WARNING,
+                            self.build_model.__name__)
+                return False
 
-            if config.get(""):
+            # Save preprocessed data
+            if config.get('app.save.deep.learning.preprocessed.data'):
                 self.save_preprocessed_data(dict_preprocessed_data)
 
+            # Split preprocessed data into training && test
             [dict_training_data, dict_test_data] = self.get_split_preprocessed_data(dict_preprocessed_data, 0.2)
             self.model = self.get_neural_network_model(hidden_layers=16, number_of_neurons=128)
 
-            if config.get("app.save.deep.learning.model"):
+            # Save model
+            if config.get('app.save.deep.learning.model'):
                 self.save_model()  # Missing model
 
             return True
@@ -735,7 +747,6 @@ class DeepLearning(object):
     def predict_next_move(self):
         pass
 
-    # TODO 'save_preprocessed_data' method
     def save_preprocessed_data(self, dict_preprocessed_data):
         """
         This method saves the preprocessed data to the 'preprocessed_data' folder as 2 numpy files
@@ -773,6 +784,39 @@ class DeepLearning(object):
             return True
         except Exception as error_message:
             console.log(error_message, console.LOG_ERROR, self.save_preprocessed_data.__name__)
+            return False
+
+    def load_preprocessed_data(self):
+        """
+        This method loads the current preprocessed data saved on disk at the ''
+
+        :return: (Dictionary) 2 Elements representing the preprocessed input and output layers of the neural network
+        {
+            'X': <Numpy Array> (Nx(Mx(8x8x12))),
+            'y': <Numpy Array> (Nx(Mx(2x2x8)))
+        }
+        """
+        try:
+            # Create file paths
+            x_file_path = os.path.join(config.get('app.folder.deep.learning.models'),
+                                       config.get('app.folder.deep.learning.preprocessed.data'),
+                                       config.get('app.file.deep.learning.preprocessed.data.x'))
+
+            y_file_path = os.path.join(config.get('app.folder.deep.learning.models'),
+                                       config.get('app.folder.deep.learning.preprocessed.data'),
+                                       config.get('app.file.deep.learning.preprocessed.data.y'))
+
+            # Load numpy data
+            X = np.load(x_file_path)
+            y = np.load(y_file_path)
+
+            return {
+                'X': X,
+                'y': y
+            }
+
+        except Exception as error_message:
+            console.log(error_message, console.LOG_ERROR, self.load_preprocessed_data.__name__)
             return False
 
 
