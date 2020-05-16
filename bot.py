@@ -562,9 +562,9 @@ class DeepLearning(object):
 
                 # X.append([board_handler.convert_board_inst_to_binary(), int(current_turn)])
                 X.append(np.concatenate([
-                        np.array(board_handler.convert_board_inst_to_binary()).flatten(),
-                        np.array([int(current_turn)])
-                    ]))
+                    np.array(board_handler.convert_board_inst_to_binary()).flatten(),
+                    np.array([int(current_turn)])
+                ]))
                 y.append(self.convert_positions_to_output_v2(initial_position, next_position))
                 current_turn = not current_turn
 
@@ -630,7 +630,7 @@ class DeepLearning(object):
             # board_input = keras.layers.Input(shape=(8, 8, 12))
             # turn_input = keras.layers.Input(shape=(1, 1))
 
-            input_layer = keras.layers.Input(shape=(769, ))
+            input_layer = keras.layers.Input(shape=(769,))
 
             last_hidden_layer = None
             new_hidden_layer = keras.layers.Dense(number_of_neurons, activation='sigmoid')(input_layer)
@@ -762,9 +762,24 @@ class DeepLearning(object):
             console.log(error_message, console.LOG_ERROR, self.save_model.__name__)
             return False
 
-    # TODO 'load_model' method
     def load_model(self):
-        pass
+        """
+        This method loads the current keras model saved on disk at the models folder: 'app.file.deep.learning.model'
+        file
+
+        :return: (Keras Model) The Neural Network model
+        """
+        try:
+            # Create file path
+            model_file_path = os.path.join(config.get('app.folder.deep.learning.models'),
+                                           config.get('app.file.deep.learning.model'))
+
+            model = keras.models.load_model(model_file_path)
+
+            return model
+        except Exception as error_message:
+            console.log(error_message, console.LOG_ERROR, self.load_model.__name__)
+            return False
 
     # TODO 'train_model' method
     def train_model(self):
