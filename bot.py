@@ -14,6 +14,7 @@ from config import config
 from enum import Enum
 from functools import partial
 from sklearn.model_selection import train_test_split
+from datetime import datetime
 
 
 # %% Class Bot Method
@@ -701,7 +702,7 @@ class DeepLearning(object):
             dict_preprocessed_data = self.preprocess_training_data(pgn)
 
             if config.get(""):
-                self.save_preprocessed_data()  # Missing preprocessed data
+                self.save_preprocessed_data(dict_preprocessed_data)
 
             [dict_training_data, dict_test_data] = self.get_split_preprocessed_data(dict_preprocessed_data, 0.2)
             self.model = self.get_neural_network_model(hidden_layers=16, number_of_neurons=128)
@@ -735,8 +736,44 @@ class DeepLearning(object):
         pass
 
     # TODO 'save_preprocessed_data' method
-    def save_preprocessed_data(self):
-        pass
+    def save_preprocessed_data(self, dict_preprocessed_data):
+        """
+        This method saves the preprocessed data to the 'preprocessed_data' folder as 2 numpy files
+
+        :param dict_preprocessed_data: (Dictionary) 2 Elements representing the preprocessed input and output layers of the neural network
+        {
+            'X': <Numpy Array> (Nx(Mx(8x8x12))),
+            'y': <Numpy Array> (Nx(Mx(2x2x8)))
+        }
+        :return: (Boolean) True or False)
+        """
+        try:
+            # Create file sufixes
+            now = datetime.now()  # current date and time
+            file_suffix = now.strftime('%Y%m%d%H%M')
+            file_extension = 'npy'
+
+            # Create file names
+            x_file_name = ('X_%s.%s' % (file_suffix, file_extension))
+            y_file_name = ('y_%s.%s' % (file_suffix, file_extension))
+
+            # Create file paths
+            x_file_path = os.path.join(config.get('app.folder.deep.learning.models'),
+                                       config.get('app.folder.deep.learning.preprocessed.data'),
+                                       x_file_name)
+
+            y_file_path = os.path.join(config.get('app.folder.deep.learning.models'),
+                                       config.get('app.folder.deep.learning.preprocessed.data'),
+                                       y_file_name)
+
+            # Save files
+            np.save(x_file_path, dict_preprocessed_data['X'])
+            np.save(y_file_path, dict_preprocessed_data['y'])
+
+            return True
+        except Exception as error_message:
+            console.log(error_message, console.LOG_ERROR, self.save_preprocessed_data.__name__)
+            return False
 
 
 # %% Class Tree
