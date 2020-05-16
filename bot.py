@@ -335,7 +335,24 @@ class DeepLearning(object):
         }
         """
         try:
-            pass
+            if self.model is None:
+                self.model = self.load_model()
+
+            from board import Board
+            board_handler = Board(8, 8)
+            board_handler.gameplay_mode = GamePlayMode.MULTIPLAYER
+            board_handler.board_inst = copy.deepcopy(board_inst)
+            board_handler.current_color = 'black'
+
+            X = np.array([np.concatenate([
+                np.array(board_handler.convert_board_inst_to_binary()).flatten(),
+                np.array([0])
+            ])])
+
+            y = self.model.predict(X)
+
+            dict_best_move = self.convert_output_to_positions_v2(y)
+            return dict_best_move
         except Exception as error_message:
             console.log(error_message, console.LOG_ERROR, self.find_next_best_move.__name__)
             return False
@@ -402,17 +419,17 @@ class DeepLearning(object):
         }
         """
         try:
-            if not isinstance(output, np.ndarray):
-                output = np.array(output)
+            if isinstance(output, np.ndarray):
+                output = output.tolist()
 
             return {
                 'initial_position': (
-                    np.argmax(output[:, 0]),
-                    np.argmax(output[:, 1])
+                    np.argmax(output[0]),
+                    np.argmax(output[1])
                 ),
                 'next_position': (
-                    np.argmax(output[:, 2]),
-                    np.argmax(output[:, 3])
+                    np.argmax(output[2]),
+                    np.argmax(output[3])
                 )
             }
 
@@ -1034,7 +1051,14 @@ def run_debug_mode():
 
         # Test Deep Learning algorithm
         if config.get("app.test.deep.learning.algorithm"):
-            deep_learning_handler.build_model()
+            if config.get('app.build.deep.learning.model'):
+                deep_learning_handler.build_model()
+            else:
+                from board import Board
+                board_handler = Board(8, 8)
+                board_handler.gameplay_mode = GamePlayMode.MULTIPLAYER
+
+                deep_learning_handler.find_next_best_move(board_handler.board_inst, None)
 
         return True
     except Exception as error_message:
