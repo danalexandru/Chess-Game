@@ -624,7 +624,7 @@ class DeepLearning(object):
 
         :param hidden_layers: (Integer) The number of hidden layers
         :param number_of_neurons: (Integer) The number of neurons per hidden layer
-        :return: (Model) The Neural Network model
+        :return: (Keras Model) The Neural Network model
         """
         try:
             # board_input = keras.layers.Input(shape=(8, 8, 12))
@@ -716,20 +716,51 @@ class DeepLearning(object):
 
             # Split preprocessed data into training && test
             [dict_training_data, dict_test_data] = self.get_split_preprocessed_data(dict_preprocessed_data, 0.2)
-            self.model = self.get_neural_network_model(hidden_layers=16, number_of_neurons=128)
+
+            if config.get('app.build.deep.learning.model'):
+                self.model = self.get_neural_network_model(hidden_layers=16, number_of_neurons=128)
+            elif config.get('app.load.deep.learning.model'):
+                self.model = self.load_model()
+            else:
+                console.log('Both configs for building and loading the model are set to False.',
+                            console.LOG_WARNING,
+                            self.build_model.__name__)
+                return False
 
             # Save model
             if config.get('app.save.deep.learning.model'):
-                self.save_model()  # Missing model
+                self.save_model(self.model)
 
             return True
         except Exception as error_message:
             console.log(error_message, console.LOG_ERROR, self.build_model.__name__)
             return False
 
-    # TODO 'save_model' method
-    def save_model(self):
-        pass
+    def save_model(self, model):
+        """
+        This method saves the 'keras' model to the 'models' folder as a .h5 file.
+
+        :param model: (Keras Model) The Neural Network model
+        :return: Boolean (True or False)
+        """
+        try:
+            # Create file sufixes
+            now = datetime.now()  # current date and time
+            file_suffix = now.strftime('%Y%m%d%H%M')
+            file_extension = 'h5'
+
+            # Create file name
+            model_file_name = ('model_%s.%s' % (file_suffix, file_extension))
+
+            # Create file path
+            model_file_path = os.path.join(config.get('app.folder.deep.learning.models'),
+                                           model_file_name)
+
+            model.save(model_file_path)
+            return True
+        except Exception as error_message:
+            console.log(error_message, console.LOG_ERROR, self.save_model.__name__)
+            return False
 
     # TODO 'load_model' method
     def load_model(self):
@@ -788,7 +819,8 @@ class DeepLearning(object):
 
     def load_preprocessed_data(self):
         """
-        This method loads the current preprocessed data saved on disk at the ''
+        This method loads the current preprocessed data saved on disk at the models/preprocessed_data folder:
+        'app.file.deep.learning.preprocessed.data.x', 'app.file.deep.learning.preprocessed.data.y' files
 
         :return: (Dictionary) 2 Elements representing the preprocessed input and output layers of the neural network
         {
