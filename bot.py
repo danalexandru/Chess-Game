@@ -349,9 +349,15 @@ class DeepLearning(object):
                 np.array([0])
             ])])
 
-            y = self.model.predict(X)
+            while True:
+                y = self.model.predict(X)
 
-            dict_best_move = self.convert_output_to_positions_v2(y)
+                dict_best_move = self.convert_output_to_positions_v2(y)
+                if board_handler.move_chess_piece(
+                        dict_best_move['initial_position'],
+                        dict_best_move['next_position']) is True:
+                    break
+
             return dict_best_move
         except Exception as error_message:
             console.log(error_message, console.LOG_ERROR, self.find_next_best_move.__name__)
@@ -860,10 +866,17 @@ class DeepLearning(object):
             'X': <Numpy Array> (N1x(Mx(8x8x12))),
             'y': <Numpy Array> (N1x(Mx(2x2x8)))
         }
-        :return: (Dictionary) 2 Elements representing the test loss and test accuracy
+        :return: (Dictionary) Dictionary containing the losses and accuracies of the test
         {
-            'test_loss': <Integer>,
-            'test_accuracy': <Integer>
+            'loss': <Number>,
+            'init_row_loss': <Number>,
+            'init_col_loss': <Number>,
+            'next_row_loss': <Number>,
+            'next_col_loss': <Number>,
+            'init_row_accuracy': <Number>,
+            'init_col_accuracy': <Number>,
+            'next_row_accuracy': <Number>,
+            'next_col_accuracy': <Number>
         }
         """
         try:
