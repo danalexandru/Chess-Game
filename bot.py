@@ -531,7 +531,8 @@ class DeepLearning(object):
             while True:
                 game = chess.pgn.read_game(pgn)
                 if game is None or \
-                        number_of_games >= max_number_of_games:
+                        (max_number_of_games is not False and
+                         number_of_games >= max_number_of_games):
                     break  # end of the file
 
                 dict_preprocessed_data = self.preprocess_training_data_for_current_game(game)
