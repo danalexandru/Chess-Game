@@ -8,6 +8,7 @@ import copy
 import multiprocessing
 import chess.pgn
 import keras
+import matplotlib.pyplot as plt
 
 from globals import *
 from config import config
@@ -843,11 +844,13 @@ class DeepLearning(object):
             y = np.array([j for i in y for j in i])
 
             # Merge preprocessed data
-            model.fit(X, [y[:, :, 0], y[:, :, 1], y[:, :, 2], y[:, :, 3]],
-                      epochs=epochs,
-                      batch_size=batch_size,
-                      verbose=1
-                      )
+            history = model.fit(X, [y[:, :, 0], y[:, :, 1], y[:, :, 2], y[:, :, 3]],
+                                epochs=epochs,
+                                batch_size=batch_size,
+                                verbose=1
+                                )
+            if config.get('app.test.deep.learning.plot.training.history'):
+                self.plot_training_progress(history, model.metrics_names)
 
             return model
         except Exception as error_message:
@@ -978,6 +981,37 @@ class DeepLearning(object):
 
         except Exception as error_message:
             console.log(error_message, console.LOG_ERROR, self.load_preprocessed_data.__name__)
+            return False
+
+    def plot_training_progress(self, history, keys):
+        """
+        This method plots the history of the training model from the 'train_model' method
+        
+        :param history: (Dictionary) A dictionary containing the losses and accuracies of every iteration through the 
+        training data
+        :param keys: (List) A list of the keys inside the 'history' dictionary
+        :return: (Boolean) True or False
+        """
+        try:
+            for i in range(len(keys)):
+                key = keys[i]
+                
+                metric = np.array(history.history[key])
+                plt.figure(i)
+                plt.plot(
+                    np.arange(metric.size), 
+                    metric,
+                    linestyle='-',
+                    color='blue',
+                    label=str(key).capitalize()
+                )
+                plt.grid(True)
+                plt.legend(loc='best')
+                
+            input('Pres Enter to continue...')
+            return True
+        except Exception as error_message:
+            console.log(error_message, console.LOG_ERROR, self.plot_training_progress.__name__)
             return False
 
 
