@@ -852,6 +852,9 @@ class DeepLearning(object):
             if config.get('app.test.deep.learning.plot.training.history'):
                 self.plot_training_progress(history, model.metrics_names)
 
+            if config.get('app.save.deep.learning.model.training.history'):
+                self.save_training_model_history(history)
+
             return model
         except Exception as error_message:
             console.log(error_message, console.LOG_ERROR, self.train_model.__name__)
@@ -993,25 +996,117 @@ class DeepLearning(object):
         :return: (Boolean) True or False
         """
         try:
+            # Create file sufixes
+            now = datetime.now()  # current date and time
+            file_suffix = now.strftime('%Y%m%d%H%M')
+            file_extension = 'png'
+
             for i in range(len(keys)):
                 key = keys[i]
-                
+
+                title = ''
+                y_label = ''
+                x_label = 'Iterations'
+
+                # Determine plot title
+                if 'init' in key:
+                    title = title + 'initial' + ' '
+                elif 'next' in key:
+                    title = title + 'next' + ' '
+
+                if 'row' in key:
+                    title = title + 'row' + ' '
+                elif 'col' in key:
+                    title = title + 'column' + ' '
+
+                if 'loss' in key:
+                    title = title + 'loss'
+                    y_label = 'Loss'
+                elif 'accuracy' in key:
+                    title = title + 'accuracy'
+                    y_label = 'Accuracy'
+
+                title = str(title).capitalize()
                 metric = np.array(history.history[key])
                 plt.figure(i)
                 plt.plot(
-                    np.arange(metric.size), 
+                    np.arange(metric.size),
                     metric,
                     linestyle='-',
                     color='blue',
-                    label=str(key).capitalize()
+                    # label=str(key).capitalize()
                 )
                 plt.grid(True)
-                plt.legend(loc='best')
-                
+                # plt.legend(loc='best')
+
+                plt.title(title)
+                plt.xlabel(x_label)
+                plt.ylabel(y_label)
+
+                # Save plot
+                plots_file_name = ('%s_%s.%s' % (key, file_suffix, file_extension))
+                plots_file_path = os.path.join(config.get('app.folder.pics.main'),
+                                               config.get('app.folder.deep.learning.model.training.history.plots'),
+                                               plots_file_name)
+
+                plt.savefig(plots_file_path)
             input('Pres Enter to continue...')
             return True
         except Exception as error_message:
             console.log(error_message, console.LOG_ERROR, self.plot_training_progress.__name__)
+            return False
+
+    def save_training_model_history(self, history):
+        """
+        This method saves the history of the keras training model locally
+
+        :param history: (Dictionary) A dictionary containing the losses and accuracies of every iteration through the
+        training data
+        :return: (Boolean) True or False
+        """
+        try:
+            # Create file sufixes
+            now = datetime.now()  # current date and time
+            file_suffix = now.strftime('%Y%m%d%H%M')
+            file_extension = 'json'
+
+            # Create file name
+            history_file_name = ('history_%s.%s' % (file_suffix, file_extension))
+
+            # Create file path
+            history_file_path = os.path.join(config.get('app.folder.deep.learning.models'),
+                                             config.get('app.folder.deep.learning.model.training.history'),
+                                             history_file_name)
+
+            file = open(history_file_path, 'w')
+            file.write(str(history.history))
+            file.close()
+
+            return True
+        except Exception as error_message:
+            console.log(error_message, console.LOG_ERROR, self.save_training_model_history.__name__)
+            return False
+
+    def load_training_model_history(self):
+        """
+        This method returns the history of the training model saved at the 'models/history' location. The file is that
+        is being loaded is 'app.file.deep.learning.model.training.history'.
+
+        :return: (Dictionary) A dictionary containing the losses and accuracies of every iteration through the
+        training data
+        """
+        try:
+            # Create file path
+            history_file_path = os.path.join(config.get('app.folder.deep.learning.models'),
+                                             config.get('app.folder.deep.learning.model.training.history'),
+                                             config.get('app.file.deep.learning.model.training.history'))
+
+            file = open(history_file_path, 'r')
+            dict_history = file.read()
+
+            return eval(dict_history)
+        except Exception as error_message:
+            console.log(error_message, console.LOG_ERROR, self.load_training_model_history.__name__)
             return False
 
 
