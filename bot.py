@@ -907,6 +907,9 @@ class DeepLearning(object):
                         console.LOG_SUCCESS,
                         self.test_model.__name__)
 
+            if config.get('app.test.deep.learning.plot.test.data'):
+                self.plot_test_model_data(model, dict_test_data)
+
             return dict_results
 
         except Exception as error_message:
@@ -998,7 +1001,7 @@ class DeepLearning(object):
         try:
             # Create file sufixes
             now = datetime.now()  # current date and time
-            file_suffix = now.strftime('%Y%m%d%H%M')
+            file_prefix = now.strftime('%Y%m%d%H%M')
             file_extension = 'png'
 
             for i in range(len(keys)):
@@ -1044,7 +1047,7 @@ class DeepLearning(object):
                 plt.ylabel(y_label)
 
                 # Save plot
-                plots_file_name = ('%s_%s.%s' % (key, file_suffix, file_extension))
+                plots_file_name = ('%s_training_%s.%s' % (file_prefix, key, file_extension))
                 plots_file_path = os.path.join(config.get('app.folder.pics.main'),
                                                config.get('app.folder.deep.learning.model.training.history.plots'),
                                                plots_file_name)
@@ -1107,6 +1110,92 @@ class DeepLearning(object):
             return eval(dict_history)
         except Exception as error_message:
             console.log(error_message, console.LOG_ERROR, self.load_training_model_history.__name__)
+            return False
+
+    def plot_test_model_data(self, model, dict_test_data):
+        """
+        This method plots the real test data and compares it with the predicted one given by the model
+
+        :param model: (Keras Model) The Neural Network model
+        :param dict_test_data: (Dictionary) 2 Elements representing the preprocessed input and output layers of the
+        neural network (only the test data)
+        {
+            'X': <Numpy Array> (N1x(Mx(8x8x12))),
+            'y': <Numpy Array> (N1x(Mx(2x2x8)))
+        }
+        :return: (Boolean) True or False
+        """
+        try:
+            # Create file sufixes
+            now = datetime.now()  # current date and time
+            file_prefix = now.strftime('%Y%m%d%H%M')
+            file_extension = 'png'
+
+            # Get preprocessed data
+            X = dict_test_data['X']
+            y = dict_test_data['y']
+
+            # Merge preprocessed data
+            X = np.array([j for i in X for j in i])
+            y = np.array([j for i in y for j in i])
+
+            y_predicted = model.predict(X)
+            titles = ['Initial Row', 'Initial Column', 'Next Row', 'Next Column']
+            labels = ['init_row', 'init_col', 'next_row', 'next_col']
+
+            list_real_values = [[], [], [], []]
+            list_predicted_values = [[], [], [], []]
+            for i in range(y[:, :, 0].shape[0]):
+                # Convert output to positions
+                dict_real_values = self.convert_output_to_positions_v2(y[i])
+                dict_predicted_values = self.convert_output_to_positions_v2(np.array([
+                    y_predicted[0][i, :],
+                    y_predicted[1][i, :],
+                    y_predicted[2][i, :],
+                    y_predicted[3][i, :]
+                ]).T.tolist())
+
+                # Append positions to list_real_values list
+                list_real_values[0].append(dict_real_values['initial_position'][0])
+                list_real_values[1].append(dict_real_values['initial_position'][1])
+                list_real_values[2].append(dict_real_values['next_position'][0])
+                list_real_values[3].append(dict_real_values['next_position'][1])
+
+                # Append positions to list_predicted_values list
+                list_predicted_values[0].append(dict_predicted_values['initial_position'][0])
+                list_predicted_values[1].append(dict_predicted_values['initial_position'][1])
+                list_predicted_values[2].append(dict_predicted_values['next_position'][0])
+                list_predicted_values[3].append(dict_predicted_values['next_position'][1])
+
+            for i in range(4):
+                np_real_values = np.array(list_real_values[i])
+                np_predicted_values = np.array(list_predicted_values[i])
+
+                plt.figure(i)
+                plt.ylim(-1, 9)
+                plt.scatter(np.arange(np_real_values.size),
+                            np_real_values,
+                            color='red',
+                            label='Real Data')
+                plt.scatter(np.arange(np_predicted_values.size),
+                         np_predicted_values,
+                         color='blue',
+                         label='Predicted Data')
+                plt.grid(True)
+                plt.legend(loc='best')
+
+                plt.title(titles[i])
+
+                # Save plot
+                plots_file_name = ('%s_test_%s.%s' % (file_prefix, labels[i], file_extension))
+                plots_file_path = os.path.join(config.get('app.folder.pics.main'),
+                                               config.get('app.folder.deep.learning.model.training.history.plots'),
+                                               plots_file_name)
+
+                plt.savefig(plots_file_path)
+            return True
+        except Exception as error_message:
+            console.log(error_message, console.LOG_ERROR, self.plot_test_model_data.__name__)
             return False
 
 
