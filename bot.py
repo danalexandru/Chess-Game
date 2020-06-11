@@ -140,32 +140,75 @@ class BruteForce(object):
 
             list_valid_moves_tree = self.generate_list_valid_moves_tree(board_inst, current_score)
             leafs = list(list_valid_moves_tree.find_leafs())
-            best_leaf = Tree(
-                node_index=-1,
-                parent=None,
-                children=[],
-                data={
-                    'board_inst': None,
-                    'current_score': {
-                        'white': np.inf,
-                        'black': 0
-                    },
-                    'total_score': {
-                        'white': np.inf,
-                        'black': 0
-                    },
-                    'next_color': None,
-                    'initial_position': [],
-                    'next_position': []
-                }
-            )
-            for leaf in leafs:
-                if ((best_leaf.data['total_score']['white'] - best_leaf.data['total_score']['black']) >
-                        (leaf.data['total_score']['white'] - leaf.data['total_score']['black'])):
-                    best_leaf = leaf.copy()
 
+            list_best_leafs = [leafs[0]]
+
+            if len(leafs) == 0:
+                console.log('There are no leafs in the minimax tree.', console.LOG_WARNING,
+                            self.find_next_best_move.__name__)
+                return False
+
+            best_leaf = leafs[0]
+
+            score_used = 'total_score'
+            for leaf in leafs:
+                # find a better leaf than the current one
+                if (leaf.data['next_color'] != 'black'
+                        and leaf not in list_best_leafs
+                        and ((best_leaf.data[score_used]['white'] - best_leaf.data[score_used]['black']) >
+                             (leaf.data[score_used]['white'] - leaf.data[score_used]['black']))):
+                    list_best_leafs = [leaf]
+                    best_leaf = leaf
+
+                elif (leaf.data['next_color'] != 'white'
+                      and leaf not in list_best_leafs
+                      and ((best_leaf.data[score_used]['white'] - best_leaf.data[score_used]['black']) <
+                           (leaf.data[score_used]['white'] - leaf.data[score_used]['black']))):
+                    list_best_leafs = [leaf]
+                    best_leaf = leaf
+
+                # find leafs that are just as good as the current one
+                elif (leaf not in list_best_leafs
+                      and (best_leaf.data[score_used]['white'] - best_leaf.data[score_used]['black']) ==
+                      (leaf.data[score_used]['white'] - leaf.data[score_used]['black'])):
+                    list_best_leafs.append(leaf)
+
+            list_current_notes = list_best_leafs
             while best_leaf.node_index != 1:
-                best_leaf = best_leaf.parent.copy()
+                list_parent_nodes = [best_leaf.parent]
+                for leaf in list_current_notes:
+                    # find a better leaf than the current one
+                    if (leaf.parent.data['next_color'] != 'black'
+                            and leaf.parent not in list_parent_nodes
+                            and ((best_leaf.parent.data[score_used]['white']
+                                  - best_leaf.parent.data[score_used]['black']) >
+                                 (leaf.parent.data[score_used]['white']
+                                  - leaf.parent.data[score_used]['black']))):
+
+                        list_parent_nodes = [leaf.parent]
+                        best_leaf = leaf
+
+                    elif (leaf.parent.data['next_color'] != 'white'
+                          and leaf.parent not in list_parent_nodes
+                          and ((best_leaf.parent.data[score_used]['white']
+                                - best_leaf.parent.data[score_used]['black']) <
+                               (leaf.parent.data[score_used]['white']
+                                - leaf.parent.data[score_used]['black']))):
+
+                        list_parent_nodes = [leaf.parent]
+                        best_leaf = leaf
+
+                    # find leafs that are just as good as the current one
+                    elif (leaf.parent not in list_parent_nodes
+                          and (best_leaf.parent.data[score_used]['white']
+                               - best_leaf.parent.data[score_used]['black']) ==
+                          (leaf.parent.data[score_used]['white']
+                           - leaf.parent.data[score_used]['black'])):
+
+                        list_parent_nodes.append(leaf.parent)
+
+                list_current_notes = list_parent_nodes
+                best_leaf = list_current_notes[0]
 
             return {
                 'initial_position': best_leaf.data['initial_position'],
@@ -1178,9 +1221,9 @@ class DeepLearning(object):
                             color='red',
                             label='Real Data')
                 plt.scatter(np.arange(np_predicted_values.size),
-                         np_predicted_values,
-                         color='blue',
-                         label='Predicted Data')
+                            np_predicted_values,
+                            color='blue',
+                            label='Predicted Data')
                 plt.grid(True)
                 plt.legend(loc='best')
 
