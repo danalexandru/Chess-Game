@@ -795,8 +795,19 @@ class DeepLearning(object):
                 return False
 
             # Save preprocessed data
-            if config.get('app.save.deep.learning.preprocessed.data'):
+            if config.get('app.save.deep.learning.preprocessed.data')\
+                    and config.get('app.build.deep.learning.preprocessed.data')\
+                    and not config.get('app.load.deep.learning.preprocessed.data'):
                 self.save_preprocessed_data(dict_preprocessed_data)
+
+            if config.get('app.debug.deep.learning.trim.preprocessed.data'):
+                if config.get('app.load.deep.learning.trim.preprocessed.data'):
+                    dict_preprocessed_data = self.load_trimmed_preprocessed_data()
+                else:
+                    dict_preprocessed_data = self.get_trim_preprocessed_data(dict_preprocessed_data)
+
+                    if config.get('app.save.deep.learning.trim.preprocessed.data'):
+                        self.save_trimmed_preprocessed_data(dict_preprocessed_data)
 
             # Split preprocessed data into training && test
             [dict_training_data, dict_test_data] = self.get_split_preprocessed_data(dict_preprocessed_data, 0.2)
@@ -1239,6 +1250,146 @@ class DeepLearning(object):
             return True
         except Exception as error_message:
             console.log(error_message, console.LOG_ERROR, self.plot_test_model_data.__name__)
+            return False
+
+    def get_trim_preprocessed_data(self, dict_preprocessed_data):
+        """
+        This method assures us that we could only do one move on a chessboard, for a certain chess pieces placement.
+
+        :param dict_preprocessed_data: (Dictionary) 2 Elements representing the preprocessed input and output layers of
+        the neural network
+        {
+            'X': <Numpy Array> (Nx(Mx(8x8x12))),
+            'y': <Numpy Array> (Nx(Mx(2x2x8)))
+        }
+        return: (Dictionary) 2 Elements representing the preprocessed input and output layers of the neural network,
+        but without the ability to make 2 different moves given the same chessboard state
+        {
+            'X': <Numpy Array> (Nx(Mx(8x8x12))),
+            'y': <Numpy Array> (Nx(Mx(2x2x8)))
+        }
+        """
+        try:
+            X = dict_preprocessed_data['X']
+            y = dict_preprocessed_data['y']
+            
+            list_trimmed_X = []
+            list_trimmed_y = []
+            
+            list_unique_X = []
+            list_unique_y = []
+            
+            def find_element_in_list(array, list_elems):
+                for element in list_elems:
+                    if np.array_equal(element, array):
+                        return True
+                    
+                return False
+            
+            for game in range(X.shape[0]):
+                list_game_trimmed_X = []
+                list_game_trimmed_y = []
+                
+                for move in range(X[game].shape[0]):
+                    if not find_element_in_list(X[game][move], list_unique_X):
+                        list_unique_X.append(X[game][move])
+                        list_unique_y.append(y[game][move])
+                        
+                        list_game_trimmed_X.append(X[game][move])
+                        list_game_trimmed_y.append(y[game][move])
+                    else:
+                        index = [np.array_equal(X[game][move], x) for x in list_unique_X].index(True)
+                        
+                        if np.array_equal(y[game][move], list_unique_y[index]):
+                            list_game_trimmed_X.append(X[game][move])
+                            list_game_trimmed_y.append(y[game][move])
+                            
+                if len(list_game_trimmed_X) > 0 and len(list_game_trimmed_y) > 0:
+                    list_trimmed_X.append(np.array(list_game_trimmed_X))
+                    list_trimmed_y.append(np.array(list_game_trimmed_y))
+                    
+            return {
+                'X': np.array(list_trimmed_X),
+                'y': np.array(list_trimmed_y)
+            }
+        
+        except Exception as error_message:
+            console.log(error_message, console.LOG_ERROR, self.get_trim_preprocessed_data.__name__)
+            return False
+
+    def save_trimmed_preprocessed_data(self, dict_preprocessed_data):
+        """
+        This method takes the trimmed preprocessed data obtained using the 'get_trim_preprocessed_data' method and
+        saves it locally
+
+        :param dict_preprocessed_data: (Dictionary) 2 Elements representing the preprocessed input and output layers of
+        the neural network
+        {
+            'X': <Numpy Array> (Nx(Mx(8x8x12))),
+            'y': <Numpy Array> (Nx(Mx(2x2x8)))
+        }
+        :return: Boolean (True or False)
+        """
+        try:
+            # Create file sufixes
+            now = datetime.now()  # current date and time
+            file_suffix = now.strftime('%Y%m%d%H%M')
+            file_extension = 'npy'
+
+            # Create file names
+            x_file_name = ('X_trimmed_%s.%s' % (file_suffix, file_extension))
+            y_file_name = ('y_trimmed_%s.%s' % (file_suffix, file_extension))
+
+            # Create file paths
+            x_file_path = os.path.join(config.get('app.folder.deep.learning.models'),
+                                       config.get('app.folder.deep.learning.preprocessed.data'),
+                                       x_file_name)
+
+            y_file_path = os.path.join(config.get('app.folder.deep.learning.models'),
+                                       config.get('app.folder.deep.learning.preprocessed.data'),
+                                       y_file_name)
+            # Save files
+            np.save(x_file_path, dict_preprocessed_data['X'])
+            np.save(y_file_path, dict_preprocessed_data['y'])
+
+            return True
+        except Exception as error_message:
+            console.log(error_message, console.LOG_ERROR, self.save_trimmed_preprocessed_data.__name__)
+            return False
+
+    def load_trimmed_preprocessed_data(self):
+        """
+        This method loads the current trimmed preprocessed data saved on disk at the models/preprocessed_data folder:
+        'app.file.deep.learning.trim.preprocessed.data.x', 'app.file.deep.learning.trim.preprocessed.data.y' files
+
+        :return: (Dictionary) 2 Elements representing the trimmed preprocessed input and output layers of the neural
+        network
+        {
+            'X': <Numpy Array> (Nx(Mx(8x8x12))),
+            'y': <Numpy Array> (Nx(Mx(2x2x8)))
+        }
+        """
+        try:
+            # Create file paths
+            x_file_path = os.path.join(config.get('app.folder.deep.learning.models'),
+                                       config.get('app.folder.deep.learning.preprocessed.data'),
+                                       config.get('app.file.deep.learning.trim.preprocessed.data.x'))
+
+            y_file_path = os.path.join(config.get('app.folder.deep.learning.models'),
+                                       config.get('app.folder.deep.learning.preprocessed.data'),
+                                       config.get('app.file.deep.learning.trim.preprocessed.data.y'))
+
+            # Load numpy data
+            X = np.load(x_file_path, allow_pickle=True)
+            y = np.load(y_file_path, allow_pickle=True)
+
+            return {
+                'X': X,
+                'y': y
+            }
+
+        except Exception as error_message:
+            console.log(error_message, console.LOG_ERROR, self.load_trimmed_preprocessed_data.__name__)
             return False
 
 
